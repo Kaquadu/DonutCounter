@@ -8,8 +8,11 @@ use Mix.Config
 # General application configuration
 config :donuts,
   ecto_repos: [Donuts.Repo],
-  client_id: "632634181587.644062506869"
-  redirect_uri: "http%3A%2F%2Flocalhost%3A4000%2Floggedin"
+  client_id: "632634181587.644062506869",
+  client_secret: "8ce5c827f81a18909c247b81436f72bc",
+  redirect_uri_auth: "http%3A%2F%2Flocalhost%3A4000%2Fauth",
+  redirect_uri_loggedin: "http%3A%2F%2Flocalhost%3A4000%2Floggedin",
+  verification_token: "d77fq65TdeT0hvpraviVUpnE"
 
 # Configures the endpoint
 config :donuts, DonutsWeb.Endpoint,
