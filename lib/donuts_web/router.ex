@@ -17,7 +17,9 @@ defmodule DonutsWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    get "/loggedin", PageController, :logged_in
+    get "/sign-in", PageController, :sign_in
+    get "/auth", PageController, :auth
+    get "/logged-in", PageController, :logged_in
   end
 
   # Other scopes may use custom stacks.

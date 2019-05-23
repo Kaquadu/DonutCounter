@@ -17,11 +17,7 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <li><a href="https://slack.com/oauth/authorize?scope=identity.basic&client_id=632634181587.644062506869&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Floggedin">
-              <img alt=""Sign in with Slack"" height="40" width="172"
-               src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
-               srcset="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x,
-               https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x" /></a></li>
+            <li><%= link "Login with Stack", to: DonutsWeb.Router.Helpers.page_path(@conn, :sign_in) %></li>
           </ul>
         </nav>
         <span class="logo"></span>
