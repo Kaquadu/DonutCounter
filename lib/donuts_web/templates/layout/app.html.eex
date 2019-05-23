@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="shortcut icon" href="images/donut.png" />
+    <title>Donut Alert!</title>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+  </head>
+
+  <body>
+    <div class="container">
+      <header class="header">
+        <nav role="navigation">
+          <ul class="nav nav-pills pull-right">
+            <li><a href="https://slack.com/oauth/authorize?scope=identity.basic&client_id=632634181587.644062506869&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Floggedin">
+              <img alt=""Sign in with Slack"" height="40" width="172"
+               src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
+               srcset="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x,
+               https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x" /></a></li>
+          </ul>
+        </nav>
+        <span class="logo"></span>
+      </header>
+
+      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+
+      <main role="main">
+        <%= render @view_module, @view_template, assigns %>
+      </main>
+
+    </div> <!-- /container -->
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>
