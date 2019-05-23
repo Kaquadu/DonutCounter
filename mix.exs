@@ -43,7 +43,10 @@ defmodule Donuts.Mixfile do
       {:cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
       {:poison, "~> 3.1"},
-      {:httpoison, "~> 1.4"}
+      {:httpoison, "~> 1.4"},
+      {:uuid, "~> 1.1.8"},
+      {:comeonin, "~> 5.1"},
+      {:bcrypt_elixir, "~> 2.0.3"}
     ]
   end
 

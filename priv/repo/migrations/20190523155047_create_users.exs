@@ -3,7 +3,7 @@ defmodule Donuts.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :ID, :string
+      add :ID, :string, primary_key: true
       add :name, :string
 
       timestamps()

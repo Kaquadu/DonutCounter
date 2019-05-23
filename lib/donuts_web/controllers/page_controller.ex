@@ -16,7 +16,7 @@ defmodule DonutsWeb.PageController do
   end
 
   def auth(conn, params) do
-    response = params |> Auth.get_code() |> Auth.get_token_info()
+    response = params |> Auth.get_code() |> Auth.get_token_info() |> Auth.create_session()
     redirect(conn, to: "/logged-in")
   end
 
