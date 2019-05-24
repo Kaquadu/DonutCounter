@@ -4,6 +4,17 @@ defmodule Donuts.Sessions do
 
   alias Donuts.Sessions.Session
 
+  def get_all() do
+    Repo.all(Session)
+  end
+
+  def check_active(token) do
+    Repo.all(Session)
+    |> Enum.each(fn x ->
+      Bcrypt.verify_pass(token, x)
+    end) |> IO.inspect
+  end
+
   def create_session(attrs) do
     %Session{}
     |> Session.changeset(attrs)

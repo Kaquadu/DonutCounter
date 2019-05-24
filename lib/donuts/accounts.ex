@@ -4,7 +4,7 @@ defmodule Donuts.Accounts do
 
   alias Donuts.Accounts.User
 
-  def get_all_users() do
+  def get_all() do
     Repo.all(User)
   end
 

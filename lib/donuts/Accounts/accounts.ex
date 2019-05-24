@@ -2,16 +2,18 @@ defmodule Donuts.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:uuid, :binary_id, autogenerate: true}
+
   schema "users" do
-    field :ID, :string
+    field :slack_id, :string
     field :name, :string
     timestamps()
   end
 
   def changeset(user, attrs) do
     user
-      |> cast(attrs, [:ID, :name])
-      |> validate_required([:ID, :name])
-      |> unique_constraint(:ID)
+      |> cast(attrs, [:slack_id, :name])
+      |> validate_required([:slack_id, :name])
+      |> unique_constraint(:slack_id)
   end
 end
