@@ -3,8 +3,9 @@ defmodule Donuts.Donuts.Donut do
   import Ecto.Changeset
   import UUID
 
+  @primary_key {:uuid, :binary_id, autogenerate: true}
+
   schema "donuts" do
-    field :uuid, :string
     field :sender, :string
     field :guilty, :string
     field :comment, :string
@@ -16,13 +17,11 @@ defmodule Donuts.Donuts.Donut do
   def changeset(donut, attrs) do
     attrs =
     attrs
-    |> Map.put(:uuid, UUID.uuid1())
-    |> Map.put(:expiration_date, DateTime.utc_now()) |> IO.inspect
+    |> Map.put(:expiration_date, DateTime.utc_now())
 
     donut
-    |> cast(attrs, [:uuid, :sender, :guilty, :comment, :expiration_date])
-    |> validate_required([:uuid, :sender, :guilty, :expiration_date])
-    |> unique_constraint(:uuid)
+    |> cast(attrs, [:sender, :guilty, :comment, :expiration_date])
+    |> validate_required([:sender, :guilty, :expiration_date])
   end
 
 end

@@ -3,8 +3,9 @@ defmodule Donuts.Sessions.Session do
   import Ecto.Changeset
   import UUID
 
+  @primary_key {:uuid, :binary_id, autogenerate: true}
+
   schema "sessions" do
-    field :uuid, :string
     field :token, :string
     field :user_id, :string
 
@@ -12,15 +13,10 @@ defmodule Donuts.Sessions.Session do
   end
 
   def changeset(session, attrs) do
-    attrs =
-    attrs
-    |> Map.put(:uuid, UUID.uuid1())
-
     session
-    |> cast(attrs, [:uuid, :token, :user_id])
-    |> validate_required([:uuid, :token, :user_id])
+    |> cast(attrs, [:token, :user_id])
+    |> validate_required([:token, :user_id])
     |> update_change(:token, &Bcrypt.hash_pwd_salt/1)
-    |> unique_constraint(:uuid)
   end
 
 end
