@@ -18,7 +18,7 @@ defmodule Donuts.Helpers.Auth do
 
   def create_session(response) do
     token = Map.get(response, "access_token")
-    user_id = Map.get(response, "user") |> Map.get("id")
+    user_id = response |> Map.get("user") |> Map.get("id")
     Sessions.create_session(%{:token => token, :user_id => user_id})
   end
 end
