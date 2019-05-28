@@ -10,6 +10,11 @@ defmodule Donuts.Helpers.SlackCommunicator do
     |> HTTPHelper.get_body
   end
 
+  def send_message_to_channel(channel, text) do
+    "https://slack.com/api/chat.postMessage?token=#{@oauth_token}&channel=#{channel}&text=#{text}&as_user=false"
+    |> HTTPHelper.get_body
+  end
+
   def handle_event(%{
     "type" => event_type,
     "channel" => event_channel,
@@ -22,24 +27,14 @@ defmodule Donuts.Helpers.SlackCommunicator do
   end
 
   defp process_donut_command(command, user_id) do
-    splitted_cmd = command |> String.split()
-    command = splitted_cmd |> List.pop_at(0)
-    fname = splitted_cmd |> List.pop_at(1)
-    sname = splitted_cmd |> List.pop_at(2)
-    name = fname <> " " <> sname
-    if (Accounts.get_by_real_name(name)) and command == "add" do
-      sender = Accounts.get_by_slack_id(user_id)
-      donut = %{}
-      |> Map.put("sender", sender)
-      |> Map.put("guilty", name)
-      Donuts.Donuts.create_donut(donut)
-    else if (Accounts.get_by_real_name(name)) and command == "remove" do
-      #delete donut
+    cmd_ingridients = command |> String.split()
+    cmd_base = cmd_ingridients |> Enum.at(0)
 
-    else
-      #not a correct cmd
-    end
-  end
+    
+    fname = splitted_cmd |> Enum.at(1)
+    sname = splitted_cmd |> Enum.at(2)
+    name = fname <> " " <> sname
+
   end
 
 end

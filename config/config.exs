@@ -13,10 +13,10 @@ config :donuts,
   redirect_uri_auth: "http%3A%2F%2Flocalhost%3A4000%2Fauth",
   redirect_uri_loggedin: "http%3A%2F%2Flocalhost%3A4000%2Floggedin",
   verification_token: "d77fq65TdeT0hvpraviVUpnE",
-  oauth_token: "xoxp-632634181587-644044063701-637766598225-e918e4d4d42df0b64b52601221edb48d",
+  oauth_token: "xoxp-632634181587-644044063701-641871250257-625849d3a4fb0d8805231751810b3b32",
   ttl_seconds: 1800,
   bcrypt_salt: "$2b$12$x0DHri2vRvSt.qrWyLJOVu",
-  donuts_channel_id: "C024BE91L",
+  donuts_channel_id: "donuts",
   donuts_expiration_days: 30
 
 # Configures the endpoint
