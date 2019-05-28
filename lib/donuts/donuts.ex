@@ -1,4 +1,4 @@
-defmodule Donuts.Accounts do
+defmodule Donuts.Donuts do
   import Ecto.Query, warn: false
   alias Donuts.Repo
   alias Donuts.Donuts.Donut
