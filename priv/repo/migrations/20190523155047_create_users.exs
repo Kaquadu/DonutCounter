@@ -6,6 +6,7 @@ defmodule Donuts.Repo.Migrations.CreateUsers do
       add :uuid, :uuid, primary_key: true
       add :slack_id, :string
       add :name, :string
+      add :is_admin, :boolean
 
       timestamps()
     end

@@ -12,7 +12,12 @@ config :donuts,
   client_secret: "8ce5c827f81a18909c247b81436f72bc",
   redirect_uri_auth: "http%3A%2F%2Flocalhost%3A4000%2Fauth",
   redirect_uri_loggedin: "http%3A%2F%2Flocalhost%3A4000%2Floggedin",
-  verification_token: "d77fq65TdeT0hvpraviVUpnE"
+  verification_token: "d77fq65TdeT0hvpraviVUpnE",
+  oauth_token: "xoxp-632634181587-644044063701-637766598225-e918e4d4d42df0b64b52601221edb48d",
+  ttl_seconds: 1800,
+  bcrypt_salt: "$2b$12$x0DHri2vRvSt.qrWyLJOVu",
+  donuts_channel_id: "C024BE91L",
+  donuts_expiration_days: 30
 
 # Configures the endpoint
 config :donuts, DonutsWeb.Endpoint,

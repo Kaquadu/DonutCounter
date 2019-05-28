@@ -7,6 +7,7 @@ defmodule Donuts.Accounts.User do
   schema "users" do
     field :slack_id, :string
     field :name, :string
+    field :is_admin, :boolean
     timestamps()
   end
 

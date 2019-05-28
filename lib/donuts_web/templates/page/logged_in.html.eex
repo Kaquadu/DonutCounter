@@ -1,5 +1,7 @@
 <div class = "menu-container">
-  <a id = "href-button" href = "#aboutUs">Donuts service</a>
-  <a id = "href-button" href = "#aboutUs">Sweet list</a>
-  <a id = "href-button" href = "#aboutUs">Add donut</a>
+  <a id = "href-button" href = "#aboutDonuts">Donuts service</a>
+  <a id = "href-button" href = "#donutsList">Sweet list</a>
+  <a id = "href-button" href = "#addDonut">Add donut</a>
+
+  
 </div>

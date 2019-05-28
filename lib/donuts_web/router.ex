@@ -20,6 +20,7 @@ defmodule DonutsWeb.Router do
     get "/sign-in", PageController, :sign_in
     get "/auth", PageController, :auth
     get "/logged-in", PageController, :logged_in
+    post "/event-occured", PageController, :event_handler
   end
 
   # Other scopes may use custom stacks.
