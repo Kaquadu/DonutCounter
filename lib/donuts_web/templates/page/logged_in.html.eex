@@ -1,7 +1,38 @@
-<div class = "menu-container">
-  <a id = "href-button" href = "#aboutDonuts">Donuts service</a>
-  <a id = "href-button" href = "#donutsList">Sweet list</a>
-  <a id = "href-button" href = "#addDonut">Add donut</a>
+<style>
+  section{
+      display: none;
+  }
+  :target{
+      display: block;
+  }
+</style>
 
-  
+<div class = "page-container">
+  <div class = "menu-container">
+    <a id = "href-button" href = "#aboutDonuts">About</a>
+    <a id = "href-button" href = "#donutCommands">Commands</a>
+    <a id = "href-button" href = "#donutsList">Sweet list</a>
+    <a id = "href-button" href = "#addDonut">Add donut</a>
+  </div>
+
+  <section id = "aboutDonuts">
+    <p>Our internal security policy assumes that one cannot leave his/her electronic device with an unlocked screen. If someone notices unlocked screen, he may type the word - ‘pączki’ (or variations of this word) via one of the public channels on our internal communicator. As a penalty for breaking security aspects, the one who was caught in the act owes everyone in the company doughnuts and is obliged to bring them to the office. </p>
+  </section>
+
+  <section id = "donutCommands">
+    <p>Add - add donut to currently logged user. Remember to put your name & surename there!</p>
+    <p>Example:</p>
+    <p>add Kuba Kowalczykowski</p>
+  </section>
+
+  <section id = "donutsList">
+    Mamamia let me
+
+  </section>
+
+  <section id = "addDonut">
+    Mamamia let me go
+
+  </section>
+
 </div>

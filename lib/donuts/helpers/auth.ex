@@ -12,7 +12,8 @@ defmodule Donuts.Helpers.Auth do
   end
 
   def get_token_info(code) do
-    "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{code}&redirect_uri=#{@redirect_uri_auth}"
+    redirect = @redirect_uri_auth |> URI.encode()
+    "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{code}&redirect_uri=#{redirect}"
     |> HTTPHelper.get_body()
   end
 

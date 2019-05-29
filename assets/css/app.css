@@ -1,5 +1,13 @@
 /* This file is for your main application css. */
 
+.page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFFFFF;
+}
+
 .menu-container {
   display: flex;
   flex-direction: row;
@@ -7,6 +15,7 @@
   align-items: center;
   background-color: #fbfbfb;
   overflow: hidden;
+  width: 100%
 }
 
 #href-button {

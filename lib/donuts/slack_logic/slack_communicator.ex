@@ -21,7 +21,7 @@ defmodule Donuts.Helpers.SlackCommunicator do
     "text" => event_text,
     "user" => user_id
     }) do
-    if event_type == "message" and event_channel == @donuts_channel do
+    if event_type == "message" do
       process_donut_command(event_text, user_id)
     end
   end
@@ -34,10 +34,10 @@ defmodule Donuts.Helpers.SlackCommunicator do
         cmd_fname = cmd_ingridients |> Enum.at(1)
         cmd_lname = cmd_ingridients |> Enum.at(2)
         if cmd_fname != nil and cmd_lname != nil do
-          cmd_target_name = cmd_fname <> " " <> cmd_lname
-          add_donut_to_user(cmd_target_name, sender_id)
+          cmd_sender_name = cmd_fname <> " " <> cmd_lname
+          add_donut_to_user(cmd_sender_name, sender_id)
         else
-          message =  "Oops! Wrong format of the guilty's name!" |> URI.encode()
+          message =  "Oops! Wrong format of your's name!" |> URI.encode()
           send_message_to_channel(@donuts_channel, message)
         end
         {:noreply, nil}
@@ -45,7 +45,7 @@ defmodule Donuts.Helpers.SlackCommunicator do
         cmd_donut_id = cmd_ingridients |> Enum.at(1)
         delete_target = Donuts.Donuts.get_by_id(cmd_donut_id)
         if delete_target != nil do
-          Donuts.Donuts.delete_donut()
+          Donuts.Donuts.delete_donut(delete_target)
         else
           message =  "Oops! Wrong ID of the donut!" |> URI.encode()
           send_message_to_channel(@donuts_channel, message)
@@ -63,22 +63,22 @@ defmodule Donuts.Helpers.SlackCommunicator do
         active_donuts = get_active_donuts() |> URI.encode()
         send_message_to_channel(@donuts_channel, active_donuts)
         {:noreply, nil}
-      _ ->
-        message = "Oops! Wrong command!" |> URI.encode()
-        send_message_to_channel(@donuts_channel, message)
+      _other ->
+        #message = "Oops! Wrong command!" |> URI.encode()
+        #send_message_to_channel(@donuts_channel, message)
         {:noreply, nil}
     end
   end
 
-  def add_donut_to_user(target_name, sender_id) do
-    if Accounts.get_by_real_name(target_name) != nil do
-      sender_name = Accounts.get_by_slack_id(sender_id) |> Map.get(:name)
+  def add_donut_to_user(sender_name, target_id) do
+    if Accounts.get_by_real_name(sender_name) != nil do
+      target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
       %{}
-        |> Map.put(:sender, sender_name)
-        |> Map.put(:guilty, target_name)
+        |> Map.put(:sender, target_name)
+        |> Map.put(:guilty, sender_name)
         |> Donuts.Donuts.create_donut()
     else
-      message = "Oops! There is no such person!" |> URI.encode()
+      message = "Oops! There is no such person like #{sender_name}!" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
     end
   end
@@ -86,7 +86,7 @@ defmodule Donuts.Helpers.SlackCommunicator do
   def get_active_donuts() do
     active_donuts =
       Donuts.Donuts.get_all()
-      |> Enum.reduce("", fn donut, message ->
+      |> Enum.reduce("Active donuts: \n", fn donut, message ->
         message = message <> "Guilty:" <> " " <> Map.get(donut, :guilty) <> " | "
         message = message <> "Sender:" <> " " <> Map.get(donut, :sender) <> " | "
         exp_date =
