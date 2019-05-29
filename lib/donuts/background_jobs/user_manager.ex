@@ -29,10 +29,11 @@ defmodule Donuts.Background.UserManager do
   end
 
   def get_user_data(raw_data) do
-
     if (raw_data == %{"error" => "token_revoked", "ok" => false}) do
+      IO.puts "---------------------"
       IO.puts "Error - Token revoked"
       IO.inspect raw_data
+      IO.puts "---------------------"
     else
       raw_data
       |> Map.get("members")

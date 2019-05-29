@@ -7,9 +7,17 @@ defmodule Donuts.Donuts do
     Repo.all(Donut)
   end
 
+  def get_by_id(id) do
+    Repo.get(Donut, id)
+  end
+
   def create_donut(attrs) do
     %Donut{}
     |> Donut.changeset(attrs)
     |> Repo.insert
+  end
+
+  def delete_donut(%Donut{} = donut) do
+    Repo.delete(donut)
   end
 end
