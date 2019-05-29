@@ -5,6 +5,7 @@ defmodule DonutsWeb.PageController do
   @redirect_uri_loggedin Application.get_env(:donuts, :redirect_uri_loggedin)
   @client_secret Application.get_env(:donuts, :client_secret)
   alias DonutsWeb.Router.Helpers, as: Routes
+  alias Donuts.Helpers.SlackCommunicator
   alias Donuts.Accounts
   alias Donuts.Helpers.Auth
   alias Donuts.Helpers.HTTPHelper
@@ -40,7 +41,8 @@ defmodule DonutsWeb.PageController do
     render conn, "logged_in.html"
   end
 
-  def event_hander(conn, %{"event" => event }) do
+  def event_handler(conn, %{"event" => event }) do
+    SlackCommunicator.handle_event(event)
     conn |> send_resp(200, "")
   end
 end
