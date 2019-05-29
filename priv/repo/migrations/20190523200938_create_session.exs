@@ -10,6 +10,6 @@ defmodule Donuts.Repo.Migrations.CreateSession do
       timestamps(type: :utc_datetime)
     end
 
-    create unique_index(:sessions, [:token])
+    create unique_index(:sessions, [:uuid])
   end
 end

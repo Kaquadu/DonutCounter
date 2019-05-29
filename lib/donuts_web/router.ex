@@ -15,11 +15,13 @@ defmodule DonutsWeb.Router do
 
   scope "/", DonutsWeb do
     pipe_through :browser # Use the default browser stack
-
     get "/", PageController, :index
     get "/sign-in", PageController, :sign_in
     get "/auth", PageController, :auth
-    get "/logged-in", PageController, :logged_in
+    get "/loggedin", PageController, :logged_in
+  end
+
+  scope "/events", DonutsWeb do
     post "/event-occured", PageController, :event_handler
   end
 
