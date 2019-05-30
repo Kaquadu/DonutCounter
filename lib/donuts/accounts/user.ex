@@ -1,13 +1,14 @@
 defmodule Donuts.Accounts.User do
-  use Ecto.Schema
+  use Donuts.Schema
   import Ecto.Changeset
-
-  @primary_key {:uuid, :binary_id, autogenerate: true}
 
   schema "users" do
     field :slack_id, :string
     field :name, :string
     field :is_admin, :boolean
+
+    has_many :donuts, Donuts.Donuts.Donut, on_delete: :delete_all
+    has_many :sessions, Donuts.Sessions.Session, on_delete: :delete_all
     timestamps()
   end
 

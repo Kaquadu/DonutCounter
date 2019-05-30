@@ -1,6 +1,6 @@
 defmodule Donuts.Background.UserManager do
   use GenServer
-  alias Donuts.Helpers.SlackCommunicator
+  alias Donuts.Donuts.SlackCommunicator
   alias Donuts.Accounts
 
   def start_link(_) do
@@ -16,7 +16,7 @@ defmodule Donuts.Background.UserManager do
   def handle_info(message, state) do
     case message do
       :update_db ->
-        Donuts.Helpers.SlackCommunicator.get_all_users()
+        Donuts.Donuts.SlackCommunicator.get_all_users()
         |> get_user_data()
         schedule(5*60*1000)
         {:noreply, state}

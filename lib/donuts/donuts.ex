@@ -3,6 +3,9 @@ defmodule Donuts.Donuts do
   alias Donuts.Repo
   alias Donuts.Donuts.Donut
 
+  defdelegate handle_slack_event(event), to:
+    Donuts.Donuts.SlackCommunicator
+
   def get_all() do
     Repo.all(Donut)
   end
@@ -19,5 +22,11 @@ defmodule Donuts.Donuts do
 
   def delete_donut(%Donut{} = donut) do
     Repo.delete(donut)
+  end
+
+  def update_donut(%Donut{} = donut, attrs) do
+    donut
+    |> Donut.changeset(attrs)
+    |> Repo.update()
   end
 end

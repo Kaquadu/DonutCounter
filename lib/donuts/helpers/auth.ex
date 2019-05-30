@@ -6,6 +6,7 @@ defmodule Donuts.Helpers.Auth do
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.Sessions.Session
   alias Donuts.Sessions
+  alias Donuts.Accounts
 
   def get_code(params) do
     Map.get(params, "code")
@@ -19,7 +20,12 @@ defmodule Donuts.Helpers.Auth do
 
   def create_session(response) do
     token = Map.get(response, "access_token")
-    user_id = response |> Map.get("user") |> Map.get("id")
+    user_id =
+      response
+      |> Map.get("user")
+      |> Map.get("id")
+      |> Accounts.get_by_slack_id()
+      |> Map.get(:id)
     Sessions.create_session(%{:token => token, :user_id => user_id})
   end
 end

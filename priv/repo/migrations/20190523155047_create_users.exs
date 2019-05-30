@@ -2,13 +2,13 @@ defmodule Donuts.Repo.Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do
-    create table(:users) do
-      add :uuid, :uuid, primary_key: true
+    create table(:users, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :slack_id, :string
       add :name, :string
       add :is_admin, :boolean
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:users, [:slack_id])

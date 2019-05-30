@@ -16,21 +16,33 @@
   </div>
 
   <section id = "aboutDonuts">
-    <p>Our internal security policy assumes that one cannot leave his/her electronic device with an unlocked screen. If someone notices unlocked screen, he may type the word - ‘pączki’ (or variations of this word) via one of the public channels on our internal communicator. As a penalty for breaking security aspects, the one who was caught in the act owes everyone in the company doughnuts and is obliged to bring them to the office. </p>
+    <hr>
+    <p>Our internal security policy assumes that one cannot leave his/her electronic device with an unlocked screen. If someone notices unlocked screen, he may type the word - ‘donuts’ (or variations of this word) via one of the public channels on our internal communicator. As a penalty for breaking security aspects, the one who was caught in the act owes everyone in the company doughnuts and is obliged to bring them to the office. </p>
   </section>
 
   <section id = "donutCommands">
-    <p>Add - add donut to currently logged user. Remember to put your name & surename there!</p>
-    <p>Example:</p>
-    <p>add Kuba Kowalczykowski</p>
+    <hr>
+    <p>Sweet list can be modified via Slack. You can use commands listed below to do so.
+    <p><strong>donuts_add</strong> - add donut to currently logged user. Remember to type your name & surename!</p>
+    <p>Example: add Kuba Kowalczykowski</p>
+    <p><strong>donuts_rm</strong> - remove donut debt based on its ID</p>
+    <p>Example: donuts_rm 5933ce33-fb90-4133-b1de-eb9239779ab6</p>
+    <p><strong>donuts_release</strong> - tags donuts as delivered based on ID</p>
+    <p>Example: donuts_release 5933ce33-fb90-4133-b1de-eb9239779ab6</p>
+    <p><strong>donuts_info</strong> - gets all active donuts</p>
+    <p>Example: donuts_info</p>
+    <p><strong>donuts_help</strong> - list of commands</p>
+    <p>Example: onuts_help</p>
   </section>
 
   <section id = "donutsList">
+    <hr>
     Mamamia let me
 
   </section>
 
   <section id = "addDonut">
+    <hr>
     Mamamia let me go
 
   </section>
