@@ -1,6 +1,5 @@
 defmodule Donuts.Donuts.Donut do
   use Donuts.Schema
-  import Ecto.Changeset
 
   schema "donuts" do
     field :sender, :string

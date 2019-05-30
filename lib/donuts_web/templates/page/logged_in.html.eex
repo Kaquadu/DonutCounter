@@ -37,8 +37,36 @@
 
   <section id = "donutsList">
     <hr>
-    Mamamia let me
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
 
+          <th>Total</th>
+
+          <th>Delivered</th>
+
+          <th>Expired</th>
+
+          <th>Active</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for user <- @stats do %>
+            <tr>
+              <td><%= user.username %></td>
+
+              <td><%= user.total_donuts %></td>
+
+              <td><%= user.delivered_donuts %></td>
+
+              <td><%= user.expired_donuts %></td>
+
+              <td><%= user.active_donuts %></td>
+            </tr>
+        <% end %>
+      </tbody>
+    </table>
   </section>
 
   <section id = "addDonut">
