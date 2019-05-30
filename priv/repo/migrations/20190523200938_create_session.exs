@@ -2,14 +2,13 @@ defmodule Donuts.Repo.Migrations.CreateSession do
   use Ecto.Migration
 
   def change do
-    create table(:sessions) do
-      add :uuid, :uuid, primary_key: true
+    create table(:sessions, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :token, :string
-      add :user_id, :string
+      add :user_id, references(:users, type: :uuid, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end
 
-    create unique_index(:sessions, [:uuid])
   end
 end

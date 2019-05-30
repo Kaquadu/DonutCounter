@@ -1,26 +1,21 @@
 defmodule Donuts.Donuts.Donut do
-  @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
-  use Ecto.Schema
+  use Donuts.Schema
   import Ecto.Changeset
-
-  @primary_key {:uuid, :binary_id, autogenerate: true}
 
   schema "donuts" do
     field :sender, :string
     field :guilty, :string
+    field :delivered, :boolean
     field :expiration_date, :utc_datetime
 
+
+    belongs_to :user, Donuts.Accounts.User
     timestamps()
   end
 
   def changeset(donut, attrs) do
-    attrs =
-    attrs
-    |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
-
     donut
-    |> cast(attrs, [:sender, :guilty, :expiration_date])
-    |> validate_required([:sender, :guilty, :expiration_date])
+      |> cast(attrs, [:sender, :guilty, :delivered, :user_id, :expiration_date])
+      |> validate_required([:sender, :guilty, :delivered, :user_id, :expiration_date])
   end
-
 end
