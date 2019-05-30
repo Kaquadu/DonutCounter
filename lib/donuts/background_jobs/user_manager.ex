@@ -1,6 +1,5 @@
 defmodule Donuts.Background.UserManager do
   use GenServer
-  alias Donuts.Donuts.SlackCommunicator
   alias Donuts.Accounts
 
   def start_link(_) do
@@ -35,22 +34,24 @@ defmodule Donuts.Background.UserManager do
       IO.inspect raw_data
       IO.puts "---------------------"
     else
-      raw_data
-      |> Map.get("members")
-      |> Enum.each(fn usr_raw ->
-        slack_id = usr_raw |> Map.get("id")
-        if !Accounts.get_by_slack_id(slack_id) do
+      members = raw_data |> Map.get("members")
+      if members != [] and members != nil do
+        members
+        |> Enum.each(fn usr_raw ->
           slack_id = usr_raw |> Map.get("id")
-          real_name = usr_raw |> Map.get("profile") |> Map.get("real_name")
-          is_admin = usr_raw |> Map.get("is_admin")
+          if !Accounts.get_by_slack_id(slack_id) do
+            slack_id = usr_raw |> Map.get("id")
+            real_name = usr_raw |> Map.get("profile") |> Map.get("real_name")
+            is_admin = usr_raw |> Map.get("is_admin")
 
-          %{}
-          |> Map.put("slack_id", slack_id)
-          |> Map.put("name", real_name)
-          |> Map.put("is_admin", is_admin)
-          |> Accounts.create_user()
-        end
-      end)
+            %{}
+            |> Map.put("slack_id", slack_id)
+            |> Map.put("name", real_name)
+            |> Map.put("is_admin", is_admin)
+            |> Accounts.create_user()
+          end
+        end)
+      end
     end
 
   end

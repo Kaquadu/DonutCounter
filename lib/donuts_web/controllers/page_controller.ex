@@ -16,9 +16,9 @@ defmodule DonutsWeb.PageController do
   end
 
   def sign_in(conn, _params) do
-    redirect = @redirect_uri_auth |> URI.encode() |> IO.inspect
+    redirect = @redirect_uri_auth |> URI.encode()
     link = "https://slack.com/oauth/authorize?scope=identity.basic&client_id=#{@client_id}&redirect_uri=#{redirect}"
-    render conn, "sign-in.html", link: link
+    render(conn, "sign-in.html", link: link)
   end
 
   def auth(conn, params) do
@@ -44,7 +44,8 @@ defmodule DonutsWeb.PageController do
   end
 
   def logged_in(conn, _params) do
-    render conn, "logged_in.html"
+    user_stats = Donuts.Accounts.Statistics.get_statistics()
+    render conn, "logged_in.html", stats: user_stats
   end
 
   def event_test(conn, params) do # only change in router when you have to verify your app in slack

@@ -8,7 +8,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
 
   def get_all_users() do
     "https://slack.com/api/users.list?token=#{@oauth_token}&pretty=1"
-    |> HTTPHelper.get_body
+    |> HTTPHelper.get_body()
   end
 
   def send_message_to_channel(channel, text) do
@@ -66,7 +66,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
         release_target = Donuts.Donuts.get_by_id(cmd_donut_id)
         if release_target != nil do
           case Donuts.Donuts.update_donut(release_target, %{:delivered => true}) do
-            {:ok, address} ->
+            {:ok, donut} ->
               message =  "Released succesfuly!" |> URI.encode()
               send_message_to_channel(@donuts_channel, message)
             {:error, %Ecto.Changeset{} = changeset} ->

@@ -1,6 +1,5 @@
 defmodule Donuts.Accounts.User do
   use Donuts.Schema
-  import Ecto.Changeset
 
   schema "users" do
     field :slack_id, :string

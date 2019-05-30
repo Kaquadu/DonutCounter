@@ -24,6 +24,37 @@ defmodule Donuts.Donuts do
     Repo.delete(donut)
   end
 
+  def get_all_donuts_by_id(id) do
+    Repo.all(from d in Donut,
+            where: d.user_id == ^id)
+  end
+
+  def get_delivered_donuts_by_id(id) do
+    Repo.all(from d in Donut,
+            where: d.user_id == ^id,
+            where: d.delivered == true)
+  end
+
+  def get_expired_donuts_by_id(id) do
+    Repo.all(from d in Donut,
+            where: d.user_id == ^id,
+            where: d.delivered == false,
+            where: d.expiration_date < ^DateTime.utc_now())
+  end
+
+  def get_active_donuts_by_id(id) do
+    Repo.all(from d in Donut,
+            where: d.user_id == ^id,
+            where: d.delivered == false,
+            where: d.expiration_date > ^DateTime.utc_now())
+  end
+
+  def get_expired_donuts() do
+    Repo.all(from d in Donut,
+            where: d.expiration_date < ^DateTime.utc_now(),
+            where: d.delivered == false)
+  end
+
   def update_donut(%Donut{} = donut, attrs) do
     donut
     |> Donut.changeset(attrs)

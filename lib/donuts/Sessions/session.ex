@@ -1,7 +1,5 @@
 defmodule Donuts.Sessions.Session do
   use Donuts.Schema
-  import Ecto.Changeset
-  import UUID
   @salt Application.get_env(:donuts, :bcrypt_salt)
 
   schema "sessions" do
