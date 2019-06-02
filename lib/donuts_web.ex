@@ -23,6 +23,7 @@ defmodule DonutsWeb do
       import Plug.Conn
       import DonutsWeb.Router.Helpers
       import DonutsWeb.Gettext
+      alias DonutsWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -40,6 +41,7 @@ defmodule DonutsWeb do
       import DonutsWeb.Router.Helpers
       import DonutsWeb.ErrorHelpers
       import DonutsWeb.Gettext
+      alias DonutsWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -48,6 +50,7 @@ defmodule DonutsWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      alias DonutsWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -55,6 +58,7 @@ defmodule DonutsWeb do
     quote do
       use Phoenix.Channel
       import DonutsWeb.Gettext
+      alias DonutsWeb.Router.Helpers, as: Routes
     end
   end
 

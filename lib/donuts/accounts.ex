@@ -7,6 +7,10 @@ defmodule Donuts.Accounts do
     Repo.all(User)
   end
 
+  def get_by_id(id) do
+    Repo.get_by(User, id: id)
+  end
+
   def get_by_slack_id(slack_id) do
     Repo.get_by(User, slack_id: slack_id)
   end
