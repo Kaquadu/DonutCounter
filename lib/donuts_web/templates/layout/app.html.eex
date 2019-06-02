@@ -16,9 +16,15 @@
     <div class="container">
       <header class="header">
         <nav role="navigation">
+          <%= if DonutsWeb.Services.UserCheck.logged_in?(@conn) != [] do %>
+            <ul class="nav nav-pills pull-right"> Jesteś zalogowany jako: <br>
+            <%= DonutsWeb.Services.UserCheck.get_current_user_name(@conn) %>
+            </ul>
+          <%= else %>
           <ul class="nav nav-pills pull-right">
-            <li><%= link "Login with Stack", to: DonutsWeb.Router.Helpers.page_path(@conn, :sign_in) %></li>
+              <li><%= link "Login with Stack", to: DonutsWeb.Router.Helpers.page_path(@conn, :sign_in) %></li>
           </ul>
+          <%= end %>
         </nav>
         <span class="logo"></span>
       </header>

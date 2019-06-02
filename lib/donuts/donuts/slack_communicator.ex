@@ -98,8 +98,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
         end
         {:noreply, nil}
       _other ->
-        message = "Oops! Wrong command!" |> URI.encode()
-        send_message_to_channel(@donuts_channel, message)
+        # message = "Oops! Wrong command!" |> URI.encode()
+        # send_message_to_channel(@donuts_channel, message)
         {:noreply, nil}
     end
   end
@@ -109,8 +109,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
       target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
       target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
       %{}
-        |> Map.put(:sender, target_name)
-        |> Map.put(:guilty, sender_name)
+        |> Map.put(:sender, sender_name)
+        |> Map.put(:guilty, target_name)
         |> Map.put(:user_id, target_id)
         |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
         |> Map.put(:delivered, false)
@@ -125,7 +125,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
     active_donuts =
       Donuts.Donuts.get_all()
       |> Enum.reduce("Active donuts: \n", fn donut, message ->
-        delivered = donut |> Map.get(:delivered)
+        donut |> IO.inspect
+        delivered = donut |> Map.get(:delivered) |> IO.inspect
         if delivered == false do
           message = message <> "Guilty:" <> " " <> Map.get(donut, :guilty) <> " | "
           message = message <> "Sender:" <> " " <> Map.get(donut, :sender) <> " | "
@@ -135,6 +136,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
             |> Date.to_string()
           message = message <> "Expiration date:" <> " " <> exp_date <> " | "
           message = message <> "ID:" <> " " <> Map.get(donut, :id) <> "\n"
+        else
+          message
         end
       end)
   end

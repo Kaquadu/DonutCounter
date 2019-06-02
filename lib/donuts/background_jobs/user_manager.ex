@@ -39,7 +39,7 @@ defmodule Donuts.Background.UserManager do
         members
         |> Enum.each(fn usr_raw ->
           slack_id = usr_raw |> Map.get("id")
-          if !Accounts.get_by_slack_id(slack_id) do
+          if slack_id != "USLACKBOT" and !Accounts.get_by_slack_id(slack_id) do
             slack_id = usr_raw |> Map.get("id")
             real_name = usr_raw |> Map.get("profile") |> Map.get("real_name")
             is_admin = usr_raw |> Map.get("is_admin")
