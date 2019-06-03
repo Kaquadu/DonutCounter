@@ -23,7 +23,7 @@ defmodule DonutsWeb.Router do
   end
 
   scope "/events", DonutsWeb do
-    post "/event-occured", PageController, :event_test
+    post "/event-occured", PageController, :event_handler
   end
 
   # Other scopes may use custom stacks.
