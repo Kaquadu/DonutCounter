@@ -14,7 +14,10 @@ config :donuts, DonutsWeb.Endpoint,
 # Configure your database
 config :donuts, Donuts.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "donuts_prod",
-  pool_size: 15
+  ssl: true,
+  url: database_url,
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+  # username: "postgres",
+  # password: "postgres",
+  # database: "donuts_prod",
+  # pool_size: 15
