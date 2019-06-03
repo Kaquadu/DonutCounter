@@ -16,8 +16,8 @@
     <div class="container">
       <header class="header">
         <nav role="navigation">
-          <%= if DonutsWeb.Services.UserCheck.logged_in?(@conn) != [] do %>
-            <ul class="nav nav-pills pull-right"> Jesteś zalogowany jako: <br>
+          <%= if DonutsWeb.Services.UserCheck.logged_in?(@conn) != [] and DonutsWeb.Services.UserCheck.logged_in?(@conn) != nil do %>
+            <ul class="nav nav-pills pull-right"> You are logged in as: <br>
             <%= DonutsWeb.Services.UserCheck.get_current_user_name(@conn) %>
             </ul>
           <%= else %>

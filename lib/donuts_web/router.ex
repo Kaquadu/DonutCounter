@@ -19,7 +19,7 @@ defmodule DonutsWeb.Router do
     get "/sign-in", PageController, :sign_in
     get "/auth", PageController, :auth
     get "/loggedin", PageController, :logged_in
-    post "add-donut", PageController, :add_donut
+    post "/add-donut", PageController, :add_donut
   end
 
   scope "/events", DonutsWeb do

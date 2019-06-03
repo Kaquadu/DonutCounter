@@ -9,10 +9,13 @@ defmodule DonutsWeb.Services.UserCheck do
   end
 
   def get_current_user_name(conn) do
-      logged_in?(conn)
-      |> List.first()
-      |> Map.get(:user_id)
-      |> Accounts.get_by_id()
-      |> Map.get(:name)
+      list = logged_in?(conn)
+      if list != [] and list != nil do
+        list
+          |> List.first()
+          |> Map.get(:user_id)
+          |> Accounts.get_by_id()
+          |> Map.get(:name)
+      end
   end
 end
