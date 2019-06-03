@@ -67,7 +67,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
         if release_target != nil do
           case Donuts.Donuts.update_donut(release_target, %{:delivered => true}) do
             {:ok, donut} ->
-              message =  "Released succesfuly!" |> URI.encode()
+              message =  "Released successfully!" |> URI.encode()
               send_message_to_channel(@donuts_channel, message)
             {:error, %Ecto.Changeset{} = changeset} ->
               message =  "Oops! Error in changeset!" |> URI.encode()
