@@ -17,9 +17,9 @@ config :donuts, Donuts.Repo,
   username: System.get_env("DATABASE_USERNAME"),
   password: System.get_env("DATABASE_PASSWORD"),
   database: "donuts_prod",
-  size: 20
-  #pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
-  # adapter: Ecto.Adapters.Postgres,
+  #size: 20
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+  adapter: Ecto.Adapters.Postgres,
   # username: "postgres",
   # password: "postgres",
   # database: "donuts_prod",
