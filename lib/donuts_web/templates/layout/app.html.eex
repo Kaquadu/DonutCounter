@@ -24,7 +24,7 @@
           <ul class="nav nav-pills pull-right">
               <li><%= link "Login with Stack", to: DonutsWeb.Router.Helpers.page_path(@conn, :sign_in) %></li>
           </ul>
-          <%= end %>
+          <% end %>
         </nav>
         <span class="logo"></span>
       </header>
