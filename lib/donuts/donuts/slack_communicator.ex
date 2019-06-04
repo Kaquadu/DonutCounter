@@ -107,25 +107,39 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   def add_donut_to_user(sender_name, target_id) do
-    sender = Accounts.get_by_real_name(sender_name)
-    if (sender == nil) do
-      sender =
-        sender_name
-        |> String.trim("<")
-        |> String.trim(">")
-        |> String.trim("@")
-        |> Accounts.get_by_slack_id()
-    end
-    if sender != nil do
+    sender_by_rn = Accounts.get_by_real_name(sender_name)
+    sender_by_sid =
+      sender_name
+      |> String.trim("<")
+      |> String.trim(">")
+      |> String.trim("@")
+      |> Accounts.get_by_slack_id() |> IO.inspect
+      
+    if sender_by_rn != nil or sender_by_sid != nil do
       target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
       target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
+
+      if (sender_by_rn != nil) do
+      sender_list_name = sender_by_rn |> Map.get(:name)
       %{}
-        |> Map.put(:sender, sender_name)
+        |> Map.put(:sender, sender_list_name)
         |> Map.put(:guilty, target_name)
         |> Map.put(:user_id, target_id)
         |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
         |> Map.put(:delivered, false)
         |> Donuts.Donuts.create_donut()
+      end
+
+      if (sender_by_sid != nil) do
+      sender_list_name = sender_by_sid |> Map.get(:name)
+      %{}
+        |> Map.put(:sender, sender_list_name)
+        |> Map.put(:guilty, target_name)
+        |> Map.put(:user_id, target_id)
+        |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
+        |> Map.put(:delivered, false)
+        |> Donuts.Donuts.create_donut()
+      end
 
       message =  "Succesfuly added donut debt!" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
