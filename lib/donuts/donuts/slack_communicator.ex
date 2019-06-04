@@ -43,8 +43,13 @@ defmodule Donuts.Donuts.SlackCommunicator do
           add_donut_to_user(cmd_sender_name, sender_id)
           message =  "Succesfuly added donut debt!" |> URI.encode()
           send_message_to_channel(@donuts_channel, message)
+        else if cmd_fname != nil and cmd_lname == nil do
+          cmd_sender_name = cmd_fname
+          add_donut_to_user(cmd_sender_name, sender_id)
+          message =  "Succesfuly added donut debt!" |> URI.encode()
+          send_message_to_channel(@donuts_channel, message)
         else
-          message =  "Oops! Wrong format of yours name!" |> URI.encode()
+          message =  "Oops! Wrong format of your name!" |> URI.encode()
           send_message_to_channel(@donuts_channel, message)
         end
         {:noreply, nil}
