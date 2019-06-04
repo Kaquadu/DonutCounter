@@ -41,13 +41,9 @@ defmodule Donuts.Donuts.SlackCommunicator do
         if cmd_fname != nil and cmd_lname != nil do
           cmd_sender_name = cmd_fname <> " " <> cmd_lname
           add_donut_to_user(cmd_sender_name, sender_id)
-          message =  "Succesfuly added donut debt!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
         else if cmd_fname != nil and cmd_lname == nil do
           cmd_sender_name = cmd_fname
           add_donut_to_user(cmd_sender_name, sender_id)
-          message =  "Succesfuly added donut debt!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
         else
           message =  "Oops! Wrong format of your name!" |> URI.encode()
           send_message_to_channel(@donuts_channel, message)
@@ -121,6 +117,9 @@ defmodule Donuts.Donuts.SlackCommunicator do
         |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
         |> Map.put(:delivered, false)
         |> Donuts.Donuts.create_donut()
+
+      message =  "Succesfuly added donut debt!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
     else
       message = "Oops! There is no such person like #{sender_name}!" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
