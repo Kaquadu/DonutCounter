@@ -52,6 +52,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
           message =  "Oops! Wrong format of your name!" |> URI.encode()
           send_message_to_channel(@donuts_channel, message)
         end
+      end
         {:noreply, nil}
       "donuts_rm" ->
         cmd_donut_id = cmd_ingridients |> Enum.at(1)
