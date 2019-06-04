@@ -32,7 +32,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   defp process_donut_command(command, sender_id) do
-    cmd_ingridients = command |> String.split(" ", trim: true)
+    cmd_ingridients = command |> String.split(" ", trim: true) |> IO.inspect
     cmd_base = cmd_ingridients |> Enum.at(0)
     case cmd_base do
       "donuts_add" ->
