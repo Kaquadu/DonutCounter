@@ -17,7 +17,7 @@ defmodule Donuts.Background.UserManager do
       :update_db ->
         Donuts.Donuts.SlackCommunicator.get_all_users()
         |> get_user_data()
-        schedule(5*60*1000)
+        schedule(1*60*1000)
         {:noreply, state}
       end
   end
