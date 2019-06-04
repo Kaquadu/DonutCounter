@@ -107,7 +107,16 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   def add_donut_to_user(sender_name, target_id) do
-    if Accounts.get_by_real_name(sender_name) != nil do
+    sender = Accounts.get_by_real_name(sender_name)
+    if (sender == nil) do
+      sender =
+        sender_name
+        |> String.trim("<")
+        |> String.trim(">")
+        |> String.trim("@")
+        |> Accounts.get_by_slack_id()
+    end
+    if sender != nil do
       target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
       target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
       %{}
@@ -130,8 +139,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
     active_donuts =
       Donuts.Donuts.get_all()
       |> Enum.reduce("Active donuts: \n", fn donut, message ->
-        donut |> IO.inspect
-        delivered = donut |> Map.get(:delivered) |> IO.inspect
+        donut
+        delivered = donut |> Map.get(:delivered)
         if delivered == false do
           message = message <> "Guilty:" <> " " <> Map.get(donut, :guilty) <> " | "
           message = message <> "Sender:" <> " " <> Map.get(donut, :sender) <> " | "
