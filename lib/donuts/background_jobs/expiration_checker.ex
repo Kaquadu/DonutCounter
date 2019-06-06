@@ -28,7 +28,7 @@ defmodule Donuts.Background.ExpirationChecker do
                 |> Date.to_string()
               message = message <> "Expiration date:" <> " " <> exp_date <> " | "
               message = message <> "ID:" <> " " <> Map.get(donut, :id) <> "\n"
-            end)
+            end) |> URI.encode()
           SlackCommunicator.send_message_to_channel("general", mess)
         else
           {:ok, nil}
