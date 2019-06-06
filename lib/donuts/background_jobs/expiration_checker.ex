@@ -16,6 +16,7 @@ defmodule Donuts.Background.ExpirationChecker do
   def handle_info(message, state) do
     case message do
       :check_donuts ->
+        IO.puts "im checkin donuts"
         expired_donuts = Donuts.Donuts.get_expired_donuts()
         if expired_donuts != [] do
           mess = Enum.reduce(expired_donuts, "Expired donuts: \n", fn donut, message ->
