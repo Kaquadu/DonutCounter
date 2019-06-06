@@ -99,6 +99,21 @@ defmodule Donuts.Donuts.SlackCommunicator do
           send_message_to_channel(@donuts_channel, message)
         end
         {:noreply, nil}
+      "donuts_add_days" ->
+        donut_id = cmd_ingridients |> Enum.at(1)
+        days = cmd_ingridients |> Enum.at(2)
+        donut_target = Donuts.Donuts.get_by_id(donut_id)
+        if donut_target != nil and days != nil do
+          current_exp_date = donut_target |> Map.get(:expiration_date)
+          f_exp_date = DateTime.add(current_exp_date, days*24*60*60, :second)
+          Donuts.Donuts.update_donut(donut_target, %{:expiration_date => f_exp_date})
+          message =  "Changed date!" |> URI.encode()
+          send_message_to_channel(@donuts_channel, message)
+        else
+          message =  "Oops! Wrong format of the command!" |> URI.encode()
+          send_message_to_channel(@donuts_channel, message)
+        end
+        {:noreply, nil}
       _other ->
         # message = "Oops! Wrong command!" |> URI.encode()
         # send_message_to_channel(@donuts_channel, message)
@@ -114,7 +129,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
       |> String.trim(">")
       |> String.trim("@")
       |> Accounts.get_by_slack_id() |> IO.inspect
-      
+
     if sender_by_rn != nil or sender_by_sid != nil do
       target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
       target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)

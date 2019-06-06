@@ -17,7 +17,8 @@ config :donuts,
   ttl_seconds: 1800,
   bcrypt_salt: "$2b$12$x0DHri2vRvSt.qrWyLJOVu",
   donuts_channel_id: "donuts",
-  donuts_expiration_days: 30
+  donuts_expiration_days: 30,
+  donuts_checker_minutes: 15
 
 # Configures the endpoint
 config :donuts, DonutsWeb.Endpoint,
