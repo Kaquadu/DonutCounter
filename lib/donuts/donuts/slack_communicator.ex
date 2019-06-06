@@ -101,7 +101,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
         {:noreply, nil}
       "donuts_add_days" ->
         donut_id = cmd_ingridients |> Enum.at(1)
-        days = cmd_ingridients |> Enum.at(2)
+        days = cmd_ingridients |> Enum.at(2) |> String.to_integer()
         donut_target = Donuts.Donuts.get_by_id(donut_id)
         if donut_target != nil and days != nil do
           current_exp_date = donut_target |> Map.get(:expiration_date)
