@@ -83,8 +83,10 @@ defmodule Donuts.Donuts.SlackCommunicator do
       "donuts_help" ->
         message =  "Commands: \n
           donuts_add name surename \n
-          donuts_release donut_uuid \n
-          donuts_rm donut_uuid \n
+          donuts_add @slack_name \n
+          donuts_release donut_id \n
+          donuts_rm donut_id \n
+          donuts_add_days donut_id days \n
           donuts_info \n
           donuts_help" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
