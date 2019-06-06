@@ -1,6 +1,7 @@
 defmodule Donuts.Background.ExpirationChecker do
   use GenServer
   alias Donuts.Donuts.SlackCommunicator
+  @minutes Application.get_env(:donuts, :donuts_checker_minutes)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, [])
@@ -31,7 +32,7 @@ defmodule Donuts.Background.ExpirationChecker do
         else
           {:ok, nil}
         end
-        schedule(15*60*1000)
+        schedule(@minutes*60*1000)
         {:noreply, state}
     end
   end
