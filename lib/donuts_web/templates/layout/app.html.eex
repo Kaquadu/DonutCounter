@@ -16,13 +16,13 @@
     <div class="container">
       <header class="header">
         <nav role="navigation">
-          <%= if DonutsWeb.Services.UserCheck.logged_in?(@conn) != [] and DonutsWeb.Services.UserCheck.logged_in?(@conn) != nil do %>
-            <ul class="nav nav-pills pull-right"> You are logged in as: <br>
-            <%= DonutsWeb.Services.UserCheck.get_current_user_name(@conn) %>
+          <%= if Donuts.Sessions.Session.logged_in?(@conn) != [] and Donuts.Sessions.Session.logged_in?(@conn) != nil do %>
+            <ul class="nav nav-pills pull-right"> You are logged as: <br>
+            <%= Donuts.Sessions.Session.get_current_user_name(@conn) %>
             </ul>
           <%= else %>
           <ul class="nav nav-pills pull-right">
-              <li><%= link "Login with Stack", to: DonutsWeb.Router.Helpers.page_path(@conn, :sign_in) %></li>
+              <li><%= link "Login with Slack", to: DonutsWeb.Router.Helpers.session_path(@conn, :sign_in) %></li>
           </ul>
           <% end %>
         </nav>
