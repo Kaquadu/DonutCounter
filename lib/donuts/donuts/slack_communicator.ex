@@ -34,6 +34,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   defp process_donut_command(command, sender_id, event_channel) do
     cmd_ingridients = command |> String.split(" ", trim: true)
     cmd_base = cmd_ingridients |> Enum.at(0)
+
     case cmd_base do
       "donuts_add" ->
         cmd_fname = cmd_ingridients |> Enum.at(1)
@@ -55,34 +56,18 @@ defmodule Donuts.Donuts.SlackCommunicator do
         {:noreply, nil}
       "donuts_info" ->
         active_donuts = get_active_donuts()
-        if active_donuts != nil do
-          active_donuts = active_donuts |> URI.encode()
-          send_message_to_channel(@donuts_channel, active_donuts)
-        else
-          message =  "No active donut debts!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_donuts_info(active_donuts)
         {:noreply, nil}
       "donuts_add_days" ->
         donut_id = cmd_ingridients |> Enum.at(1)
         days = cmd_ingridients |> Enum.at(2) |> String.to_integer()
         donut_target = Donuts.Donuts.get_by_id(donut_id)
-        if donut_target != nil and days != nil do
-          current_exp_date = donut_target |> Map.get(:expiration_date)
-          f_exp_date = DateTime.add(current_exp_date, days*24*60*60, :second)
-          Donuts.Donuts.update_donut(donut_target, %{:expiration_date => f_exp_date})
-          message =  "Changed date!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        else
-          message =  "Oops! Wrong format of the command!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_donut_add_days(donut_target, days)
         {:noreply, nil}
       _other ->
-        # message = "Oops! Wrong command!" |> URI.encode()
-        # send_message_to_channel(@donuts_channel, message)
         {:noreply, nil}
     end
+
   end
 
   def process_add_donut(cmd_fname, nil, from_id) do
@@ -186,6 +171,39 @@ defmodule Donuts.Donuts.SlackCommunicator do
       donuts_add_days donut_id days \n
       donuts_info \n
       donuts_help" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donuts_info(nil) do
+    message =  "No active donut debts!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donuts_info(active_donuts) do
+    active_donuts = active_donuts |> URI.encode()
+    send_message_to_channel(@donuts_channel, active_donuts)
+  end
+
+  def process_donut_add_days(nil, nil) do
+    message =  "Oops! Wrong format of the command!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_add_days(nil, days) do
+    message =  "Oops! Wrong format of the command!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_add_days(donut_target, nil) do
+    message =  "Oops! Wrong format of the command! Days not specified." |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_add_days(donut_target, days) when is_integer(days) do
+    current_exp_date = donut_target |> Map.get(:expiration_date)
+    f_exp_date = DateTime.add(current_exp_date, days*24*60*60, :second)
+    Donuts.Donuts.update_donut(donut_target, %{:expiration_date => f_exp_date})
+    message =  "Changed date!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
