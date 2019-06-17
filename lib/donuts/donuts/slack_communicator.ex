@@ -39,7 +39,6 @@ defmodule Donuts.Donuts.SlackCommunicator do
         cmd_fname = cmd_ingridients |> Enum.at(1)
         cmd_lname = cmd_ingridients |> Enum.at(2)
         process_add_donut(cmd_fname, cmd_lname, sender_id)
-      end
         {:noreply, nil}
       "donuts_rm" ->
         cmd_donut_id = cmd_ingridients |> Enum.at(1)
