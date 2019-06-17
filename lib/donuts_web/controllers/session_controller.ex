@@ -2,7 +2,11 @@ defmodule DonutsWeb.SessionController do
   use DonutsWeb, :controller
   @client_id Application.get_env(:donuts, :client_id)
   @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
-  
+  alias Donuts.Sessions.Session
+  alias Donuts.Accounts
+  alias Donuts.Helpers.Auth
+  alias Donuts.Helpers.HTTPHelper
+
   def sign_in(conn, _params) do
     redirect = @redirect_uri_auth |> URI.encode()
     link = "https://slack.com/oauth/authorize?scope=identity.basic&client_id=#{@client_id}&redirect_uri=#{redirect}"
