@@ -2,6 +2,7 @@ defmodule Donuts.Donuts do
   import Ecto.Query, warn: false
   alias Donuts.Repo
   alias Donuts.Donuts.Donut
+  alias Donuts.Accounts
 
   defdelegate handle_slack_event(event), to:
     Donuts.Donuts.SlackCommunicator
