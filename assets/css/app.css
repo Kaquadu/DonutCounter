@@ -1,11 +1,11 @@
 /* This file is for your main application css. */
 
-section{
+/* section{
     display: none;
 }
 section:target{
     display: block;
-}
+} */
 
 .page-container {
   display: flex;
