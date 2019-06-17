@@ -2,7 +2,6 @@ defmodule DonutsWeb.PageController do
   use DonutsWeb, :controller
   @redirect_uri_loggedin Application.get_env(:donuts, :redirect_uri_loggedin)
   @client_secret Application.get_env(:donuts, :client_secret)
-  @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
   alias Donuts.Sessions.Session
   alias Donuts.Accounts
   alias Donuts.Helpers.Auth
