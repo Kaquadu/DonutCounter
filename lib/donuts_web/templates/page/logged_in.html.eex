@@ -1,11 +1,11 @@
-<style>
+<!-- <style>
   section{
       display: none;
   }
   :target{
       display: block;
   }
-</style>
+</style> -->
 
 <div class = "page-container">
   <div class = "menu-container">
