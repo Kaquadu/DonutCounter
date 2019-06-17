@@ -3,7 +3,8 @@ defmodule Donuts.Donuts do
   alias Donuts.Repo
   alias Donuts.Donuts.Donut
   alias Donuts.Accounts
-
+  alias Donuts.Sessions.Session
+  
   defdelegate handle_slack_event(event), to:
     Donuts.Donuts.SlackCommunicator
 
