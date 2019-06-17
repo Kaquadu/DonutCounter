@@ -116,19 +116,24 @@ defmodule Donuts.Donuts.SlackCommunicator do
     target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
     target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
 
-    sender_list_name = ""
     if (sender_by_rn != nil) do
       sender_list_name = sender_by_rn |> Map.get(:name)
+      %{:sender => sender_list_name,
+        :guilty => target_name,
+        :user_id => target_id,
+        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+        :delivered => false}
+      |> Donuts.Donuts.create_donut()
     else
       sender_list_name = sender_by_sid |> Map.get(:name)
+      %{:sender => sender_list_name,
+        :guilty => target_name,
+        :user_id => target_id,
+        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+        :delivered => false}
+      |> Donuts.Donuts.create_donut()
     end
 
-    %{:sender => sender_list_name,
-      :guilty => target_name,
-      :user_id => target_id,
-      :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-      :delivered => false}
-    |> Donuts.Donuts.create_donut()
     message =  "Succesfuly added donut debt!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
