@@ -23,7 +23,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
     "user" => user_id
     }) do
     if event_type == "message" do
-      process_donut_command(event_text, user_id)
+      process_donut_command(event_text, user_id, event_channel)
     end
   end
 
@@ -31,23 +31,14 @@ defmodule Donuts.Donuts.SlackCommunicator do
     {:unhandled_event, nil}
   end
 
-  defp process_donut_command(command, sender_id) do
+  defp process_donut_command(command, sender_id, event_channel) do
     cmd_ingridients = command |> String.split(" ", trim: true)
     cmd_base = cmd_ingridients |> Enum.at(0)
     case cmd_base do
       "donuts_add" ->
         cmd_fname = cmd_ingridients |> Enum.at(1)
         cmd_lname = cmd_ingridients |> Enum.at(2)
-        if cmd_fname != nil and cmd_lname != nil do
-          cmd_sender_name = cmd_fname <> " " <> cmd_lname
-          add_donut_to_user(cmd_sender_name, sender_id)
-        else if cmd_fname != nil and cmd_lname == nil do
-          cmd_sender_name = cmd_fname
-          add_donut_to_user(cmd_sender_name, sender_id)
-        else
-          message =  "Oops! Wrong format of your name!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_add_donut(cmd_fname, cmd_lname, sender_id)
       end
         {:noreply, nil}
       "donuts_rm" ->
@@ -123,6 +114,15 @@ defmodule Donuts.Donuts.SlackCommunicator do
     end
   end
 
+  def process_add_donut(cmd_fname, nil, from_id) do
+    add_donut_to_user(cmd_fname, from_id)
+  end
+
+  def process_add_donut(cmd_fname, cmd_lname, from_id) do
+      cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
+      add_donut_to_user(cmd_sender_name, from_id)
+  end
+
   def add_donut_to_user(sender_name, target_id) do
     sender_by_rn = Accounts.get_by_real_name(sender_name)
     sender_by_sid =
@@ -138,24 +138,24 @@ defmodule Donuts.Donuts.SlackCommunicator do
 
       if (sender_by_rn != nil) do
       sender_list_name = sender_by_rn |> Map.get(:name)
-      %{}
-        |> Map.put(:sender, sender_list_name)
-        |> Map.put(:guilty, target_name)
-        |> Map.put(:user_id, target_id)
-        |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
-        |> Map.put(:delivered, false)
-        |> Donuts.Donuts.create_donut()
+
+      %{:sender => sender_list_name,
+        :guilty => target_name,
+        :user_id => target_id,
+        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+        :delivered => false}
+      |> Donuts.Donuts.create_donut()
       end
 
       if (sender_by_sid != nil) do
       sender_list_name = sender_by_sid |> Map.get(:name)
-      %{}
-        |> Map.put(:sender, sender_list_name)
-        |> Map.put(:guilty, target_name)
-        |> Map.put(:user_id, target_id)
-        |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
-        |> Map.put(:delivered, false)
-        |> Donuts.Donuts.create_donut()
+
+      %{:sender => sender_list_name,
+        :guilty => target_name,
+        :user_id => target_id,
+        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+        :delivered => false}
+      |> Donuts.Donuts.create_donut()
       end
 
       message =  "Succesfuly added donut debt!" |> URI.encode()
@@ -173,14 +173,14 @@ defmodule Donuts.Donuts.SlackCommunicator do
         donut
         delivered = donut |> Map.get(:delivered)
         if delivered == false do
-          message = message <> "Guilty:" <> " " <> Map.get(donut, :guilty) <> " | "
-          message = message <> "Sender:" <> " " <> Map.get(donut, :sender) <> " | "
+          message = message <> "Guilty: #{Map.get(donut, :guilty)} | "
+          message = message <> "Sender: #{Map.get(donut, :sender)} | "
           exp_date =
             Map.get(donut, :expiration_date)
             |> DateTime.to_date()
             |> Date.to_string()
-          message = message <> "Expiration date:" <> " " <> exp_date <> " | "
-          message = message <> "ID:" <> " " <> Map.get(donut, :id) <> "\n"
+          message = message <> "Expiration date: #{exp_date} | "
+          message = message <> "ID: #{Map.get(donut, :id)} \n"
         else
           message
         end
