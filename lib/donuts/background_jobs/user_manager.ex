@@ -16,7 +16,7 @@ defmodule Donuts.Background.UserManager do
     case message do
       :update_db ->
         Donuts.Donuts.SlackCommunicator.get_all_users()
-        |> get_user_data()
+        |> assign_users()
         schedule(1*60*1000)
         {:noreply, state}
       end
@@ -27,13 +27,13 @@ defmodule Donuts.Background.UserManager do
     Process.send_after(self(), :update_db, time)
   end
 
-  def get_user_data(raw_data) do
-    if (raw_data == %{"error" => "token_revoked", "ok" => false}) do
-      IO.puts "---------------------"
-      IO.puts "Error - Token revoked"
-      IO.inspect raw_data
-      IO.puts "---------------------"
-    else
+  def get_user_data(%{"error" => "token_revoked", "ok" => false}) do
+    IO.puts "---------------------"
+    IO.puts "Error - Token revoked"
+    IO.puts "---------------------"
+  end
+
+  def assign_users(raw_data) do
       members = raw_data |> Map.get("members")
       if members != [] and members != nil do
         members
@@ -44,15 +44,13 @@ defmodule Donuts.Background.UserManager do
             real_name = usr_raw |> Map.get("profile") |> Map.get("real_name")
             is_admin = usr_raw |> Map.get("is_admin")
 
-            %{}
-            |> Map.put("slack_id", slack_id)
-            |> Map.put("name", real_name)
-            |> Map.put("is_admin", is_admin)
-            |> Accounts.create_user()
+            %{"slack_id" => slack_id,
+              "name" => real_name,
+              "is_admin" => is_admin}
+              |> Accounts.create_user()
           end
         end)
       end
-    end
-
   end
+
 end
