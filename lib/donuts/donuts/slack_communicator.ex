@@ -43,43 +43,15 @@ defmodule Donuts.Donuts.SlackCommunicator do
       "donuts_rm" ->
         cmd_donut_id = cmd_ingridients |> Enum.at(1)
         delete_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-        if delete_target != nil do
-          Donuts.Donuts.delete_donut(delete_target)
-          name = delete_target |> Map.get(:guilty)
-          message =  "Deleted donut debt of #{name}!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        else
-          message =  "Oops! Wrong ID of the donut!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_rm_donut(delete_target)
         {:noreply, nil}
       "donuts_release" ->
         cmd_donut_id = cmd_ingridients |> Enum.at(1)
         release_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-        if release_target != nil do
-          case Donuts.Donuts.update_donut(release_target, %{:delivered => true}) do
-            {:ok, donut} ->
-              message =  "Released successfully!" |> URI.encode()
-              send_message_to_channel(@donuts_channel, message)
-            {:error, %Ecto.Changeset{} = changeset} ->
-              message =  "Oops! Error in changeset!" |> URI.encode()
-              send_message_to_channel(@donuts_channel, message)
-          end
-        else
-          message =  "Oops! Wrong ID of the donut!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_release_donut(release_target)
         {:noreply, nil}
       "donuts_help" ->
-        message =  "Commands: \n
-          donuts_add name surename \n
-          donuts_add @slack_name \n
-          donuts_release donut_id \n
-          donuts_rm donut_id \n
-          donuts_add_days donut_id days \n
-          donuts_info \n
-          donuts_help" |> URI.encode()
-        send_message_to_channel(@donuts_channel, message)
+        send_help()
         {:noreply, nil}
       "donuts_info" ->
         active_donuts = get_active_donuts()
@@ -118,8 +90,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   def process_add_donut(cmd_fname, cmd_lname, from_id) do
-      cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
-      add_donut_to_user(cmd_sender_name, from_id)
+    cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
+    add_donut_to_user(cmd_sender_name, from_id)
   end
 
   def add_donut_to_user(sender_name, target_id) do
@@ -131,38 +103,74 @@ defmodule Donuts.Donuts.SlackCommunicator do
       |> String.trim("@")
       |> Accounts.get_by_slack_id()
 
-    if sender_by_rn != nil or sender_by_sid != nil do
-      target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
-      target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
+    {sender_by_rn, sender_by_sid}
+      |> add_donut(target_id)
+  end
 
-      if (sender_by_rn != nil) do
+  def add_donut({nil, nil}, _) do
+    message = "Oops! There is no such person!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def add_donut({sender_by_rn, sender_by_sid}, target_id) do
+    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
+
+    sender_list_name = ""
+    if (sender_by_rn != nil) do
       sender_list_name = sender_by_rn |> Map.get(:name)
-
-      %{:sender => sender_list_name,
-        :guilty => target_name,
-        :user_id => target_id,
-        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-        :delivered => false}
-      |> Donuts.Donuts.create_donut()
-      end
-
-      if (sender_by_sid != nil) do
-      sender_list_name = sender_by_sid |> Map.get(:name)
-
-      %{:sender => sender_list_name,
-        :guilty => target_name,
-        :user_id => target_id,
-        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-        :delivered => false}
-      |> Donuts.Donuts.create_donut()
-      end
-
-      message =  "Succesfuly added donut debt!" |> URI.encode()
-      send_message_to_channel(@donuts_channel, message)
     else
-      message = "Oops! There is no such person like #{sender_name}!" |> URI.encode()
-      send_message_to_channel(@donuts_channel, message)
+      sender_list_name = sender_by_sid |> Map.get(:name)
     end
+
+    %{:sender => sender_list_name,
+      :guilty => target_name,
+      :user_id => target_id,
+      :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+      :delivered => false}
+    |> Donuts.Donuts.create_donut()
+    message =  "Succesfuly added donut debt!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_rm_donut(nil) do
+    message =  "Oops! Wrong ID of the donut!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_rm_donut(delete_target) do
+    Donuts.Donuts.delete_donut(delete_target)
+    name = delete_target |> Map.get(:guilty)
+    message =  "Deleted donut debt of #{name}!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_release_donut(nil) do
+    message =  "Oops! Wrong ID of the donut!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_release_donut(release_target) do
+    case Donuts.Donuts.update_donut(release_target, %{:delivered => true}) do
+      {:ok, donut} ->
+        message =  "Released successfully!" |> URI.encode()
+        send_message_to_channel(@donuts_channel, message)
+      {:error, %Ecto.Changeset{} = changeset} ->
+        message =  "Oops! Error in changeset!" |> URI.encode()
+        send_message_to_channel(@donuts_channel, message)
+    end
+  end
+
+  def send_help() do
+    message =  "Commands: \n
+      donuts_add name surename \n
+      donuts_add @slack_name \n
+      donuts_release donut_id \n
+      donuts_rm donut_id \n
+      donuts_add_days donut_id days \n
+      donuts_info \n
+      donuts_help" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
   end
 
   def get_active_donuts() do
