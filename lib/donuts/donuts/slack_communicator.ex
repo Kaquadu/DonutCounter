@@ -32,7 +32,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   defp process_donut_command(command, sender_id) do
-    cmd_ingridients = command |> String.split(" ", trim: true) |> IO.inspect
+    cmd_ingridients = command |> String.split(" ", trim: true)
     cmd_base = cmd_ingridients |> Enum.at(0)
     case cmd_base do
       "donuts_add" ->
@@ -130,7 +130,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
       |> String.trim("<")
       |> String.trim(">")
       |> String.trim("@")
-      |> Accounts.get_by_slack_id() |> IO.inspect
+      |> Accounts.get_by_slack_id()
 
     if sender_by_rn != nil or sender_by_sid != nil do
       target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
