@@ -62,3 +62,10 @@ table th {
   background-color: #606060;
   color: white;
 }
+
+section{
+    display: none;
+}
+:target{
+    display: block;
+}
