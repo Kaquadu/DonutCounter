@@ -1,6 +1,6 @@
 defmodule DonutsWeb.PageControllerTest do
-  alias DonutsWeb.Router.Helpers, as: Routes
   use DonutsWeb.ConnCase
+  alias DonutsWeb.Router.Helpers, as: Routes
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"
