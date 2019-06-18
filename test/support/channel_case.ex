@@ -25,13 +25,13 @@ defmodule DonutsWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Donuts.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Donuts.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end
