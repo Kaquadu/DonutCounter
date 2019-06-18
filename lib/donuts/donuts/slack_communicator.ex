@@ -6,7 +6,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   alias Donuts.Accounts
   alias Donuts.Donuts.Donut
 
-  #defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
+  # defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
 
   def get_all_users() do
     "https://slack.com/api/users.list?token=#{@oauth_token}&pretty=1"
