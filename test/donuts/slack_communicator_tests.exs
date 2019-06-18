@@ -57,11 +57,12 @@ defmodule Donuts.SlackCommunicatorTests do
       {status, user} = add_test_user()
       user_id = user |> Map.get(:id)
       user_name = user |> Map.get(:name)
+      user_slack_id = user |> Map.get(:slack_id)
       {status, donut} = add_test_donut(user_id)
       donut_id = donut |> Map.get(:id)
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_rm", donut_id], user_id, "donuts")
+        SlackCommunicator.process_donut_command(["donuts_rm", donut_id], user_slack_id, "donuts")
         |> Map.get("message")
         |> Map.get("text")
 
@@ -76,9 +77,10 @@ defmodule Donuts.SlackCommunicatorTests do
 
       result =
         SlackCommunicator.process_donut_command(["donuts_release", donut_id], user_id, "donuts")
-        |> Map.get("ok")
+        |> Map.get("message")
+        |> Map.get("text")
 
-      assert result == true
+      assert result == "Released successfully!"
     end
 
     test "add cmd via fname & lname invalid" do
@@ -92,6 +94,49 @@ defmodule Donuts.SlackCommunicatorTests do
         |> Map.get("text")
 
       assert result == "Oops! There is no such person!"
+    end
+
+    test "add cmd via slack @ invalid" do
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add", "MAMYBUGA"],
+          "UJZAC1VLM",
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! There is no such person!"
+    end
+
+    test "rm cmd invalid" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_name = user |> Map.get(:name)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+      user_id = user_id |> String.replace("1", "2")
+      user_id = user_id |> String.replace("3", "2")
+      user_id = user_id |> String.replace("4", "2")
+
+      result =
+        SlackCommunicator.process_donut_command(["donuts_rm", user_id], user_slack_id, "donuts")
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! Wrong ID of the donut!"
+    end
+
+    test "random command" do
+      result =
+        SlackCommunicator.process_donut_command(
+          ["randomcmd", "MAMYBUGA"],
+          "UJZAC1VLM",
+          "donuts"
+        )
+
+      assert result == {:ok, "UJZAC1VLM"}
     end
   end
 

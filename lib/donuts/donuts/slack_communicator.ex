@@ -262,16 +262,16 @@ defmodule Donuts.Donuts.SlackCommunicator do
         delivered = donut |> Map.get(:delivered)
 
         if delivered == false do
-          message = message <> "Guilty: #{Map.get(donut, :guilty)} | "
-          message = message <> "Sender: #{Map.get(donut, :sender)} | "
+          message = "#{message} Guilty: #{Map.get(donut, :guilty)} | "
+          message = "#{message} Sender: #{Map.get(donut, :sender)} | "
 
           exp_date =
             Map.get(donut, :expiration_date)
             |> DateTime.to_date()
             |> Date.to_string()
 
-          message = message <> "Expiration date: #{exp_date} | "
-          message = message <> "ID: #{Map.get(donut, :id)} \n"
+          message = "#{message} Expiration date: #{exp_date} | "
+          message = "#{message} ID: #{Map.get(donut, :id)} \n"
         else
           message
         end

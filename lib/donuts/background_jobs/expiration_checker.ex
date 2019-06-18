@@ -28,16 +28,16 @@ defmodule Donuts.Background.ExpirationChecker do
   def communicate_expired_donuts(expired_donuts) do
     mess =
       Enum.reduce(expired_donuts, "Expired donuts: \n", fn donut, message ->
-        message = message <> "Guilty: #{Map.get(donut, :guilty)} | "
-        message = message <> "Sender: #{Map.get(donut, :sender)} | "
+        message = "#{message} Guilty: #{Map.get(donut, :guilty)} | "
+        message = "#{message} Sender: #{Map.get(donut, :sender)} | "
 
         exp_date =
           Map.get(donut, :expiration_date)
           |> DateTime.to_date()
           |> Date.to_string()
 
-        message = message <> "Expiration date: #{exp_date} | "
-        message = message <> "ID: #{Map.get(donut, :id)} \n"
+        message = "#{message} Expiration date: #{exp_date} | "
+        message = "#{message} ID: #{Map.get(donut, :id)} \n"
       end)
       |> URI.encode()
 
