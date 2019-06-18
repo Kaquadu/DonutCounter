@@ -77,6 +77,19 @@ defmodule Donuts.Donuts.SlackCommunicator do
       send_message_to_channel(@donuts_channel, message)
   end
 
+  def process_donut_command(["donuts_add_days" | params], sender_id, event_channel)
+    when length(params) == 2 do
+      [id, days] = params
+      donut_target = Donuts.Donuts.get_by_id(id)
+      process_donut_add_days(donut_target, days)
+  endmix
+
+  def process_donut_command(["donuts_add_days" | params], sender_id, event_channel)
+    when length(params) != 2 do
+      message = "Wrong command format!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+
   def process_donut_command(["donuts_info" | params], sender_id, event_channel) do
     active_donuts = get_active_donuts() |> process_donuts_info()
   end
@@ -89,44 +102,6 @@ defmodule Donuts.Donuts.SlackCommunicator do
     message = "Command #{cmd} is not supported!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
-
-  # def process_donut_command(command, sender_id, event_channel) do
-  #   cmd_ingridients = command |> String.split(" ", trim: true)
-  #   cmd_base = cmd_ingridients |> Enum.at(0)
-  #   case cmd_base do
-  #     "donuts_add" ->
-  #       cmd_fname = cmd_ingridients |> Enum.at(1)
-  #       cmd_lname = cmd_ingridients |> Enum.at(2)
-  #       process_add_donut(cmd_fname, cmd_lname, sender_id)
-  #       {:noreply, nil}
-  #     "donuts_rm" ->
-  #       cmd_donut_id = cmd_ingridients |> Enum.at(1)
-  #       delete_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-  #       process_rm_donut(delete_target)
-  #       {:noreply, nil}
-  #     "donuts_release" ->
-  #       cmd_donut_id = cmd_ingridients |> Enum.at(1)
-  #       release_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-  #       process_release_donut(release_target)
-  #       {:noreply, nil}
-  #     "donuts_help" ->
-  #       send_help()
-  #       {:noreply, nil}
-  #     "donuts_info" ->
-  #       active_donuts = get_active_donuts()
-  #       process_donuts_info(active_donuts)
-  #       {:noreply, nil}
-  #     "donuts_add_days" ->
-  #       [cmd1, cmd2, | t] = cmd_ingridients
-  #       donut_id = cmd_ingridients |> Enum.at(1)
-  #       days = cmd_ingridients |> Enum.at(2) |> String.to_integer()
-  #       donut_target = Donuts.Donuts.get_by_id(donut_id)
-  #       process_donut_add_days(donut_target, days)
-  #       {:noreply, nil}
-  #     _other ->
-  #       {:noreply, nil}
-  #   end
-  # end
 
   def process_add_donut([cmd_fname], cmd_lname, from_id) when cmd_lname == nil do
     get_sender(cmd_fname)
