@@ -31,7 +31,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
     {:unhandled_event, nil}
   end
 
-  defp process_donut_command(command, sender_id, event_channel) do
+  def process_donut_command(command, sender_id, event_channel) do
     cmd_ingridients = command |> String.split(" ", trim: true)
     cmd_base = cmd_ingridients |> Enum.at(0)
 

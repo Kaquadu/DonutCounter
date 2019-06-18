@@ -2,6 +2,13 @@ defmodule Donuts.SlackCommunicatorTests do
   use Donuts.DataCase
   alias Donuts.Donuts.SlackCommunicator
 
+  describe "Testing commands: " do
+    test "help cmd" do
+      result = SlackCommunicator.process_donut_command("donuts_info", "UJY1A1VLM", "donuts")
+      assert result == {:noreply, nil}
+    end
+  end
+
   describe "Testing adding donuts: " do
     test "valid donut with fname and lname" do
       add_test_user()
