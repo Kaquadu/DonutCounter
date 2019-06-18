@@ -29,11 +29,11 @@ defmodule Donuts.SlackCommunicatorTests do
       donut_id = donut |> Map.get(:id)
     end
 
-    # test "add cmd via fname & lname" do
-    #   result = SlackCommunicator.process_donut_command(["donuts_add", "Kuba", "Kowalczykowski"], "UJY1A1VLM", "donuts")
-    #     |> Map.get("ok")
-    #   assert result == true
-    # end
+    test "add cmd via fname & lname invalid" do
+      result = SlackCommunicator.process_donut_command(["donuts_add", "ASDF", "XYZ"], "UJZAC1VLM", "donuts")
+        |> Map.get("ok")
+      assert result == true
+    end
   end
 
   def add_test_user() do
