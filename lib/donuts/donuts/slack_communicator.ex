@@ -29,9 +29,26 @@ defmodule Donuts.Donuts.SlackCommunicator do
     {:unhandled_event, nil}
   end
 
-  def process_donut_command(["donuts_add" | params], sender_id, event_channel) do
-    [cmd_fname, cmd_lname] = params
-    process_add_donut(cmd_fname, cmd_lname, sender_id)
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
+    when length(params) == 0 do
+      message = "Oops! There is no such person!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
+    when length(params) == 1 do
+      process_add_donut(params, nil, sender_id)
+  end
+
+  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+    when length(params) == 2 do
+      [cmd_fname | cmd_lname] = params
+      process_add_donut(cmd_fname, cmd_lname, sender_id)
+  end
+
+  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+    when length(params) > 2 do
+      message = "Wrong name format" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
   end
 
   # def process_donut_command(command, sender_id, event_channel) do
@@ -72,25 +89,25 @@ defmodule Donuts.Donuts.SlackCommunicator do
   #   end
   # end
 
-  def process_add_donut(cmd_fname, nil, from_id) do
+  def process_add_donut(cmd_fname, cmd_lname, from_id) when cmd_lname == nil do
     get_sender(cmd_fname)
-    |> add_donut(from_id)
+      |> add_donut(from_id)
   end
 
   def process_add_donut(cmd_fname, cmd_lname, from_id) do
     cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
     get_sender(cmd_sender_name)
-    |> add_donut(from_id)
+      |> add_donut(from_id)
   end
 
   def get_sender(sender_name) do
     sender_by_rn = Accounts.get_by_real_name(sender_name)
     sender_by_sid =
       sender_name
-      |> String.trim("<")
-      |> String.trim(">")
-      |> String.trim("@")
-      |> Accounts.get_by_slack_id()
+        |> String.trim("<")
+        |> String.trim(">")
+        |> String.trim("@")
+        |> Accounts.get_by_slack_id()
 
     {sender_by_rn, sender_by_sid}
   end
