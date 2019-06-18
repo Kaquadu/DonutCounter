@@ -16,80 +16,114 @@ defmodule Donuts.Donuts.SlackCommunicator do
     |> HTTPHelper.get_body()
   end
 
-  def handle_slack_event(%{
-    "type" => event_type,
-    "channel" => event_channel,
-    "text" => event_text,
-    "user" => user_id
-    }) do
-    if event_type == "message" do
-      process_donut_command(event_text, user_id, event_channel)
-    end
+  def handle_slack_event(
+  %{"type" => event_type,
+   "channel" => event_channel,
+   "text" => event_text,
+   "user" => user_id}) when event_type == "message" do
+     cmd_ingridients = event_text |> String.split(" ", trim: true)
+     process_donut_command(cmd_ingridients, user_id, event_channel)
   end
 
   def handle_slack_event(_params) do
     {:unhandled_event, nil}
   end
 
-  def process_donut_command(command, sender_id, event_channel) do
-    cmd_ingridients = command |> String.split(" ", trim: true)
-    cmd_base = cmd_ingridients |> Enum.at(0)
-
-    case cmd_base do
-      "donuts_add" ->
-        cmd_fname = cmd_ingridients |> Enum.at(1)
-        cmd_lname = cmd_ingridients |> Enum.at(2)
-        process_add_donut(cmd_fname, cmd_lname, sender_id)
-        {:noreply, nil}
-      "donuts_rm" ->
-        cmd_donut_id = cmd_ingridients |> Enum.at(1)
-        delete_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-        process_rm_donut(delete_target)
-        {:noreply, nil}
-      "donuts_release" ->
-        cmd_donut_id = cmd_ingridients |> Enum.at(1)
-        release_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-        process_release_donut(release_target)
-        {:noreply, nil}
-      "donuts_help" ->
-        send_help()
-        {:noreply, nil}
-      "donuts_info" ->
-        active_donuts = get_active_donuts()
-        process_donuts_info(active_donuts)
-        {:noreply, nil}
-      "donuts_add_days" ->
-        donut_id = cmd_ingridients |> Enum.at(1)
-        days = cmd_ingridients |> Enum.at(2) |> String.to_integer()
-        donut_target = Donuts.Donuts.get_by_id(donut_id)
-        process_donut_add_days(donut_target, days)
-        {:noreply, nil}
-      _other ->
-        {:noreply, nil}
-    end
-
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
+    when length(params) == 0 do
+      message = "Wrong name format!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
   end
 
-  def process_add_donut(cmd_fname, nil, from_id) do
-    add_donut_to_user(cmd_fname, from_id)
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
+    when length(params) == 1 do
+      process_add_donut(params, nil, sender_id)
+  end
+
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
+    when length(params) == 2 do
+      [cmd_fname, cmd_lname] = params
+      process_add_donut(cmd_fname, cmd_lname, sender_id)
+  end
+
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
+    when length(params) > 2 do
+      message = "Wrong name format!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+    when length(params) == 1 do
+      [id] = params
+      delete_target = Donuts.Donuts.get_by_id(id)
+      process_rm_donut(delete_target)
+  end
+
+  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+    when length(params) != 1 do
+      message = "Wrong command format!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_command(["donuts_release" | params], sender_id, event_channel)
+    when length(params) == 1 do
+      [id] = params
+      release_target = Donuts.Donuts.get_by_id(id)
+      process_release_donut(release_target)
+  end
+
+  def process_donut_command(["donuts_release" | params], sender_id, event_channel)
+    when length(params) != 1 do
+      message = "Wrong command format!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_command(["donuts_add_days" | params], sender_id, event_channel)
+    when length(params) == 2 do
+      [id, days] = params
+      donut_target = Donuts.Donuts.get_by_id(id)
+      process_donut_add_days(donut_target, days)
+  end
+
+  def process_donut_command(["donuts_add_days" | params], sender_id, event_channel)
+    when length(params) != 2 do
+      message = "Wrong command format!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_command(["donuts_info" | params], sender_id, event_channel) do
+    active_donuts = get_active_donuts() |> process_donuts_info()
+  end
+
+  def process_donut_command(["donuts_help" | params], sender_id, event_channel) do
+    send_help()
+  end
+
+  def process_donut_command(_, sender_id, event_channel) do
+    {:ok, sender_id}
+  end
+
+  def process_add_donut([cmd_fname], cmd_lname, from_id) when cmd_lname == nil do
+    get_sender(cmd_fname)
+      |> add_donut(from_id)
   end
 
   def process_add_donut(cmd_fname, cmd_lname, from_id) do
     cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
-    add_donut_to_user(cmd_sender_name, from_id)
+    get_sender(cmd_sender_name)
+      |> add_donut(from_id)
   end
 
-  def add_donut_to_user(sender_name, target_id) do
+  def get_sender(sender_name) do
     sender_by_rn = Accounts.get_by_real_name(sender_name)
     sender_by_sid =
       sender_name
-      |> String.trim("<")
-      |> String.trim(">")
-      |> String.trim("@")
-      |> Accounts.get_by_slack_id()
+        |> String.trim("<")
+        |> String.trim(">")
+        |> String.trim("@")
+        |> Accounts.get_by_slack_id()
 
     {sender_by_rn, sender_by_sid}
-      |> add_donut(target_id)
   end
 
   def add_donut({nil, nil}, _) do
