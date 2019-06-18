@@ -22,7 +22,6 @@ defmodule Donuts.Accounts do
   def create_user(attrs) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert
+    |> Repo.insert()
   end
-
 end
