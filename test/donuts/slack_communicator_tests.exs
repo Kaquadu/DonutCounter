@@ -41,6 +41,6 @@ defmodule Donuts.SlackCommunicatorTests do
   end
 
   def add_test_donut() do
-    
+
   end
 end
