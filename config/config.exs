@@ -10,14 +10,15 @@ config :donuts,
   ecto_repos: [Donuts.Repo],
   client_id: "632634181587.644062506869",
   client_secret: "8ce5c827f81a18909c247b81436f72bc",
-  redirect_uri_auth: "https://habitum.serveo.net/auth",
-  redirect_uri_loggedin: "https://habitum.serveo.net/loggedin",
+  redirect_uri_auth: "https://sleepy-taiga-28784.herokuapp.com/auth",
+  redirect_uri_loggedin: "https://sleepy-taiga-28784.herokuapp.com/loggedin",
   verification_token: "d77fq65TdeT0hvpraviVUpnE",
-  oauth_token: "xoxp-632634181587-644044063701-647036050289-aa25bd5fe1a1d7a6caef65cf4f62eb2f",
+  oauth_token: "xoxp-632634181587-644044063701-657074757461-015993de5a46bb0e43a5c296790fedbc",
   ttl_seconds: 1800,
   bcrypt_salt: "$2b$12$x0DHri2vRvSt.qrWyLJOVu",
   donuts_channel_id: "donuts",
-  donuts_expiration_days: 30
+  donuts_expiration_days: 30,
+  donuts_checker_minutes: 180
 
 # Configures the endpoint
 config :donuts, DonutsWeb.Endpoint,

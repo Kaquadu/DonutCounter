@@ -23,7 +23,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
     "user" => user_id
     }) do
     if event_type == "message" do
-      process_donut_command(event_text, user_id)
+      process_donut_command(event_text, user_id, event_channel)
     end
   end
 
@@ -31,111 +31,197 @@ defmodule Donuts.Donuts.SlackCommunicator do
     {:unhandled_event, nil}
   end
 
-  defp process_donut_command(command, sender_id) do
+  def process_donut_command(command, sender_id, event_channel) do
     cmd_ingridients = command |> String.split(" ", trim: true)
     cmd_base = cmd_ingridients |> Enum.at(0)
+
     case cmd_base do
       "donuts_add" ->
         cmd_fname = cmd_ingridients |> Enum.at(1)
         cmd_lname = cmd_ingridients |> Enum.at(2)
-        if cmd_fname != nil and cmd_lname != nil do
-          cmd_sender_name = cmd_fname <> " " <> cmd_lname
-          add_donut_to_user(cmd_sender_name, sender_id)
-          message =  "Succesfuly added donut debt!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        else
-          message =  "Oops! Wrong format of your's name!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_add_donut(cmd_fname, cmd_lname, sender_id)
         {:noreply, nil}
       "donuts_rm" ->
         cmd_donut_id = cmd_ingridients |> Enum.at(1)
         delete_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-        if delete_target != nil do
-          Donuts.Donuts.delete_donut(delete_target)
-          name = delete_target |> Map.get(:guilty)
-          message =  "Deleted donut debt of #{name}!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        else
-          message =  "Oops! Wrong ID of the donut!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_rm_donut(delete_target)
         {:noreply, nil}
       "donuts_release" ->
         cmd_donut_id = cmd_ingridients |> Enum.at(1)
         release_target = Donuts.Donuts.get_by_id(cmd_donut_id)
-        if release_target != nil do
-          case Donuts.Donuts.update_donut(release_target, %{:delivered => true}) do
-            {:ok, donut} ->
-              message =  "Released succesfuly!" |> URI.encode()
-              send_message_to_channel(@donuts_channel, message)
-            {:error, %Ecto.Changeset{} = changeset} ->
-              message =  "Oops! Error in changeset!" |> URI.encode()
-              send_message_to_channel(@donuts_channel, message)
-          end
-        else
-          message =  "Oops! Wrong ID of the donut!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_release_donut(release_target)
         {:noreply, nil}
       "donuts_help" ->
-        message =  "Commands: \n
-          donuts_add name surename \n
-          donuts_release donut_uuid \n
-          donuts_rm donut_uuid \n
-          donuts_info \n
-          donuts_help" |> URI.encode()
-        send_message_to_channel(@donuts_channel, message)
+        send_help()
         {:noreply, nil}
       "donuts_info" ->
         active_donuts = get_active_donuts()
-        if active_donuts != nil do
-          active_donuts = active_donuts |> URI.encode()
-          send_message_to_channel(@donuts_channel, active_donuts)
-        else
-          message =  "No active donut debts!" |> URI.encode()
-          send_message_to_channel(@donuts_channel, message)
-        end
+        process_donuts_info(active_donuts)
+        {:noreply, nil}
+      "donuts_add_days" ->
+        donut_id = cmd_ingridients |> Enum.at(1)
+        days = cmd_ingridients |> Enum.at(2) |> String.to_integer()
+        donut_target = Donuts.Donuts.get_by_id(donut_id)
+        process_donut_add_days(donut_target, days)
         {:noreply, nil}
       _other ->
-        # message = "Oops! Wrong command!" |> URI.encode()
-        # send_message_to_channel(@donuts_channel, message)
         {:noreply, nil}
     end
+
+  end
+
+  def process_add_donut(cmd_fname, nil, from_id) do
+    add_donut_to_user(cmd_fname, from_id)
+  end
+
+  def process_add_donut(cmd_fname, cmd_lname, from_id) do
+    cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
+    add_donut_to_user(cmd_sender_name, from_id)
   end
 
   def add_donut_to_user(sender_name, target_id) do
-    if Accounts.get_by_real_name(sender_name) != nil do
-      target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
-      target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
-      %{}
-        |> Map.put(:sender, sender_name)
-        |> Map.put(:guilty, target_name)
-        |> Map.put(:user_id, target_id)
-        |> Map.put(:expiration_date, DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second))
-        |> Map.put(:delivered, false)
-        |> Donuts.Donuts.create_donut()
-    else
-      message = "Oops! There is no such person like #{sender_name}!" |> URI.encode()
-      send_message_to_channel(@donuts_channel, message)
+    sender_by_rn = Accounts.get_by_real_name(sender_name)
+    sender_by_sid =
+      sender_name
+      |> String.trim("<")
+      |> String.trim(">")
+      |> String.trim("@")
+      |> Accounts.get_by_slack_id()
+
+    {sender_by_rn, sender_by_sid}
+      |> add_donut(target_id)
+  end
+
+  def add_donut({nil, nil}, _) do
+    message = "Oops! There is no such person!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def add_donut({nil, sender_by_sid}, target_id) do
+    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
+
+      sender_list_name = sender_by_sid |> Map.get(:name)
+      %{:sender => sender_list_name,
+        :guilty => target_name,
+        :user_id => target_id,
+        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+        :delivered => false}
+      |> Donuts.Donuts.create_donut()
+
+    message =  "Succesfuly added donut debt!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def add_donut({sender_by_rn, nil}, target_id) do
+    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
+
+      sender_list_name = sender_by_rn |> Map.get(:name)
+      %{:sender => sender_list_name,
+        :guilty => target_name,
+        :user_id => target_id,
+        :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+        :delivered => false}
+      |> Donuts.Donuts.create_donut()
+
+    message =  "Succesfuly added donut debt!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def add_donut({nil, nil}, target_id) do
+    message =  "Wrong user!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_rm_donut(nil) do
+    message =  "Oops! Wrong ID of the donut!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_rm_donut(delete_target) do
+    Donuts.Donuts.delete_donut(delete_target)
+    name = delete_target |> Map.get(:guilty)
+    message =  "Deleted donut debt of #{name}!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_release_donut(nil) do
+    message =  "Oops! Wrong ID of the donut!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_release_donut(release_target) do
+    case Donuts.Donuts.update_donut(release_target, %{:delivered => true}) do
+      {:ok, donut} ->
+        message =  "Released successfully!" |> URI.encode()
+        send_message_to_channel(@donuts_channel, message)
+      {:error, %Ecto.Changeset{} = changeset} ->
+        message =  "Oops! Error in changeset!" |> URI.encode()
+        send_message_to_channel(@donuts_channel, message)
     end
+  end
+
+  def send_help() do
+    message =  "Commands: \n
+      donuts_add name surename \n
+      donuts_add @slack_name \n
+      donuts_release donut_id \n
+      donuts_rm donut_id \n
+      donuts_add_days donut_id days \n
+      donuts_info \n
+      donuts_help" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donuts_info(nil) do
+    message =  "No active donut debts!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donuts_info(active_donuts) do
+    active_donuts = active_donuts |> URI.encode()
+    send_message_to_channel(@donuts_channel, active_donuts)
+  end
+
+  def process_donut_add_days(nil, nil) do
+    message =  "Oops! Wrong format of the command!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_add_days(nil, days) do
+    message =  "Oops! Wrong format of the command!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_add_days(donut_target, nil) do
+    message =  "Oops! Wrong format of the command! Days not specified." |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_add_days(donut_target, days) when is_integer(days) do
+    current_exp_date = donut_target |> Map.get(:expiration_date)
+    f_exp_date = DateTime.add(current_exp_date, days*24*60*60, :second)
+    Donuts.Donuts.update_donut(donut_target, %{:expiration_date => f_exp_date})
+    message =  "Changed date!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
   end
 
   def get_active_donuts() do
     active_donuts =
       Donuts.Donuts.get_all()
       |> Enum.reduce("Active donuts: \n", fn donut, message ->
-        donut |> IO.inspect
-        delivered = donut |> Map.get(:delivered) |> IO.inspect
+        donut
+        delivered = donut |> Map.get(:delivered)
         if delivered == false do
-          message = message <> "Guilty:" <> " " <> Map.get(donut, :guilty) <> " | "
-          message = message <> "Sender:" <> " " <> Map.get(donut, :sender) <> " | "
+          message = message <> "Guilty: #{Map.get(donut, :guilty)} | "
+          message = message <> "Sender: #{Map.get(donut, :sender)} | "
           exp_date =
             Map.get(donut, :expiration_date)
             |> DateTime.to_date()
             |> Date.to_string()
-          message = message <> "Expiration date:" <> " " <> exp_date <> " | "
-          message = message <> "ID:" <> " " <> Map.get(donut, :id) <> "\n"
+          message = message <> "Expiration date: #{exp_date} | "
+          message = message <> "ID: #{Map.get(donut, :id)} \n"
         else
           message
         end
