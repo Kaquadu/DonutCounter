@@ -34,6 +34,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
       message = "Wrong name format!" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
   end
+
   def process_donut_command(["donuts_add" | params], sender_id, event_channel)
     when length(params) == 1 do
       process_add_donut(params, nil, sender_id) |> IO.inspect
@@ -82,7 +83,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
       [id, days] = params
       donut_target = Donuts.Donuts.get_by_id(id)
       process_donut_add_days(donut_target, days)
-  endmix
+  end
 
   def process_donut_command(["donuts_add_days" | params], sender_id, event_channel)
     when length(params) != 2 do
