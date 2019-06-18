@@ -36,7 +36,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
   def process_donut_command(["donuts_add" | params], sender_id, event_channel)
     when length(params) == 1 do
-      process_add_donut(params, nil, sender_id)
+      process_add_donut(params, nil, sender_id) |> IO.inspect
   end
 
   def process_donut_command(["donuts_add" | params], sender_id, event_channel)
@@ -53,7 +53,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
 
   def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
     when length(params) == 1 do
-      delete_target = Donuts.Donuts.get_by_id(params)
+      [id] = params
+      delete_target = Donuts.Donuts.get_by_id(id)
       process_rm_donut(delete_target)
   end
 
@@ -65,7 +66,8 @@ defmodule Donuts.Donuts.SlackCommunicator do
 
   def process_donut_command(["donuts_release" | params], sender_id, event_channel)
     when length(params) == 1 do
-      release_target = Donuts.Donuts.get_by_id(params)
+      [id] = params
+      release_target = Donuts.Donuts.get_by_id(id)
       process_release_donut(release_target)
   end
 
@@ -126,12 +128,12 @@ defmodule Donuts.Donuts.SlackCommunicator do
   #   end
   # end
 
-  def process_add_donut(cmd_fname, cmd_lname, from_id) when cmd_lname == nil do
+  def process_add_donut([cmd_fname], cmd_lname, from_id) when cmd_lname == nil do
     get_sender(cmd_fname)
       |> add_donut(from_id)
   end
 
-  def process_add_donut(cmd_fname, cmd_lname, from_id) do
+  def process_add_donut([cmd_fname], [cmd_lname], from_id) do
     cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
     get_sender(cmd_sender_name)
       |> add_donut(from_id)
