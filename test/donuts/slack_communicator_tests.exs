@@ -1,6 +1,7 @@
 defmodule Donuts.SlackCommunicatorTests do
   use Donuts.DataCase
   alias Donuts.Donuts.SlackCommunicator
+  @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
   describe "Testing commands in general: " do
     test "help cmd" do
@@ -36,9 +37,12 @@ defmodule Donuts.SlackCommunicatorTests do
 
   describe "Testing rm donuts: " do
     test "rm valid donut" do
-      add_test_user()
-      add_test_donut()
-      result = SlackCommunicator.process_rm_donut(nil)
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get{:id}
+      result = SlackCommunicator.process_rm_donut(donut_id)
+        |> Map.get("message") |> Map.get("text")
       assert result == "Oops! Wrong ID of the donut!"
     end
   end
@@ -50,12 +54,12 @@ defmodule Donuts.SlackCommunicatorTests do
       |> Donuts.Accounts.create_user()
   end
 
-  def add_test_donut() do
+  def add_test_donut(user_id) do
     %{:sender => "Kuba Kowalczykowski",
       :guilty => "Kuba Kowalczykowski",
-      :user_id => "UJY1A1VLM",
+      :user_id => user_id,
       :expiration_date => DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false}
-    |> Donuts.Donuts.create_donut() |> IO.inspect
+    |> Donuts.Donuts.create_donut()
   end
 end

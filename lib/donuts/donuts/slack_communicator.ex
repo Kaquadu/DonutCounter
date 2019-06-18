@@ -71,15 +71,17 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   def process_add_donut(cmd_fname, nil, from_id) do
-    add_donut_to_user(cmd_fname, from_id)
+    get_sender(cmd_fname)
+    |> add_donut(from_id)
   end
 
   def process_add_donut(cmd_fname, cmd_lname, from_id) do
     cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
-    add_donut_to_user(cmd_sender_name, from_id)
+    get_sender(cmd_sender_name)
+    |> add_donut(from_id)
   end
 
-  def add_donut_to_user(sender_name, target_id) do
+  def get_sender(sender_name) do
     sender_by_rn = Accounts.get_by_real_name(sender_name)
     sender_by_sid =
       sender_name
@@ -89,7 +91,6 @@ defmodule Donuts.Donuts.SlackCommunicator do
       |> Accounts.get_by_slack_id()
 
     {sender_by_rn, sender_by_sid}
-      |> add_donut(target_id)
   end
 
   def add_donut({nil, nil}, _) do
