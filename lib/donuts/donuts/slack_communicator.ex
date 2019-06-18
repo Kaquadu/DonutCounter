@@ -31,7 +31,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
 
   def process_donut_command(["donuts_add" | params], sender_id, event_channel)
     when length(params) == 0 do
-      message = "Oops! There is no such person!" |> URI.encode()
+      message = "Wrong name format!" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
   end
   def process_donut_command(["donuts_add" | params], sender_id, event_channel)
@@ -49,6 +49,22 @@ defmodule Donuts.Donuts.SlackCommunicator do
     when length(params) > 2 do
       message = "Wrong name format" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+    when length(params) == 1 do
+      delete_target = Donuts.Donuts.get_by_id(params)
+      process_rm_donut(delete_target)
+  end
+
+  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+    when length(params) != 1 do
+      message = "Wrong remove command format" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_command(["donuts_info" | params], sender_id, event_channel) do
+    active_donuts = get_active_donuts() |> process_donuts_info()
   end
 
   # def process_donut_command(command, sender_id, event_channel) do
