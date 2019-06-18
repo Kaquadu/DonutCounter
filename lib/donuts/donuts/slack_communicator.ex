@@ -39,13 +39,13 @@ defmodule Donuts.Donuts.SlackCommunicator do
       process_add_donut(params, nil, sender_id)
   end
 
-  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
     when length(params) == 2 do
       [cmd_fname | cmd_lname] = params
       process_add_donut(cmd_fname, cmd_lname, sender_id)
   end
 
-  def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
+  def process_donut_command(["donuts_add" | params], sender_id, event_channel)
     when length(params) > 2 do
       message = "Wrong name format" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
