@@ -47,7 +47,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
 
   def process_donut_command(["donuts_add" | params], sender_id, event_channel)
     when length(params) > 2 do
-      message = "Wrong name format" |> URI.encode()
+      message = "Wrong name format!" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
   end
 
@@ -59,12 +59,33 @@ defmodule Donuts.Donuts.SlackCommunicator do
 
   def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
     when length(params) != 1 do
-      message = "Wrong remove command format" |> URI.encode()
+      message = "Wrong command format!" |> URI.encode()
+      send_message_to_channel(@donuts_channel, message)
+  end
+
+  def process_donut_command(["donuts_release" | params], sender_id, event_channel)
+    when length(params) == 1 do
+      release_target = Donuts.Donuts.get_by_id(params)
+      process_release_donut(release_target)
+  end
+
+  def process_donut_command(["donuts_release" | params], sender_id, event_channel)
+    when length(params) != 1 do
+      message = "Wrong command format!" |> URI.encode()
       send_message_to_channel(@donuts_channel, message)
   end
 
   def process_donut_command(["donuts_info" | params], sender_id, event_channel) do
     active_donuts = get_active_donuts() |> process_donuts_info()
+  end
+
+  def process_donut_command(["donuts_help" | params], sender_id, event_channel) do
+    send_help()
+  end
+
+  def process_donut_command([cmd | params], sender_id, event_channel) do
+    message = "Command #{cmd} is not supported!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
   end
 
   # def process_donut_command(command, sender_id, event_channel) do
