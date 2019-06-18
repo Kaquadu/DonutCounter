@@ -1,5 +1,12 @@
 /* This file is for your main application css. */
 
+/* section{
+    display: none;
+}
+section:target{
+    display: block;
+} */
+
 .page-container {
   display: flex;
   flex-direction: column;

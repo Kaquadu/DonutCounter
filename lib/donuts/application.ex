@@ -14,7 +14,8 @@ defmodule Donuts.Application do
       supervisor(DonutsWeb.Endpoint, []),
       # Start your own worker by calling: Donuts.Worker.start_link(arg1, arg2, arg3)
       # worker(Donuts.Worker, [arg1, arg2, arg3]),
-      {Donuts.Background.UserManager, []}
+      {Donuts.Background.UserManager, []},
+      {Donuts.Background.ExpirationChecker, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
