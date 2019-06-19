@@ -37,12 +37,12 @@ defmodule DonutsWeb.PageController do
     if sender == nil or sender == [] do
       conn
         |> put_flash(:info, "Incorrect name.")
-        |> redirect(to: Routes.page_path(conn, :logged_in))
+        |> render("logged_in.html", success: false)
     else 
       target_name = Session.get_current_user_name(conn)
       target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
       {status, donut} = Donuts.Donuts.add_new_donut(sender_name, target_name, target_id) |> IO.inspect
-      conn |> redirect(to: Routes.page_path(conn, :logged_in))
+      conn |> render("logged_in.html", success: true)
     end
   end
 end
