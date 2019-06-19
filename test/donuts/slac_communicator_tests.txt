@@ -9,17 +9,17 @@ Donuts_add:
     - no params
 
 Donuts_rm:
-    a) valid donut id 
-    b) invalid donut id
+    a) valid user id 
+    b) invalid user id
     c) no_params != 1
 
 Donuts_release:
-    a) valid donut id 
-    b) invalid donut id
+    a) valid user id 
+    b) invalid user id
     c) no_params != 1
 
 Donuts_add_days:
-    a) valid id & days
+    a) valid id & valid days
     b) invalid id & valid days
     c) invalid id & invalid days
     d) valid id & invalid days
