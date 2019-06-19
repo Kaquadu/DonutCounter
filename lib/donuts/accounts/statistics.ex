@@ -13,14 +13,14 @@ defmodule Donuts.Accounts.Statistics do
       active_donuts = Donuts.Donuts.get_active_donuts_by_id(user_id) |> length()
 
       user_stats =
-        %{} |> Map.put(:username, user_name)
+        %{}
+        |> Map.put(:username, user_name)
         |> Map.put(:total_donuts, total_donuts)
         |> Map.put(:delivered_donuts, delivered_donuts)
         |> Map.put(:expired_donuts, expired_donuts)
         |> Map.put(:active_donuts, active_donuts)
 
-        stats_list = [user_stats | stats_list]
+      stats_list = [user_stats | stats_list]
     end)
   end
-
 end
