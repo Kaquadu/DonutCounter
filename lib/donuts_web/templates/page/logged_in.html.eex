@@ -13,6 +13,7 @@
     <a id = "href-button" href = "#donutCommands">Commands</a>
     <a id = "href-button" href = "#donutsList">Sweet list</a>
     <a id = "href-button" href = "#addDonut">Add donut</a>
+    <hr>
   </div>
 
   <section id = "aboutDonuts">
@@ -37,7 +38,7 @@
     <p><strong>donuts_info</strong> - gets all active donuts</p>
     <p>Example: donuts_info</p>
     <p><strong>donuts_help</strong> - list of commands</p>
-    <p>Example: onuts_help</p>
+    <p>Example: donuts_help</p>
   </section>
 
   <section id = "donutsList">
