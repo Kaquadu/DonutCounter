@@ -28,7 +28,8 @@ defmodule DonutsWeb.PageController do
   end
 
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
-    if Donuts.Donuts.add_new_donut(conn, sender_name) do
+    {status, donut} = Donuts.Donuts.add_new_donut(conn, sender_name)
+    if status == :ok do
       conn |> redirect(to: Routes.page_path(conn, :logged_in))
     else
       conn
