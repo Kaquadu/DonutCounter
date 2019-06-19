@@ -1,11 +1,11 @@
-<style>
+<%# <style>
   section{
       display: none;
   }
   :target{
       display: block;
   }
-</style>
+</style> %>
 
 <div class = "page-container">
   <div class = "menu-container">
@@ -13,14 +13,17 @@
     <a id = "href-button" href = "#donutCommands">Commands</a>
     <a id = "href-button" href = "#donutsList">Sweet list</a>
     <a id = "href-button" href = "#addDonut">Add donut</a>
+    <hr>
   </div>
 
   <section id = "aboutDonuts">
+    <h2>About Donuts</h2>
     <hr>
     <p>Our internal security policy assumes that one cannot leave his/her electronic device with an unlocked screen. If someone notices unlocked screen, he may type the word - ‘donuts’ (or variations of this word) via one of the public channels on our internal communicator. As a penalty for breaking security aspects, the one who was caught in the act owes everyone in the company doughnuts and is obliged to bring them to the office. </p>
   </section>
 
   <section id = "donutCommands">
+    <h2>Commands</h2>
     <hr>
     <p>Sweet list can be modified via Slack. You can use commands listed below to do so.
     <p><strong>donuts_add</strong> - add donut to currently logged user. Remember to type your name & surename or @slack_name!</p>
@@ -35,10 +38,11 @@
     <p><strong>donuts_info</strong> - gets all active donuts</p>
     <p>Example: donuts_info</p>
     <p><strong>donuts_help</strong> - list of commands</p>
-    <p>Example: onuts_help</p>
+    <p>Example: donuts_help</p>
   </section>
 
   <section id = "donutsList">
+  <h2>Sweet List</h2>
     <hr>
     <table>
       <thead>
@@ -73,6 +77,7 @@
   </section>
 
   <section id = "addDonut">
+  <h2>Add Donut</h2>
     <hr>
     <%= form_for @conn, Routes.page_path(@conn, :add_donut), [as: :donut], fn f -> %>
       <%= label f, :Your_name %>
