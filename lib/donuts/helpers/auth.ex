@@ -24,7 +24,7 @@ defmodule Donuts.Helpers.Auth do
   def create_session(response) do
     token = Map.get(response, "access_token")
 
-    Donuts.Donuts.SlackCommunicator.get_all_users()
+    Donuts.RoundPies.SlackCommunicator.get_all_users()
     |> Donuts.Background.UserManager.assign_users()
 
     user_id =

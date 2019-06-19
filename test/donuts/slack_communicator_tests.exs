@@ -1,6 +1,6 @@
 defmodule Donuts.SlackCommunicatorTests do
   use Donuts.DataCase
-  alias Donuts.Donuts.SlackCommunicator
+  alias Donuts.RoundPies.SlackCommunicator
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
   describe "Testing info & help" do
@@ -344,6 +344,6 @@ defmodule Donuts.SlackCommunicatorTests do
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false
     }
-    |> Donuts.Donuts.create_donut()
+    |> Donuts.RoundPies.create_donut()
   end
 end

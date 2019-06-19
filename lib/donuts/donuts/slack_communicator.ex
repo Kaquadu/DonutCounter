@@ -1,10 +1,10 @@
-defmodule Donuts.Donuts.SlackCommunicator do
+defmodule Donuts.RoundPies.SlackCommunicator do
   @oauth_token Application.get_env(:donuts, :oauth_token)
   @donuts_channel Application.get_env(:donuts, :donuts_channel_id)
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.Accounts
-  alias Donuts.Donuts.Donut
+  alias Donuts.RoundPies.Donut
 
   # defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
 
@@ -59,7 +59,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
       when length(params) == 1 do
     [id] = params
-    delete_target = Donuts.Donuts.get_by_id(id)
+    delete_target = Donuts.RoundPies.get_by_id(id)
     process_rm_donut(delete_target)
   end
 
@@ -72,7 +72,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   def process_donut_command(["donuts_release" | params], sender_id, event_channel)
       when length(params) == 1 do
     [id] = params
-    release_target = Donuts.Donuts.get_by_id(id)
+    release_target = Donuts.RoundPies.get_by_id(id)
     process_release_donut(release_target)
   end
 
@@ -85,7 +85,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   def process_donut_command(["donuts_add_days" | params], sender_id, event_channel)
       when length(params) == 2 do
     [id, days] = params
-    donut_target = Donuts.Donuts.get_by_id(id)
+    donut_target = Donuts.RoundPies.get_by_id(id)
 
     try do
       int_days = String.to_integer(days)
@@ -159,7 +159,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false
     }
-    |> Donuts.Donuts.create_donut()
+    |> Donuts.RoundPies.create_donut()
 
     message = "Succesfuly added donut debt!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
@@ -179,7 +179,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false
     }
-    |> Donuts.Donuts.create_donut()
+    |> Donuts.RoundPies.create_donut()
 
     message = "Succesfuly added donut debt!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
@@ -196,7 +196,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   def process_rm_donut(delete_target) do
-    Donuts.Donuts.delete_donut(delete_target)
+    Donuts.RoundPies.delete_donut(delete_target)
     name = delete_target |> Map.get(:guilty)
     message = "Deleted donut debt of #{name}!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
@@ -208,7 +208,7 @@ defmodule Donuts.Donuts.SlackCommunicator do
   end
 
   def process_release_donut(release_target) do
-    case Donuts.Donuts.update_donut(release_target, %{:delivered => true}) do
+    case Donuts.RoundPies.update_donut(release_target, %{:delivered => true}) do
       {:ok, donut} ->
         message = "Released successfully!" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
@@ -259,14 +259,14 @@ defmodule Donuts.Donuts.SlackCommunicator do
   def process_donut_add_days(donut_target, days) when is_integer(days) do
     current_exp_date = donut_target |> Map.get(:expiration_date)
     f_exp_date = DateTime.add(current_exp_date, days * 24 * 60 * 60, :second)
-    Donuts.Donuts.update_donut(donut_target, %{:expiration_date => f_exp_date})
+    Donuts.RoundPies.update_donut(donut_target, %{:expiration_date => f_exp_date})
     message = "Changed date!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def get_active_donuts() do
     active_donuts =
-      Donuts.Donuts.get_all()
+      Donuts.RoundPies.get_all()
       |> Enum.reduce("Active donuts: \n", fn donut, message ->
         donut
         delivered = donut |> Map.get(:delivered)
