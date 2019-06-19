@@ -1,4 +1,4 @@
-defmodule Donuts.Donuts.Donut do
+defmodule Donuts.RoundPies.Donut do
   use Donuts.Schema
 
   schema "donuts" do

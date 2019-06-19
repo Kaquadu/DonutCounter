@@ -1,12 +1,12 @@
-defmodule Donuts.Donuts do
+defmodule Donuts.RoundPies do
   import Ecto.Query, warn: false
   alias Donuts.Repo
-  alias Donuts.Donuts.Donut
+  alias Donuts.RoundPies.Donut
   alias Donuts.Accounts
   alias Donuts.Sessions.Session
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
-  defdelegate handle_slack_event(event), to: Donuts.Donuts.SlackCommunicator
+  defdelegate handle_slack_event(event), to: Donuts.RoundPies.SlackCommunicator
 
   def get_all() do
     Repo.all(Donut)
