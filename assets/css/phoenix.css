@@ -79,3 +79,10 @@ body, form, ul, table {
     border-bottom: 0;
   }
 }
+
+section{
+  display: none;
+}
+section:target{
+  display: block;
+}
