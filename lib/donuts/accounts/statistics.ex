@@ -12,12 +12,13 @@ defmodule Donuts.Accounts.Statistics do
       expired_donuts = Donuts.Donuts.get_expired_donuts_by_id(user_id) |> length()
       active_donuts = Donuts.Donuts.get_active_donuts_by_id(user_id) |> length()
 
-      user_stats =
-        %{:username => user_name,
-          :total_donuts => total_donuts,
-          :delivered_donuts => delivered_donuts,
-          :expired_donuts => expired_donuts,
-          :active_donuts => active_donuts}
+      user_stats = %{
+        :username => user_name,
+        :total_donuts => total_donuts,
+        :delivered_donuts => delivered_donuts,
+        :expired_donuts => expired_donuts,
+        :active_donuts => active_donuts
+      }
 
       stats_list = [user_stats | stats_list]
     end)

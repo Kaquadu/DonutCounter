@@ -85,13 +85,14 @@ defmodule Donuts.SlackCommunicatorTests do
       {status, user} = add_test_user()
       user_slack_id = user |> Map.get(:slack_id)
 
-      result = SlackCommunicator.process_donut_command(
+      result =
+        SlackCommunicator.process_donut_command(
           ["donuts_add", "Kuba", "Kowalczykowski", "NextParam"],
           user_slack_id,
           "donuts"
         )
-      |> Map.get("message")
-      |> Map.get("text")
+        |> Map.get("message")
+        |> Map.get("text")
 
       assert result == "Wrong name format!"
     end
@@ -100,13 +101,14 @@ defmodule Donuts.SlackCommunicatorTests do
       {status, user} = add_test_user()
       user_slack_id = user |> Map.get(:slack_id)
 
-      result = SlackCommunicator.process_donut_command(
+      result =
+        SlackCommunicator.process_donut_command(
           ["donuts_add"],
           user_slack_id,
           "donuts"
         )
-      |> Map.get("message")
-      |> Map.get("text")
+        |> Map.get("message")
+        |> Map.get("text")
 
       assert result == "Wrong name format!"
     end
@@ -172,7 +174,11 @@ defmodule Donuts.SlackCommunicatorTests do
       donut_id = donut |> Map.get(:id)
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_release", donut_id], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(
+          ["donuts_release", donut_id],
+          user_slack_id,
+          "donuts"
+        )
         |> Map.get("message")
         |> Map.get("text")
 
@@ -188,7 +194,11 @@ defmodule Donuts.SlackCommunicatorTests do
       fake_id = "487e9bfa-1111-1111-1111-b07c6994babe"
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_release", fake_id], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(
+          ["donuts_release", fake_id],
+          user_slack_id,
+          "donuts"
+        )
         |> Map.get("message")
         |> Map.get("text")
 
@@ -217,7 +227,11 @@ defmodule Donuts.SlackCommunicatorTests do
       donut_id = donut |> Map.get(:id)
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_add_days", donut_id, "1"], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", donut_id, "1"],
+          user_slack_id,
+          "donuts"
+        )
         |> Map.get("message")
         |> Map.get("text")
 
@@ -233,7 +247,11 @@ defmodule Donuts.SlackCommunicatorTests do
       fake_id = "487e9bfa-1111-1111-1111-b07c6994babe"
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_add_days", fake_id, "1"], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", fake_id, "1"],
+          user_slack_id,
+          "donuts"
+        )
         |> Map.get("message")
         |> Map.get("text")
 
@@ -249,7 +267,11 @@ defmodule Donuts.SlackCommunicatorTests do
       fake_id = "487e9bfa-1111-1111-1111-b07c6994babe"
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_add_days", fake_id, "abc"], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", fake_id, "abc"],
+          user_slack_id,
+          "donuts"
+        )
         |> Map.get("message")
         |> Map.get("text")
 
@@ -264,7 +286,11 @@ defmodule Donuts.SlackCommunicatorTests do
       donut_id = donut |> Map.get(:id)
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_add_days", donut_id, "abc"], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", donut_id, "abc"],
+          user_slack_id,
+          "donuts"
+        )
         |> Map.get("message")
         |> Map.get("text")
 
@@ -279,7 +305,11 @@ defmodule Donuts.SlackCommunicatorTests do
       donut_id = donut |> Map.get(:id)
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_add_days", donut_id, "1", "random_param"], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", donut_id, "1", "random_param"],
+          user_slack_id,
+          "donuts"
+        )
         |> Map.get("message")
         |> Map.get("text")
 
