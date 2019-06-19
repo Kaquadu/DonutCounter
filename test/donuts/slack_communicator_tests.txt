@@ -11,19 +11,19 @@ Donuts_add:
 Donuts_rm:
     a) valid user id 
     b) invalid user id
-    c) no_params != 1
+    c) no. params != 1
 
 Donuts_release:
     a) valid user id 
     b) invalid user id
-    c) no_params != 1
+    c) no. params != 1
 
 Donuts_add_days:
     a) valid id & valid days
     b) invalid id & valid days
     c) invalid id & invalid days
     d) valid id & invalid days
-    e) no_params != 2
+    e) no. params != 2
 
 Donuts_info, Donuts_help
 
