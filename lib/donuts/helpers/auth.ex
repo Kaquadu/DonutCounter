@@ -14,7 +14,10 @@ defmodule Donuts.Helpers.Auth do
 
   def get_token_info(code) do
     redirect = @redirect_uri_auth |> URI.encode()
-    "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{code}&redirect_uri=#{redirect}"
+
+    "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{
+      code
+    }&redirect_uri=#{redirect}"
     |> HTTPHelper.get_body()
   end
 
@@ -30,7 +33,7 @@ defmodule Donuts.Helpers.Auth do
       |> Map.get("id")
       |> Accounts.get_by_slack_id()
       |> Map.get(:id)
+
     Sessions.create_session(%{:token => token, :user_id => user_id})
   end
-
 end

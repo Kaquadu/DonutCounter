@@ -10,12 +10,17 @@ defmodule Donuts.Sessions do
   end
 
   def check_active(token) do
-    DateTime.add(DateTime.utc_now, (-1)*@ttl, :second)
+    DateTime.add(DateTime.utc_now(), -1 * @ttl, :second)
     token_h = Bcrypt.Base.hash_password(token, @salt)
-    Repo.all(from s in Session,
-              where: s.inserted_at >
-              ^DateTime.add(DateTime.utc_now, (-1)*@ttl, :second),
-              where: s.token == ^token_h)
+
+    Repo.all(
+      from(s in Session,
+        where:
+          s.inserted_at >
+            ^DateTime.add(DateTime.utc_now(), -1 * @ttl, :second),
+        where: s.token == ^token_h
+      )
+    )
   end
 
   def create_session(attrs) do
