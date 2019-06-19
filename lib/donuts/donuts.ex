@@ -22,11 +22,7 @@ defmodule Donuts.Donuts do
     |> Repo.insert()
   end
 
-  def add_new_donut(conn, sender_name) do
-    if Accounts.get_by_real_name(sender_name) do
-      target_name = Session.get_current_user_name(conn)
-      target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
-
+  def add_new_donut(sender_name, target_name, target_id) do
       %{
         :sender => sender_name,
         :guilty => target_name,
@@ -36,9 +32,6 @@ defmodule Donuts.Donuts do
         :delivered => false
       }
       |> create_donut()
-    end
-
-    :ok
   end
 
   def delete_donut(%Donut{} = donut) do

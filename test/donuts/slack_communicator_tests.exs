@@ -3,7 +3,7 @@ defmodule Donuts.SlackCommunicatorTests do
   alias Donuts.Donuts.SlackCommunicator
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
-  describe "Testing commands in general:" do
+  describe "Testing info & help" do
     test "info cmd" do
       result =
         SlackCommunicator.process_donut_command(["donuts_info"], "UJY1A1VLM", "donuts")
@@ -20,8 +20,10 @@ defmodule Donuts.SlackCommunicatorTests do
 
       assert result == true
     end
+  end
 
-    test "add cmd via slack @" do
+  describe "Testing donuts_add:" do
+    test "valid via @" do
       {status, user} = add_test_user()
       user_slack_id = user |> Map.get(:slack_id)
 
@@ -37,7 +39,7 @@ defmodule Donuts.SlackCommunicatorTests do
       assert result == "Succesfuly added donut debt!"
     end
 
-    test "add cmd via fname & lname" do
+    test "valid via real name" do
       {status, user} = add_test_user()
       user_slack_id = user |> Map.get(:slack_id)
 
@@ -53,7 +55,67 @@ defmodule Donuts.SlackCommunicatorTests do
       assert result == "Succesfuly added donut debt!"
     end
 
-    test "rm cmd" do
+    test "invalid via @" do
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add", "MAMYBUGA"],
+          "UJZAC1VLM",
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! There is no such person!"
+    end
+
+    test "invalid via real name" do
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add", "ASDF", "XYZ"],
+          "UJZAC1VLM",
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! There is no such person!"
+    end
+
+    test "invalid more params" do
+      {status, user} = add_test_user()
+      user_slack_id = user |> Map.get(:slack_id)
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add", "Kuba", "Kowalczykowski", "NextParam"],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Wrong name format!"
+    end
+
+    test "invalid no params" do
+      {status, user} = add_test_user()
+      user_slack_id = user |> Map.get(:slack_id)
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add"],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Wrong name format!"
+    end
+  end
+
+  describe "Testing donuts_rm:" do
+    test "valid donut id" do
       {status, user} = add_test_user()
       user_id = user |> Map.get(:id)
       user_name = user |> Map.get(:name)
@@ -69,66 +131,194 @@ defmodule Donuts.SlackCommunicatorTests do
       assert result == "Deleted donut debt of #{user_name}!"
     end
 
-    test "release cmd" do
-      {status, user} = add_test_user()
-      user_id = user |> Map.get(:id)
-      {status, donut} = add_test_donut(user_id)
-      donut_id = donut |> Map.get(:id)
-
-      result =
-        SlackCommunicator.process_donut_command(["donuts_release", donut_id], user_id, "donuts")
-        |> Map.get("message")
-        |> Map.get("text")
-
-      assert result == "Released successfully!"
-    end
-
-    test "add cmd via fname & lname invalid" do
-      result =
-        SlackCommunicator.process_donut_command(
-          ["donuts_add", "ASDF", "XYZ"],
-          "UJZAC1VLM",
-          "donuts"
-        )
-        |> Map.get("message")
-        |> Map.get("text")
-
-      assert result == "Oops! There is no such person!"
-    end
-
-    test "add cmd via slack @ invalid" do
-      result =
-        SlackCommunicator.process_donut_command(
-          ["donuts_add", "MAMYBUGA"],
-          "UJZAC1VLM",
-          "donuts"
-        )
-        |> Map.get("message")
-        |> Map.get("text")
-
-      assert result == "Oops! There is no such person!"
-    end
-
-    test "rm cmd invalid" do
+    test "invalid donut id" do
       {status, user} = add_test_user()
       user_id = user |> Map.get(:id)
       user_name = user |> Map.get(:name)
       user_slack_id = user |> Map.get(:slack_id)
       {status, donut} = add_test_donut(user_id)
       donut_id = donut |> Map.get(:id)
-      user_id = user_id |> String.replace("1", "2")
-      user_id = user_id |> String.replace("3", "2")
-      user_id = user_id |> String.replace("4", "2")
+      fake_id = "487e9bfa-1111-1111-1111-b07c6994babe"
 
       result =
-        SlackCommunicator.process_donut_command(["donuts_rm", user_id], user_slack_id, "donuts")
+        SlackCommunicator.process_donut_command(["donuts_rm", fake_id], user_slack_id, "donuts")
         |> Map.get("message")
         |> Map.get("text")
 
       assert result == "Oops! Wrong ID of the donut!"
     end
 
-    test "random command" do
+    test "no. params != 1" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_name = user |> Map.get(:name)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+
+      result =
+        SlackCommunicator.process_donut_command(["donuts_rm"], user_slack_id, "donuts")
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Wrong command format!"
+    end
+  end
+
+  describe "Testing donuts_release:" do
+    test "valid donut id" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_release", donut_id],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Released successfully!"
+    end
+
+    test "invalid donut id" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+      fake_id = "487e9bfa-1111-1111-1111-b07c6994babe"
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_release", fake_id],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! Wrong ID of the donut!"
+    end
+
+    test "no. params != 1" do
+      {status, user} = add_test_user()
+      user_slack_id = user |> Map.get(:slack_id)
+
+      result =
+        SlackCommunicator.process_donut_command(["donuts_release"], user_slack_id, "donuts")
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Wrong command format!"
+    end
+  end
+
+  describe "Testing donuts_add_days" do
+    test "valid id & valid days" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", donut_id, "1"],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Changed date!"
+    end
+
+    test "invalid id & valid days" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+      fake_id = "487e9bfa-1111-1111-1111-b07c6994babe"
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", fake_id, "1"],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! Wrong format of the command!"
+    end
+
+    test "invalid id & invalid days" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+      fake_id = "487e9bfa-1111-1111-1111-b07c6994babe"
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", fake_id, "abc"],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! Wrong format of the command! Days must be a number!"
+    end
+
+    test "valid id & invalid days" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", donut_id, "abc"],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Oops! Wrong format of the command! Days must be a number!"
+    end
+
+    test "no params != 2" do
+      {status, user} = add_test_user()
+      user_id = user |> Map.get(:id)
+      user_slack_id = user |> Map.get(:slack_id)
+      {status, donut} = add_test_donut(user_id)
+      donut_id = donut |> Map.get(:id)
+
+      result =
+        SlackCommunicator.process_donut_command(
+          ["donuts_add_days", donut_id, "1", "random_param"],
+          user_slack_id,
+          "donuts"
+        )
+        |> Map.get("message")
+        |> Map.get("text")
+
+      assert result == "Wrong command format!"
+    end
+  end
+
+  describe "Other tests:" do
+    test "random text" do
       result =
         SlackCommunicator.process_donut_command(
           ["randomcmd", "MAMYBUGA"],
