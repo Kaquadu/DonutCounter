@@ -1,0 +1,8 @@
+<%= if @success do %>
+    <h2>Succesfuly added donut!</h2>
+    
+<%= else %>
+    <h2>Donut not added!</h2>
+
+<% end %>
+
