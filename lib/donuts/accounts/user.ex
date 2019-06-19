@@ -6,7 +6,7 @@ defmodule Donuts.Accounts.User do
     field(:name, :string)
     field(:is_admin, :boolean)
 
-    has_many(:donuts, Donuts.Donuts.Donut, on_delete: :delete_all)
+    has_many(:donuts, Donuts.RoundPies.Donut, on_delete: :delete_all)
     has_many(:sessions, Donuts.Sessions.Session, on_delete: :delete_all)
     timestamps()
   end

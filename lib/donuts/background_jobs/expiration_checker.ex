@@ -1,6 +1,6 @@
 defmodule Donuts.Background.ExpirationChecker do
   use GenServer
-  alias Donuts.Donuts.SlackCommunicator
+  alias Donuts.RoundPies.SlackCommunicator
   @minutes Application.get_env(:donuts, :donuts_checker_minutes)
 
   def start_link(_) do
@@ -16,7 +16,7 @@ defmodule Donuts.Background.ExpirationChecker do
   def handle_info(message, state) do
     case message do
       :check_donuts ->
-        expired_donuts = Donuts.Donuts.get_expired_donuts()
+        expired_donuts = Donuts.RoundPies.get_expired_donuts()
         communicate_expired_donuts(expired_donuts)
         schedule(@minutes * 60 * 1000)
         {:noreply, state}
