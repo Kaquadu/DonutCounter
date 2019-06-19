@@ -32,7 +32,6 @@ defmodule Donuts.Donuts do
         :delivered => false
       }
       |> create_donut()
-    end
   end
 
   def delete_donut(%Donut{} = donut) do
