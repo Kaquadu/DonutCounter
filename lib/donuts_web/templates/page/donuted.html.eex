@@ -1,8 +1,10 @@
 <%= if @success do %>
     <h2>Succesfuly added donut!</h2>
-    
+    <%= link "Login with Slack", to: DonutsWeb.Router.Helpers.page_path(@conn, :logged_in) %>
+    <hr>
 <%= else %>
     <h2>Donut not added!</h2>
-
+    <%= link "Login with Slack", to: DonutsWeb.Router.Helpers.page_path(@conn, :logged_in) %>
+    <hr>
 <% end %>
 
