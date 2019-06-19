@@ -29,16 +29,15 @@ defmodule DonutsWeb.PageController do
 
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
     sender = Donuts.Accounts.get_by_real_name(sender_name) |> IO.inspect
-    target_name = Session.get_current_user_name(conn)
-    target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
-
-    {status, donut} = Donuts.Donuts.add_new_donut(sender_name, target_name, target_id) |> IO.inspect
-    if status == :ok do
-      conn |> redirect(to: Routes.page_path(conn, :logged_in))
-    else
+    if sender == nil or sender == [] do
       conn
-      |> put_flash(:info, "Incorrect name.")
-      |> redirect(to: Routes.page_path(conn, :logged_in))
+        |> put_flash(:info, "Incorrect name.")
+        |> redirect(to: Routes.page_path(conn, :logged_in))
+    else 
+      target_name = Session.get_current_user_name(conn)
+      target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
+      {status, donut} = Donuts.Donuts.add_new_donut(sender_name, target_name, target_id) |> IO.inspect
+      conn |> redirect(to: Routes.page_path(conn, :logged_in))
     end
   end
 end
