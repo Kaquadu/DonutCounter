@@ -28,10 +28,12 @@ defmodule DonutsWeb.PageController do
   end
 
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
-    Donuts.Donuts.add_new_donut(conn, sender_name)
-    conn |> redirect(to: Routes.page_path(conn, :logged_in))
-    # conn
-    #   |> put_flash(:info, "Incorrect name.")
-    #   |> redirect(to: Routes.page_path(conn, :logged_in))
+    if Donuts.Donuts.add_new_donut(conn, sender_name) = {:ok, _} do
+      conn |> redirect(to: Routes.page_path(conn, :logged_in))
+    else
+      conn
+      |> put_flash(:info, "Incorrect name.")
+      |> redirect(to: Routes.page_path(conn, :logged_in))
+    end
   end
 end
