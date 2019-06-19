@@ -8,7 +8,12 @@ defmodule DonutsWeb.PageController do
   plug(DonutsWeb.Plugs.LoginStatus when action in [:logged_in, :add_donut])
 
   def index(conn, _params) do
-    render(conn, "index.html")
+    if Donuts.Sessions.Session.logged_in?(conn) != [] and Donuts.Sessions.Session.logged_in?(conn) != nil do
+      conn
+        |> redirect(to: "/loggedin")
+    else
+      render(conn, "index.html")
+    end
   end
 
   def logged_in(conn, _params) do
@@ -28,10 +33,16 @@ defmodule DonutsWeb.PageController do
   end
 
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
-    Donuts.Donuts.add_new_donut(conn, sender_name)
-    conn |> redirect(to: Routes.page_path(conn, :logged_in))
-    # conn
-    #   |> put_flash(:info, "Incorrect name.")
-    #   |> redirect(to: Routes.page_path(conn, :logged_in))
+    sender = Donuts.Accounts.get_by_real_name(sender_name)
+    if sender == nil or sender == [] do
+      conn
+        |> put_flash(:info, "Incorrect name.")
+        |> render("donuted.html", success: false)
+    else 
+      target_name = Session.get_current_user_name(conn)
+      target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
+      {status, donut} = Donuts.Donuts.add_new_donut(sender_name, target_name, target_id)
+      conn |> render("donuted.html", success: true)
+    end
   end
 end

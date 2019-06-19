@@ -1,0 +1,29 @@
+Donuts_add:
+    a) valid
+    - via @
+    - via real name
+    b) invalid
+    - via invalid @
+    - via invalid real name
+    - more params
+    - no params
+
+Donuts_rm:
+    a) valid user id 
+    b) invalid user id
+    c) no. params != 1
+
+Donuts_release:
+    a) valid user id 
+    b) invalid user id
+    c) no. params != 1
+
+Donuts_add_days:
+    a) valid id & valid days
+    b) invalid id & valid days
+    c) invalid id & invalid days
+    d) valid id & invalid days
+    e) no. params != 2
+
+Donuts_info, Donuts_help
+

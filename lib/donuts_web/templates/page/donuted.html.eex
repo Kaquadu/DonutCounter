@@ -1,0 +1,10 @@
+<%= if @success do %>
+    <h2>Succesfuly added donut!</h2>
+    <%= link "Go back!", to: DonutsWeb.Router.Helpers.page_path(@conn, :index) %>
+    <hr>
+<%= else %>
+    <h2>Donut not added!</h2>
+    <%= link "Go back!", to: DonutsWeb.Router.Helpers.page_path(@conn, :index) %>
+    <hr>
+<% end %>
+
