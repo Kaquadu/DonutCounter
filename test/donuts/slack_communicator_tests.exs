@@ -3,7 +3,7 @@ defmodule Donuts.SlackCommunicatorTests do
   alias Donuts.Donuts.SlackCommunicator
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
-  describe "Testing commands in general:" do
+  describe "Testing info & help" do
     test "info cmd" do
       result =
         SlackCommunicator.process_donut_command(["donuts_info"], "UJY1A1VLM", "donuts")
@@ -20,8 +20,10 @@ defmodule Donuts.SlackCommunicatorTests do
 
       assert result == true
     end
+  end
 
-    test "add cmd via slack @" do
+  describe "Testing donuts_add:" do
+    test "valid via @" do
       {status, user} = add_test_user()
       user_slack_id = user |> Map.get(:slack_id)
 
@@ -37,7 +39,7 @@ defmodule Donuts.SlackCommunicatorTests do
       assert result == "Succesfuly added donut debt!"
     end
 
-    test "add cmd via fname & lname" do
+    test "valid via real name" do
       {status, user} = add_test_user()
       user_slack_id = user |> Map.get(:slack_id)
 
@@ -52,7 +54,9 @@ defmodule Donuts.SlackCommunicatorTests do
 
       assert result == "Succesfuly added donut debt!"
     end
+  end
 
+  describe "Other tests" do
     test "rm cmd" do
       {status, user} = add_test_user()
       user_id = user |> Map.get(:id)
