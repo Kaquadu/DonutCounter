@@ -8,7 +8,12 @@ defmodule DonutsWeb.PageController do
   plug(DonutsWeb.Plugs.LoginStatus when action in [:logged_in, :add_donut])
 
   def index(conn, _params) do
-    render(conn, "index.html")
+    if Donuts.Sessions.Session.logged_in?(conn) != [] and Donuts.Sessions.Session.logged_in?(conn) != nil do
+      conn
+        |> redirect(to: "/loggedin")
+    else
+      render(conn, "index.html")
+    end
   end
 
   def logged_in(conn, _params) do
