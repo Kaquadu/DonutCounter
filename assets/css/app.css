@@ -63,10 +63,3 @@ table th {
   color: white;
 }
 
-
-section{
-  display: none;
-}
-section:target{
-  display: block;
-}
