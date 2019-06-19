@@ -1,9 +1,9 @@
 /* This file is for your main application css. */
 
-section{
+#section{
     display: none;
 }
-section:target{
+#section:target{
     display: block;
 }
 
