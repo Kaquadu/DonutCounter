@@ -1,6 +1,7 @@
 defmodule Donuts.Sessions do
   import Ecto.Query, warn: false
   alias Donuts.Accounts
+  alias Donuts.Auth
   alias Donuts.Repo
   alias Donuts.Sessions.Session
   @ttl Application.get_env(:donuts, :ttl_seconds)
