@@ -86,11 +86,12 @@ defmodule Donuts.Donuts.SlackCommunicator do
       when length(params) == 2 do
     [id, days] = params
     donut_target = Donuts.Donuts.get_by_id(id)
+
     try do
       int_days = String.to_integer(days)
       process_donut_add_days(donut_target, int_days)
     rescue
-      ArgumentError -> 
+      ArgumentError ->
         message = "Oops! Wrong format of the command! Days must be a number!" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
     end
