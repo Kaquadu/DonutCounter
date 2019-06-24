@@ -20,6 +20,7 @@ defmodule DonutsWeb.Router do
     get("/sign-in", SessionController, :sign_in)
     get("/auth", SessionController, :auth)
     get("/loggedin", PageController, :logged_in)
+    get("/user", PageController, :user_view)
     post("/add-donut", PageController, :add_donut)
   end
 
