@@ -38,15 +38,15 @@ defmodule Donuts.RoundPies do
     Repo.delete(donut)
   end
 
-  def get_all_donuts_by_id(id) do
+  def get_all_donuts_number(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id
       )
-    )
+    ) |> length()
   end
 
-  def get_delivered_donuts_by_id(id) do
+  def get_delivered_donuts_number(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
@@ -55,7 +55,7 @@ defmodule Donuts.RoundPies do
     )
   end
 
-  def get_expired_donuts_by_id(id) do
+  def get_expired_donuts_number(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
@@ -65,7 +65,7 @@ defmodule Donuts.RoundPies do
     )
   end
 
-  def get_active_donuts_by_id(id) do
+  def get_active_donuts_number(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
