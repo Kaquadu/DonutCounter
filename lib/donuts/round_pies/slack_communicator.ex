@@ -148,7 +148,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
 
   def add_donut({nil, sender_by_sid}, target_id) do
     %{
-      :sender => sender_by_sid[:name],
+      :sender => sender_by_sid.name,
       :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
       :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       :expiration_date =>
@@ -163,7 +163,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
 
   def add_donut({sender_by_rn, nil}, target_id) do
     %{
-      :sender => sender_by_rn[:name],
+      :sender => sender_by_rn.name,
       :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
       :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       :expiration_date =>
@@ -188,7 +188,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
 
   def process_rm_donut(delete_target) do
     RoundPies.delete_donut(delete_target)
-    name = delete_target[:guilty]
+    name = delete_target.guilty
     message = "Deleted donut debt of #{name}!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
@@ -249,7 +249,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
 
   def process_donut_add_days(donut_target, days) when is_integer(days) do
     f_exp_date = 
-      donut_target[:expiration_date]
+      donut_target.expiration_date
       |> DateTime.add(days * 24 * 60 * 60, :second)
     RoundPies.update_donut(donut_target, %{:expiration_date => f_exp_date})
     message = "Changed date!" |> URI.encode()
@@ -261,19 +261,19 @@ defmodule Donuts.RoundPies.SlackCommunicator do
       RoundPies.get_all()
       |> Enum.reduce("Active donuts: \n", fn donut, message ->
         donut
-        delivered = donut[:delivered]
+        delivered = donut.delivered
 
         if delivered == false do
-          message = "#{message} Guilty: #{donut[:guilty]} | "
-          message = "#{message} Sender: #{donut[:sender]} | "
+          message = "#{message} Guilty: #{donut.guilty} | "
+          message = "#{message} Sender: #{donut.sender} | "
 
           exp_date =
-            donut[:expiration_date]
+            donut.expiration_date
             |> DateTime.to_date()
             |> Date.to_string()
 
           message = "#{message} Expiration date: #{exp_date} | "
-          message = "#{message} ID: #{donut[:id]} \n"
+          message = "#{message} ID: #{donut.id} \n"
         else
           message
         end
