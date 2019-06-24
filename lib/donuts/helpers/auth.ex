@@ -9,7 +9,7 @@ defmodule Donuts.Helpers.Auth do
   alias Donuts.Accounts
 
   def get_code(params) do
-    Map.get(params, "code")
+    params["code"]
   end
 
   def get_token_info(code) do
@@ -22,15 +22,13 @@ defmodule Donuts.Helpers.Auth do
   end
 
   def create_session(response) do
-    token = Map.get(response, "access_token")
+    token = response["access_token"]
 
     Donuts.RoundPies.SlackCommunicator.get_all_users()
     |> Donuts.Background.UserManager.assign_users()
 
     user_id =
-      response
-      |> Map.get("user")
-      |> Map.get("id")
+      response["user"]["id"]
       |> Accounts.get_by_slack_id()
       |> Map.get(:id)
 

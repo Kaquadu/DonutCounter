@@ -1,25 +1,18 @@
 defmodule Donuts.Accounts.Statistics do
   alias Donuts.Accounts
   alias Donuts.Accounts.User
+  alias Donuts.RoundPies
 
   def get_statistics() do
     Accounts.get_all()
     |> Enum.reduce([], fn user, stats_list ->
-      user_id = user |> Map.get(:id)
-      user_name = user |> Map.get(:name)
-      total_donuts = Donuts.RoundPies.get_all_donuts_by_id(user_id) |> length()
-      delivered_donuts = Donuts.RoundPies.get_delivered_donuts_by_id(user_id) |> length()
-      expired_donuts = Donuts.RoundPies.get_expired_donuts_by_id(user_id) |> length()
-      active_donuts = Donuts.RoundPies.get_active_donuts_by_id(user_id) |> length()
-
       user_stats = %{
-        :username => user_name,
-        :total_donuts => total_donuts,
-        :delivered_donuts => delivered_donuts,
-        :expired_donuts => expired_donuts,
-        :active_donuts => active_donuts
+        :username => user[:name],
+        :total_donuts => RoundPies.get_all_donuts_by_id(user[:id]) |> length(),
+        :delivered_donuts => RoundPies.get_delivered_donuts_by_id(user[:id]) |> length(),
+        :expired_donuts => RoundPies.get_expired_donuts_by_id(user[:id]) |> length(),
+        :active_donuts => RoundPies.get_active_donuts_by_id(user[:id]) |> length()
       }
-
       stats_list = [user_stats | stats_list]
     end)
   end

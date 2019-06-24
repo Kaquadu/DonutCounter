@@ -14,7 +14,7 @@ defmodule Donuts.Sessions.Session do
   end
 
   def changeset(session, attrs) do
-    new_token = attrs |> Map.get(:token) |> Bcrypt.Base.hash_password(@salt)
+    new_token = attrs[:token] |> Bcrypt.Base.hash_password(@salt)
     attrs = attrs |> Map.put(:token, new_token)
 
     session
