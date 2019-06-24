@@ -16,7 +16,7 @@
     <div class="container">
       <header class="header">
         <nav role="navigation">
-          <%= if Donuts.Sessions.Session.logged_in?(@conn) != [] and Donuts.Sessions.Session.logged_in?(@conn) != nil do %>
+          <%= if Donuts.Sessions.logged_in?(@conn) == true do %>
             <ul class="nav nav-pills pull-right"> You are logged as: <br>
             <%= Donuts.Sessions.Session.get_current_user_name(@conn) %>
             </ul>
