@@ -5,6 +5,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.Accounts
   alias Donuts.RoundPies.Donut
+  alias Donuts.RoundPies
 
   # defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
 
@@ -146,40 +147,30 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   end
 
   def add_donut({nil, sender_by_sid}, target_id) do
-    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
-    target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
-
-    sender_list_name = sender_by_sid |> Map.get(:name)
-
     %{
-      :sender => sender_list_name,
-      :guilty => target_name,
-      :user_id => target_id,
+      :sender => sender_by_sid[:name],
+      :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       :expiration_date =>
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false
     }
-    |> Donuts.RoundPies.create_donut()
+    |> RoundPies.create_donut()
 
     message = "Succesfuly added donut debt!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def add_donut({sender_by_rn, nil}, target_id) do
-    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
-    target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
-
-    sender_list_name = sender_by_rn |> Map.get(:name)
-
     %{
-      :sender => sender_list_name,
-      :guilty => target_name,
-      :user_id => target_id,
+      :sender => sender_by_rn[:name],
+      :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       :expiration_date =>
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false
     }
-    |> Donuts.RoundPies.create_donut()
+    |> RoundPies.create_donut()
 
     message = "Succesfuly added donut debt!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
@@ -196,8 +187,8 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   end
 
   def process_rm_donut(delete_target) do
-    Donuts.RoundPies.delete_donut(delete_target)
-    name = delete_target |> Map.get(:guilty)
+    RoundPies.delete_donut(delete_target)
+    name = delete_target[:guilty]
     message = "Deleted donut debt of #{name}!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
@@ -208,7 +199,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   end
 
   def process_release_donut(release_target) do
-    case Donuts.RoundPies.update_donut(release_target, %{:delivered => true}) do
+    case RoundPies.update_donut(release_target, %{:delivered => true}) do
       {:ok, donut} ->
         message = "Released successfully!" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
@@ -257,31 +248,32 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   end
 
   def process_donut_add_days(donut_target, days) when is_integer(days) do
-    current_exp_date = donut_target |> Map.get(:expiration_date)
-    f_exp_date = DateTime.add(current_exp_date, days * 24 * 60 * 60, :second)
-    Donuts.RoundPies.update_donut(donut_target, %{:expiration_date => f_exp_date})
+    f_exp_date = 
+      donut_target[:expiration_date]
+      |> DateTime.add(days * 24 * 60 * 60, :second)
+    RoundPies.update_donut(donut_target, %{:expiration_date => f_exp_date})
     message = "Changed date!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def get_active_donuts() do
     active_donuts =
-      Donuts.RoundPies.get_all()
+      RoundPies.get_all()
       |> Enum.reduce("Active donuts: \n", fn donut, message ->
         donut
-        delivered = donut |> Map.get(:delivered)
+        delivered = donut[:delivered]
 
         if delivered == false do
-          message = "#{message} Guilty: #{Map.get(donut, :guilty)} | "
-          message = "#{message} Sender: #{Map.get(donut, :sender)} | "
+          message = "#{message} Guilty: #{donut[:guilty]} | "
+          message = "#{message} Sender: #{donut[:sender]} | "
 
           exp_date =
-            Map.get(donut, :expiration_date)
+            donut[:expiration_date]
             |> DateTime.to_date()
             |> Date.to_string()
 
           message = "#{message} Expiration date: #{exp_date} | "
-          message = "#{message} ID: #{Map.get(donut, :id)} \n"
+          message = "#{message} ID: #{donut[:id]} \n"
         else
           message
         end
