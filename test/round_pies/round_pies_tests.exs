@@ -6,7 +6,7 @@ defmodule Donuts.RoundPiesTests do
     describe "Testing data services" do
         test "add donut via web" do
             {status, user} = add_test_user()
-            {status, donut} = RoundPies.add_new_donut(user[:name], user[:name], user[:id])
+            {status, donut} = RoundPies.add_new_donut(user.name, user.name, user.id)
             assert status == :ok
         end
     end
