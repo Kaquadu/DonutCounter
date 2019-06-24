@@ -26,7 +26,7 @@ defmodule Donuts.Accounts do
   end
 
   def get_statistics() do
-    Accounts.get_all()
+    get_all()
     |> Enum.reduce([], fn user, stats_list ->
       user_stats = %{
         :username => user.name,
