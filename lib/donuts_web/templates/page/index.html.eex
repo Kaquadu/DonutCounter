@@ -4,8 +4,9 @@
     <a class = "href-button" href = "#donutCommands">Commands</a>
     <a class = "href-button" href = "#donutsList">Sweet list</a>
     <a class = "href-button" href = "#addDonut">Add donut</a>
-    <hr>
   </div>
+
+  <hr>
 
   <section id = "aboutDonuts">
     <h2>About Donuts</h2>
