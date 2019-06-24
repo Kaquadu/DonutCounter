@@ -23,15 +23,15 @@ defmodule Donuts.RoundPies do
   end
 
   def add_new_donut(sender_name, target_name, target_id) do
-      %{
-        :sender => sender_name,
-        :guilty => target_name,
-        :user_id => target_id,
-        :expiration_date =>
-          DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-        :delivered => false
-      }
-      |> create_donut()
+    %{
+      :sender => sender_name,
+      :guilty => target_name,
+      :user_id => target_id,
+      :expiration_date =>
+        DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+      :delivered => false
+    }
+    |> create_donut()
   end
 
   def delete_donut(%Donut{} = donut) do
@@ -43,7 +43,8 @@ defmodule Donuts.RoundPies do
       from(d in Donut,
         where: d.user_id == ^id
       )
-    ) |> length()
+    )
+    |> length()
   end
 
   def get_delivered_donuts_number(id) do
@@ -52,7 +53,8 @@ defmodule Donuts.RoundPies do
         where: d.user_id == ^id,
         where: d.delivered == true
       )
-    ) |> length()
+    )
+    |> length()
   end
 
   def get_expired_donuts_number(id) do
@@ -62,7 +64,8 @@ defmodule Donuts.RoundPies do
         where: d.delivered == false,
         where: d.expiration_date < ^DateTime.utc_now()
       )
-    ) |> length()
+    )
+    |> length()
   end
 
   def get_active_donuts_number(id) do
@@ -72,7 +75,8 @@ defmodule Donuts.RoundPies do
         where: d.delivered == false,
         where: d.expiration_date > ^DateTime.utc_now()
       )
-    ) |> length()
+    )
+    |> length()
   end
 
   def get_expired_donuts() do

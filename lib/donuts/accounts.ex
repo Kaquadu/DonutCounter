@@ -36,6 +36,7 @@ defmodule Donuts.Accounts do
         :expired_donuts => RoundPies.get_expired_donuts_number(user.id),
         :active_donuts => RoundPies.get_active_donuts_number(user.id)
       }
+
       stats_list = [user_stats | stats_list]
     end)
   end

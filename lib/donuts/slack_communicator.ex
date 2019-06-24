@@ -248,9 +248,10 @@ defmodule Donuts.SlackCommunicator do
   end
 
   def process_donut_add_days(donut_target, days) when is_integer(days) do
-    f_exp_date = 
+    f_exp_date =
       donut_target.expiration_date
       |> DateTime.add(days * 24 * 60 * 60, :second)
+
     RoundPies.update_donut(donut_target, %{:expiration_date => f_exp_date})
     message = "Changed date!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
