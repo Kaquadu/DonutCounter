@@ -9,8 +9,8 @@ use Mix.Config
 config :donuts,
   ecto_repos: [Donuts.Repo],
   redirect_uri_auth: "https://sleepy-taiga-28784.herokuapp.com/auth",
-  redirect_uri_loggedin: "https://sleepy-taiga-28784.herokuapp.com/loggedin",
-  ttl_seconds: 1800,
+  redirect_uri_loggedin: "https://sleepy-taiga-28784.herokuapp.com/",
+  ttl_seconds: 300,
   donuts_channel_id: "donuts",
   donuts_expiration_days: 30,
   donuts_checker_minutes: 180
