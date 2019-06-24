@@ -55,6 +55,6 @@ defmodule Donuts.Sessions do
       |> Accounts.get_by_slack_id()
       |> Map.get(:id)
 
-    Sessions.create_session(%{:token => token, :user_id => user_id})
+    create_session(%{:token => token, :user_id => user_id})
   end
 end
