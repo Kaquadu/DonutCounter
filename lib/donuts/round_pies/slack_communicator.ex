@@ -280,3 +280,18 @@ defmodule Donuts.RoundPies.SlackCommunicator do
       end)
   end
 end
+
+defmodule Donuts.RoundPies.SlackCommunicator.Auth do
+  def get_code(params) do
+    params["code"]
+  end
+
+  def get_token_info(code) do
+    redirect = @redirect_uri_auth |> URI.encode()
+
+    "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{
+      code
+    }&redirect_uri=#{redirect}"
+    |> HTTPHelper.get_body()
+  end
+end
