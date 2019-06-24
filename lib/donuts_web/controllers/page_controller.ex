@@ -23,8 +23,7 @@ defmodule DonutsWeb.PageController do
 
   # only change in router when you have to verify your app in slack
   def event_test(conn, params) do
-    challange = Map.get(params, "challenge")
-    conn |> send_resp(200, challange)
+    conn |> send_resp(200, params["challange"])
   end
 
   def event_handler(conn, %{"event" => event}) do
