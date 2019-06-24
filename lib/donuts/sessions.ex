@@ -61,8 +61,10 @@ defmodule Donuts.Sessions do
 
   def logged_in?(conn) do
     session_token = conn |> Conn.get_session(:token)
+
     if session_token do
       active_tks = check_token_activity(session_token)
+
       case active_tks do
         [] -> false
         nil -> false
@@ -78,8 +80,12 @@ defmodule Donuts.Sessions do
     active_token_list = check_token_activity(session_token)
 
     case active_token_list do
-      [] -> "Not active"
-      nil -> "Not active"
+      [] ->
+        "Not active"
+
+      nil ->
+        "Not active"
+
       _ ->
         active_token_list
         |> List.first()

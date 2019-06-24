@@ -21,5 +21,4 @@ defmodule Donuts.Sessions.Session do
     |> cast(attrs, [:token, :user_id])
     |> validate_required([:token, :user_id])
   end
-  
 end
