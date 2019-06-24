@@ -1,9 +1,9 @@
 <div class = "page-container">
   <div class = "menu-container">
-    <a id = "href-button" href = "#aboutDonuts">About</a>
-    <a id = "href-button" href = "#donutCommands">Commands</a>
-    <a id = "href-button" href = "#donutsList">Sweet list</a>
-    <a id = "href-button" href = "#addDonut">Add donut</a>
+    <a class = "href-button" href = "#aboutDonuts">About</a>
+    <a class = "href-button" href = "#donutCommands">Commands</a>
+    <a class = "href-button" href = "#donutsList">Sweet list</a>
+    <a class = "href-button" href = "#addDonut">Add donut</a>
     <hr>
   </div>
 
