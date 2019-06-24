@@ -3,6 +3,7 @@ defmodule DonutsWeb.PageController do
   alias Donuts.Sessions
   alias Donuts.Sessions.Session
   alias Donuts.Accounts
+  alias Donuts.Account.User
   alias Donuts.Helpers.Auth
   alias Donuts.Helpers.HTTPHelper
 
@@ -11,6 +12,10 @@ defmodule DonutsWeb.PageController do
   def index(conn, _params) do
     user_stats = Accounts.get_statistics()
     render(conn, "index.html", stats: user_stats)
+  end
+
+  def user_view(conn, user) do
+    render(conn, "user_view.html", user: user)
   end
 
   # only change in router when you have to verify your app in slack
