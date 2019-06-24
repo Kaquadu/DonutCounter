@@ -1,6 +1,6 @@
 defmodule Donuts.SlackCommunicatorTests do
   use Donuts.DataCase
-  alias Donuts.RoundPies.SlackCommunicator
+  alias Donuts.SlackCommunicator
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
   describe "Testing info & help" do
