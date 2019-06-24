@@ -24,11 +24,12 @@ defmodule DonutsWeb.PageController do
 
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
     sender = Donuts.Accounts.get_by_real_name(sender_name)
+
     if sender == nil or sender == [] do
       conn
-        |> put_flash(:info, "Incorrect name.")
-        |> render("donuted.html", success: false)
-    else 
+      |> put_flash(:info, "Incorrect name.")
+      |> render("donuted.html", success: false)
+    else
       target_name = Session.get_current_user_name(conn)
       target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
       {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
