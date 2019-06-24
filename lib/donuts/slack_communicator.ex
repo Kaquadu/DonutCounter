@@ -2,10 +2,6 @@ defmodule Donuts.SlackCommunicator do
   @oauth_token Application.get_env(:donuts, :oauth_token)
   @donuts_channel Application.get_env(:donuts, :donuts_channel_id)
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
-  @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
-  @client_id Application.get_env(:donuts, :client_id)
-  @client_secret Application.get_env(:donuts, :client_secret)
-  alias Donuts.Helpers.HTTPHelper
   alias Donuts.Accounts
   alias Donuts.RoundPies.Donut
   alias Donuts.RoundPies
@@ -285,12 +281,17 @@ defmodule Donuts.SlackCommunicator do
 end
 
 defmodule Donuts.SlackCommunicator.Auth do
+  alias Donuts.Helpers.HTTPHelper
+  @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
+  @client_id Application.get_env(:donuts, :client_id)
+  @client_secret Application.get_env(:donuts, :client_secret)
+
   def get_code(params) do
     params["code"]
   end
 
   def get_token_info(code) do
-    redirect = @redirect_uri_auth |> IO.inspect |> URI.encode()
+    redirect = @redirect_uri_auth |> URI.encode()
 
     "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{
       code
