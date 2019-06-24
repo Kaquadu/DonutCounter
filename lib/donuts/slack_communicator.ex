@@ -290,7 +290,7 @@ defmodule Donuts.SlackCommunicator.Auth do
   end
 
   def get_token_info(code) do
-    redirect = @redirect_uri_auth |> URI.encode()
+    redirect = @redirect_uri_auth |> IO.inspect |> URI.encode()
 
     "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{
       code
