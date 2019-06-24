@@ -9,7 +9,7 @@ defmodule DonutsWeb.Plugs.LoginStatus do
     active_token =
       conn
       |> get_session(:token)
-      |> Sessions.check_active()
+      |> Sessions.check_token_activity()
 
     if active_token != [] do
       conn
