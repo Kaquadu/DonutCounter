@@ -1,5 +1,6 @@
 defmodule DonutsWeb.PageController do
   use DonutsWeb, :controller
+  alias Donuts.Sessions
   alias Donuts.Sessions.Session
   alias Donuts.Accounts
   alias Donuts.Helpers.Auth
