@@ -1,5 +1,6 @@
 defmodule Donuts.Sessions do
   import Ecto.Query, warn: false
+  alias Plug.Conn
   alias Donuts.Accounts
   alias Donuts.Helpers.Auth
   alias Donuts.Repo
