@@ -5,7 +5,7 @@ defmodule DonutsWeb.SessionController do
   alias Donuts.Sessions
   alias Donuts.Sessions.Session
   alias Donuts.Accounts
-  alias Donuts.RoundPies.SlackCommunicator.Auth
+  alias Donuts.SlackCommunicator.Auth
   alias Donuts.Helpers.HTTPHelper
 
   def sign_in(conn, _params) do

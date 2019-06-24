@@ -47,7 +47,7 @@ defmodule Donuts.Sessions do
   def make_session(response) do
     token = response["access_token"]
 
-    Donuts.RoundPies.SlackCommunicator.get_all_users()
+    Donuts.SlackCommunicator.get_all_users()
     |> Donuts.Background.UserManager.assign_users()
 
     user_id =

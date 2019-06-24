@@ -1,6 +1,6 @@
 defmodule Donuts.Background.ExpirationChecker do
   use GenServer
-  alias Donuts.RoundPies.SlackCommunicator
+  alias Donuts.SlackCommunicator
   @minutes Application.get_env(:donuts, :donuts_checker_minutes)
 
   def start_link(_) do

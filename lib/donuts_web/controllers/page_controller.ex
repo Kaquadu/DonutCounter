@@ -17,7 +17,7 @@ defmodule DonutsWeb.PageController do
   end
 
   def logged_in(conn, _params) do
-    user_stats = Donuts.Accounts.Statistics.get_statistics()
+    user_stats = Accounts.get_statistics()
     render(conn, "logged_in.html", stats: user_stats)
   end
 

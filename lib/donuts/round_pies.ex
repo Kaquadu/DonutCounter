@@ -6,7 +6,7 @@ defmodule Donuts.RoundPies do
   alias Donuts.Sessions.Session
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
-  defdelegate handle_slack_event(event), to: Donuts.RoundPies.SlackCommunicator
+  defdelegate handle_slack_event(event), to: Donuts.SlackCommunicator
 
   def get_all() do
     Repo.all(Donut)
