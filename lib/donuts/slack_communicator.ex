@@ -2,6 +2,7 @@ defmodule Donuts.SlackCommunicator do
   @oauth_token Application.get_env(:donuts, :oauth_token)
   @donuts_channel Application.get_env(:donuts, :donuts_channel_id)
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
+  @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.Accounts
   alias Donuts.RoundPies.Donut
