@@ -52,7 +52,7 @@ defmodule Donuts.RoundPies do
         where: d.user_id == ^id,
         where: d.delivered == true
       )
-    )
+    ) |> length()
   end
 
   def get_expired_donuts_number(id) do
@@ -62,7 +62,7 @@ defmodule Donuts.RoundPies do
         where: d.delivered == false,
         where: d.expiration_date < ^DateTime.utc_now()
       )
-    )
+    ) |> length()
   end
 
   def get_active_donuts_number(id) do
@@ -72,7 +72,7 @@ defmodule Donuts.RoundPies do
         where: d.delivered == false,
         where: d.expiration_date > ^DateTime.utc_now()
       )
-    )
+    ) |> length()
   end
 
   def get_expired_donuts() do
