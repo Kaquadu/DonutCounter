@@ -15,7 +15,7 @@ defmodule Donuts.Sessions do
     DateTime.add(DateTime.utc_now(), -1 * @ttl, :second)
     token_h = Bcrypt.Base.hash_password(token, @salt)
 
-    Repo.all(
+    active_tks = Repo.all(
       from(s in Session,
         where:
           s.inserted_at >
@@ -23,6 +23,12 @@ defmodule Donuts.Sessions do
         where: s.token == ^token_h
       )
     )
+
+    case active_tks do
+      [] -> false
+      nil -> false
+      _ -> true
+    end
   end
 
   def create_session(attrs) do
@@ -56,5 +62,22 @@ defmodule Donuts.Sessions do
       |> Map.get(:id)
 
     create_session(%{:token => token, :user_id => user_id})
+  end
+
+  def logged_in?(conn) do
+    session_token = conn |> Conn.get_session(:token)
+    if session_token, do: check_active(session_token)
+  end
+
+  def get_current_user_name(conn) do
+    list = logged_in?(conn)
+
+    if list != [] and list != nil do
+      list
+      |> List.first()
+      |> Map.get(:user_id)
+      |> Accounts.get_by_id()
+      |> Map.get(:name)
+    end
   end
 end
