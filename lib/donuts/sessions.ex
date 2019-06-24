@@ -68,6 +68,8 @@ defmodule Donuts.Sessions do
         nil -> false
         _ -> true
       end
+    else
+      false
     end
   end
 
@@ -75,14 +77,15 @@ defmodule Donuts.Sessions do
     session_token = conn |> Conn.get_session(:token)
     active_token_list = check_token_activity(session_token)
 
-    if active_token_list != [] and active_token_list != nil do
-      active_token_list
-      |> List.first()
-      |> Map.get(:user_id)
-      |> Accounts.get_by_id()
-      |> Map.get(:name)
-    else
-      "Not active"
+    case active_token_list do
+      [] -> "Not active"
+      nil -> "Not active"
+      _ ->
+        active_token_list
+        |> List.first()
+        |> Map.get(:user_id)
+        |> Accounts.get_by_id()
+        |> Map.get(:name)
     end
   end
 end
