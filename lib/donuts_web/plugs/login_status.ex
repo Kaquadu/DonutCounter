@@ -15,8 +15,8 @@ defmodule DonutsWeb.Plugs.LoginStatus do
       conn
     else
       conn
-      |> put_flash(:info, "Your session has expired.")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_flash(:info, "You have to login.")
+      |> redirect(to: Routes.session_path(conn, :sign_in))
     end
   end
 end

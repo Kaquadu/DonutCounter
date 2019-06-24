@@ -29,7 +29,7 @@ defmodule DonutsWeb.SessionController do
       {:ok, nil} ->
         conn
         |> put_session(:token, token_info["access_token"])
-        |> redirect(to: Routes.page_path(conn, :logged_in))
+        |> redirect(to: Routes.page_path(conn, :index))
       {:invalid_user, nil} ->
         conn
         |> put_flash(:info, "Sorry, it seems you are not in our user database.")
