@@ -5,20 +5,11 @@ defmodule DonutsWeb.PageController do
   alias Donuts.Helpers.Auth
   alias Donuts.Helpers.HTTPHelper
 
-  plug(DonutsWeb.Plugs.LoginStatus when action in [:logged_in, :add_donut])
+  plug(DonutsWeb.Plugs.LoginStatus when action in [:index, :logged_in, :add_donut])
 
   def index(conn, _params) do
-    if Donuts.Sessions.Session.logged_in?(conn) != [] and Donuts.Sessions.Session.logged_in?(conn) != nil do
-      conn
-        |> redirect(to: "/loggedin")
-    else
-      render(conn, "index.html")
-    end
-  end
-
-  def logged_in(conn, _params) do
     user_stats = Accounts.get_statistics()
-    render(conn, "logged_in.html", stats: user_stats)
+    render(conn, "index.html", stats: user_stats)
   end
 
   # only change in router when you have to verify your app in slack
