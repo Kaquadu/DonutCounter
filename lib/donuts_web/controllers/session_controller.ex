@@ -39,26 +39,6 @@ defmodule DonutsWeb.SessionController do
         |> put_flash(:info, "Sorry, it seems we have some kind of problem with logging in.")
         |> redirect(to: Routes.page_path(conn, :index))
     end
-
-    # if Map.get(token_info, "ok") == true do
-    #   user_id = token_info |> Map.get("user") |> Map.get("id")
-
-    #   if Accounts.get_by_slack_id(user_id) do
-    #     Auth.create_session(token_info)
-
-    #     conn
-    #     |> put_session(:token, token_info["access_token"])
-    #     |> redirect(to: Routes.page_path(conn, :logged_in))
-    #   else
-    #     conn
-    #     |> put_flash(:info, "Sorry, it seems you are not in our user database.")
-    #     |> redirect(to: Routes.page_path(conn, :index))
-    #   end
-    # else
-    #   conn
-    #   |> put_flash(:info, "Sorry, it seems we have some kind of problem with logging in.")
-    #   |> redirect(to: Routes.page_path(conn, :index))
-    # end
   end
 
 end

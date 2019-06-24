@@ -35,8 +35,7 @@ defmodule Donuts.Background.UserManager do
 
   def assign_users(raw_data) do
     members =
-      raw_data
-      |> Map.get("members")
+      raw_data["members"]
       |> update_users()
   end
 
@@ -46,12 +45,12 @@ defmodule Donuts.Background.UserManager do
   def update_users(members) do
     members
     |> Enum.each(fn usr_raw ->
-      slack_id = usr_raw |> Map.get("id")
+      slack_id = usr_raw["id"]
 
       if slack_id != "USLACKBOT" and !Accounts.get_by_slack_id(slack_id) do
-        slack_id = usr_raw |> Map.get("id")
-        real_name = usr_raw |> Map.get("profile") |> Map.get("real_name")
-        is_admin = usr_raw |> Map.get("is_admin")
+        slack_id = usr_raw["id"]
+        real_name = usr_raw["profile"]["real_name"]
+        is_admin = usr_raw["is_admin"]
 
         %{"slack_id" => slack_id, "name" => real_name, "is_admin" => is_admin}
         |> Accounts.create_user()
