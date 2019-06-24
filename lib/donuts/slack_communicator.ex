@@ -5,6 +5,7 @@ defmodule Donuts.SlackCommunicator do
   alias Donuts.Accounts
   alias Donuts.RoundPies.Donut
   alias Donuts.RoundPies
+  alias Donuts.Helpers.HTTPHelper
 
   # defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
 
@@ -281,10 +282,11 @@ defmodule Donuts.SlackCommunicator do
 end
 
 defmodule Donuts.SlackCommunicator.Auth do
-  alias Donuts.Helpers.HTTPHelper
   @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
   @client_id Application.get_env(:donuts, :client_id)
   @client_secret Application.get_env(:donuts, :client_secret)
+
+  alias Donuts.Helpers.HTTPHelper
 
   def get_code(params) do
     params["code"]
