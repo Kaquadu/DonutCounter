@@ -30,7 +30,7 @@ defmodule DonutsWeb.PageController do
       |> put_flash(:info, "Incorrect name.")
       |> render("donuted.html", success: false)
     else
-      target_name = Session.get_current_user_name(conn)
+      target_name = Sessions.get_current_user_name(conn)
       target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
       {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
       conn |> render("donuted.html", success: true)
