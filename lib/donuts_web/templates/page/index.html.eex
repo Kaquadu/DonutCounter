@@ -48,6 +48,8 @@
           <th>Expired</th>
 
           <th>Active</th>
+
+          <th>Profile</th>
         </tr>
       </thead>
       <tbody>
@@ -62,6 +64,8 @@
               <td><%= user.expired_donuts %></td>
 
               <td><%= user.active_donuts %></td>
+
+              <td><%= link "Show", to: DonutsWeb.Router.Helpers.page_path(@conn, :user_view, user) %></td>
             </tr>
         <% end %>
       </tbody>
