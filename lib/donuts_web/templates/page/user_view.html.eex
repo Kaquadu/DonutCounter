@@ -1,4 +1,3 @@
-<%= @user %>
-
+<%= @user.username %>
 <hr>
 <%= link "Go back!", to: DonutsWeb.Router.Helpers.page_path(@conn, :index) %>
