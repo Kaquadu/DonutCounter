@@ -8,7 +8,7 @@ defmodule DonutsWeb.PageController do
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.RoundPies
 
-  plug(DonutsWeb.Plugs.LoginStatus when action in [:index, :logged_in, :add_donut])
+  plug(DonutsWeb.Plugs.LoginStatus when action in [:index, :logged_in, :add_donut, :user_view])
 
   def index(conn, _params) do
     user_stats = Accounts.get_statistics()
