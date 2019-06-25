@@ -21,7 +21,7 @@ defmodule DonutsWeb.Router do
     get("/auth", SessionController, :auth)
     get("/loggedin", PageController, :logged_in)
     get("/user", PageController, :user_view)
-    get("/release-target", PageController, :release_target)
+    post("/release-target", PageController, :release_target)
     post("/add-donut", PageController, :add_donut)
   end
 
