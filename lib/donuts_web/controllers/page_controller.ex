@@ -6,6 +6,7 @@ defmodule DonutsWeb.PageController do
   alias Donuts.Account.User
   alias Donuts.Helpers.Auth
   alias Donuts.Helpers.HTTPHelper
+  alias Donuts.RoundPies
 
   plug(DonutsWeb.Plugs.LoginStatus when action in [:index, :logged_in, :add_donut])
 
@@ -15,7 +16,12 @@ defmodule DonutsWeb.PageController do
   end
 
   def user_view(conn, user) do
-    render(conn, "user_view.html", user: user)
+    user_id = Accounts.get_by_real_name(user["username"]) |> Map.get(:id) |> IO.inspect
+    delivered_donuts = RoundPies.get_delivered_donuts(user_id) |> IO.inspect
+    expired_donuts = RoundPies.get_expired_donuts(user_id) |> IO.inspect
+    active_donuts = RoundPies.get_active_donuts(user_id) |> IO.inspect
+    render(conn, "user_view.html", user: user, delivered: delivered_donuts, 
+                                    expired: expired_donuts, active: active_donuts)
   end
 
   # only change in router when you have to verify your app in slack
