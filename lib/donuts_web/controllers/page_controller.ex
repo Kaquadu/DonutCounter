@@ -17,9 +17,19 @@ defmodule DonutsWeb.PageController do
 
   def user_view(conn, user) do
     user_id = Accounts.get_by_real_name(user["username"]) |> Map.get(:id)
-    delivered_donuts = RoundPies.get_delivered_donuts(user_id) |> Map.from_struct()
-    expired_donuts = RoundPies.get_expired_donuts(user_id) |> Map.from_struct()
-    active_donuts = RoundPies.get_active_donuts(user_id) |> Map.from_struct()
+    delivered_donuts =
+      RoundPies.get_delivered_donuts(user_id)
+        |> Enum.each(fn donut -> 
+          donut |> Map.from_struct()
+        end)
+    expired_donuts = RoundPies.get_expired_donuts(user_id)
+        |> Enum.each(fn donut -> 
+          donut |> Map.from_struct()
+        end)
+    active_donuts = RoundPies.get_active_donuts(user_id)
+        |> Enum.each(fn donut -> 
+          donut |> Map.from_struct()
+        end)
     render(conn, "user_view.html", user: user, delivered: delivered_donuts, 
                                     expired: expired_donuts, active: active_donuts)
   end
