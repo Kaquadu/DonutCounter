@@ -57,6 +57,15 @@ defmodule Donuts.RoundPies do
     |> length()
   end
 
+  def get_delivered_donuts(id) do
+    Repo.all(
+      from(d in Donut,
+        where: d.user_id == ^id,
+        where: d.delivered == true
+      )
+    )
+  end
+
   def get_expired_donuts_number(id) do
     Repo.all(
       from(d in Donut,
@@ -68,6 +77,16 @@ defmodule Donuts.RoundPies do
     |> length()
   end
 
+  def get_expired_donuts(id) do
+    Repo.all(
+      from(d in Donut,
+        where: d.user_id == ^id,
+        where: d.delivered == false,
+        where: d.expiration_date < ^DateTime.utc_now()
+      )
+    )
+  end
+
   def get_active_donuts_number(id) do
     Repo.all(
       from(d in Donut,
@@ -77,6 +96,16 @@ defmodule Donuts.RoundPies do
       )
     )
     |> length()
+  end
+
+  def get_active_donuts(id) do
+    Repo.all(
+      from(d in Donut,
+        where: d.user_id == ^id,
+        where: d.delivered == false,
+        where: d.expiration_date > ^DateTime.utc_now()
+      )
+    )
   end
 
   def get_expired_donuts() do
