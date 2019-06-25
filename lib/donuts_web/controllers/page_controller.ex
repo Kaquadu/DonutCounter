@@ -24,9 +24,9 @@ defmodule DonutsWeb.PageController do
                                     expired: expired_donuts, active: active_donuts)
   end
 
-  def release_target(conn, target) do
-    target |> IO.inspect
-    |> RoundPies.update_donut(%{:delivered => true})
+  def release_target(conn, params) do
+    IO.inspect params
+    #|> RoundPies.update_donut(%{:delivered => true})
     
     conn |> redirect(to: Routes.page_path(conn, :index))
   end
