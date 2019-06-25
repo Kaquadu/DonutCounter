@@ -7,6 +7,7 @@ defmodule DonutsWeb.PageController do
   alias Donuts.Helpers.Auth
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.RoundPies
+  alias Donuts.PageController.Functions
 
   plug(DonutsWeb.Plugs.LoginStatus when action in [:index, :logged_in, :add_donut, :user_view])
 
@@ -43,17 +44,40 @@ defmodule DonutsWeb.PageController do
   end
 
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
-    sender = Donuts.Accounts.get_by_real_name(sender_name)
+    target_name = Sessions.get_current_user_name(conn)
+    Functions.process_add_donut(conn, sender_name, target_name)
+  end
+end
 
-    if sender == nil or sender == [] do
-      conn
+defmodule DonutsWeb.PageController.Functions do
+  use DonutsWeb, :controller
+  import Plug.Conn
+  def process_add_donut(conn, nil, target_name) do
+    conn
       |> put_flash(:info, "Incorrect name.")
       |> render("donuted.html", success: false)
-    else
-      target_name = Sessions.get_current_user_name(conn)
-      target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
-      {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
-      conn |> render("donuted.html", success: true)
-    end
+  end
+  def process_add_donut(conn, "", target_name) do
+    conn
+      |> put_flash(:info, "Incorrect name.")
+      |> render("donuted.html", success: false)
+  end
+  def process_add_donut(conn, sender_name, target_name)
+    when sender_name != target_name do
+      if Accounts.get_by_real_name(sender_name) do
+        target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
+        {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
+        conn |> render("donuted.html", success: true)
+      else
+        conn
+          |> put_flash(:info, "Incorrect name.")
+          |> render("donuted.html", success: false)
+      end
+  end
+  def process_add_donut(conn, sender_name, target_name)
+    when sender_name == target_name do
+      conn
+      |> put_flash(:info, "Self donuting is forbidden.")
+      |> render("donuted.html", success: false)
   end
 end
