@@ -52,7 +52,7 @@
 
            <td><%= donut.id %></td>
 
-           <td><%= link "Release", to: DonutsWeb.Router.Helpers.page_path(@conn, :release_target, donut) %></td>
+           <td><%= link "Release", to: DonutsWeb.Router.Helpers.page_path(@conn, :release_target, donut.id) %></td>
         </tr>
     <%= end %>
     </tbody>
