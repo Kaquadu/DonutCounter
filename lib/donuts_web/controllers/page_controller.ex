@@ -16,12 +16,17 @@ defmodule DonutsWeb.PageController do
   end
 
   def user_view(conn, user) do
-    user_id = Accounts.get_by_real_name(user["username"]) |> Map.get(:id) |> IO.inspect
-    delivered_donuts = RoundPies.get_delivered_donuts(user_id) |> IO.inspect
-    expired_donuts = RoundPies.get_expired_donuts(user_id) |> IO.inspect
-    active_donuts = RoundPies.get_active_donuts(user_id) |> IO.inspect
+    user_id = Accounts.get_by_real_name(user["username"]) |> Map.get(:id)
+    delivered_donuts = RoundPies.get_delivered_donuts(user_id)
+    expired_donuts = RoundPies.get_expired_donuts(user_id)
+    active_donuts = RoundPies.get_active_donuts(user_id)
     render(conn, "user_view.html", user: user, delivered: delivered_donuts, 
                                     expired: expired_donuts, active: active_donuts)
+  end
+
+  def release_target(conn, target) do
+    RoundPies.update_donut(target, %{:delivered => true})
+    conn |> redirect(to: Routes.page_path(conn, :index))
   end
 
   # only change in router when you have to verify your app in slack

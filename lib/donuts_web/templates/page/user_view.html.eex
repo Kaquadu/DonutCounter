@@ -39,6 +39,8 @@
             <th>Expiration date</th>
 
             <th>ID</th>
+
+            <th>Release</th>
         </tr>
     </thead>
     <tbody>
@@ -49,6 +51,8 @@
            <td><%= donut.expiration_date |> DateTime.to_date() %></td>
 
            <td><%= donut.id %></td>
+
+           <td><%= link "Release", to: DonutsWeb.Router.Helpers.page_path(@conn, :release_target, donut) %></td>
         </tr>
     <%= end %>
     </tbody>
