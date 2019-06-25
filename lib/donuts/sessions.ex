@@ -104,9 +104,9 @@ defmodule Donuts.Sessions do
   def can_release?(conn, user_name) do
     current_user = get_current_user_name(conn)
     if (current_user == user_name) do
-      true
-    else
       false
+    else
+      true
     end
   end
 end
