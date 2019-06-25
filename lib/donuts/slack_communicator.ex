@@ -143,18 +143,26 @@ defmodule Donuts.SlackCommunicator do
     {sender_by_rn, sender_by_sid}
   end
 
-  def check_selfsending({sender_by_rn, sender_by_sid}, target_id) do
+  def check_selfsending({nil, nil}, _), do: {nil ,nil}
+
+  def check_selfsending({nil, sender_by_sid}, target_id) do
     target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
-    s1 = nil
-    s2 = nil
-    if sender_by_rn != nil, do: s1 = sender_by_rn.name
-    if sender_by_sid != nil, do: s2 = sender_by_sid.name
-    case target_name do
-      ^s1 -> {:self, :self}
-      ^s2 -> {:self, :self}
-      _ -> {sender_by_rn, sender_by_sid}
+    if (sender_by_sid.name == target_name) do
+      {:self, :self}
+    else
+      {nil, sender_by_sid}
     end
   end
+
+  def check_selfsending({sender_by_rn, nil}, target_id) do
+    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    if (sender_by_rn.name == target_name) do
+      {:self, :self}
+    else
+      {sender_by_rn, nil}
+    end
+  end
+
 
   def add_donut({nil, nil}, _) do
     message = "Oops! There is no such person!" |> URI.encode()
