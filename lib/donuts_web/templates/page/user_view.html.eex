@@ -21,7 +21,7 @@
 
             <td><%= @user["expired_donuts"] %></td>
 
-            <td><%= @user.["active_donuts"] %></td>
+            <td><%= @user["active_donuts"] %></td>
         </tr>
     </tbody>
 </table>
