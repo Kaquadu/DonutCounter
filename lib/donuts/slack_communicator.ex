@@ -145,9 +145,11 @@ defmodule Donuts.SlackCommunicator do
 
   def check_selfsending({sender_by_rn, sender_by_sid}, target_id) do
     target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    s1 = sender_by_rn.name
+    s2 = sender_by_sid.name
     case target_name do
-      sender_by_rn.name -> {:self, :self}
-      sender_by_sid.name -> {:self, :self}
+      ^s1 -> {:self, :self}
+      ^s2 -> {:self, :self}
       _ -> {sender_by_rn, sender_by_sid}
     end
   end
