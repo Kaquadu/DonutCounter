@@ -44,7 +44,7 @@ defmodule DonutsWeb.PageController do
 
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
     target_name = Sessions.get_current_user_name(conn)
-    Functions.process_add_donut(conn, sender_name, target_name)
+    process_add_donut(conn, sender_name, target_name)
   end
 
   def process_add_donut(conn, sender_name, target_name)
