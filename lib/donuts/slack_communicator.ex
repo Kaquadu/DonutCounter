@@ -60,8 +60,9 @@ defmodule Donuts.SlackCommunicator do
   def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
       when length(params) == 1 do
     [id] = params
-    delete_target = Donuts.RoundPies.get_by_id(id)
-    process_rm_donut(delete_target)
+    Donuts.RoundPies.get_by_id(id)
+    |> check_self_release(sender_id)
+    |> process_rm_donut()
   end
 
   def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
