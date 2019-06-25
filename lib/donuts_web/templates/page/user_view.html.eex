@@ -40,7 +40,9 @@
 
             <th>ID</th>
 
-            <th>Release</th>
+            <%= if Donuts.Sessions.can_release?(@conn, @user["username"]) do %>
+                <th>Release</th>
+            <%= end %>
         </tr>
     </thead>
     <tbody>
@@ -52,7 +54,9 @@
 
            <td><%= donut.id %></td>
 
-           <td> <%= link "Release", to: DonutsWeb.Router.Helpers.page_path(@conn, :release_target, donut: donut), method: "post" %> </td>
+            <%= if Donuts.Sessions.can_release?(@conn, @user["username"]) do %>
+                <td> <%= link "Release", to: DonutsWeb.Router.Helpers.page_path(@conn, :release_target, donut: donut), method: "post" %> </td>
+            <%= end %>
         </tr>
     <%= end %>
     </tbody>
