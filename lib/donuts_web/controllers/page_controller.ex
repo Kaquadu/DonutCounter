@@ -21,15 +21,15 @@ defmodule DonutsWeb.PageController do
       RoundPies.get_delivered_donuts(user_id)
         |> Enum.each(fn donut -> 
           donut |> Map.from_struct()
-        end)
+        end) |> IO.inspect
     expired_donuts = RoundPies.get_expired_donuts(user_id)
         |> Enum.each(fn donut -> 
           donut |> Map.from_struct()
-        end)
+        end) |> IO.inspect
     active_donuts = RoundPies.get_active_donuts(user_id)
         |> Enum.each(fn donut -> 
           donut |> Map.from_struct()
-        end)
+        end) |> IO.inspect
     render(conn, "user_view.html", user: user, delivered: delivered_donuts, 
                                     expired: expired_donuts, active: active_donuts)
   end
