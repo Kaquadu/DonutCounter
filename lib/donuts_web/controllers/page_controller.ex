@@ -7,7 +7,6 @@ defmodule DonutsWeb.PageController do
   alias Donuts.Helpers.Auth
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.RoundPies
-  alias Donuts.PageController.Functions
 
   plug(DonutsWeb.Plugs.LoginStatus when action in [:index, :logged_in, :add_donut, :user_view])
 
@@ -47,21 +46,7 @@ defmodule DonutsWeb.PageController do
     target_name = Sessions.get_current_user_name(conn)
     Functions.process_add_donut(conn, sender_name, target_name)
   end
-end
 
-defmodule DonutsWeb.PageController.Functions do
-  use DonutsWeb, :controller
-  import Plug.Conn
-  def process_add_donut(conn, nil, target_name) do
-    conn
-      |> put_flash(:info, "Incorrect name.")
-      |> render("donuted.html", success: false)
-  end
-  def process_add_donut(conn, "", target_name) do
-    conn
-      |> put_flash(:info, "Incorrect name.")
-      |> render("donuted.html", success: false)
-  end
   def process_add_donut(conn, sender_name, target_name)
     when sender_name != target_name do
       if Accounts.get_by_real_name(sender_name) do
