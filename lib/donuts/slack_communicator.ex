@@ -118,6 +118,7 @@ defmodule Donuts.SlackCommunicator do
 
   def process_add_donut([cmd_fname], cmd_lname, from_id) when cmd_lname == nil do
     get_sender(cmd_fname)
+    |> check_selfsending(from_id)
     |> add_donut(from_id)
   end
 
@@ -125,6 +126,7 @@ defmodule Donuts.SlackCommunicator do
     cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
 
     get_sender(cmd_sender_name)
+    |> check_selfsending(from_id)
     |> add_donut(from_id)
   end
 
@@ -141,8 +143,22 @@ defmodule Donuts.SlackCommunicator do
     {sender_by_rn, sender_by_sid}
   end
 
+  def check_selfsending({sender_by_rn, sender_by_sid}, target_id) do
+    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    case target_name do
+      sender_by_rn -> {:self, :self}
+      sender_by_sid -> {:self, :self}
+      _ -> {sender_by_rn, sender_by_sid}
+    end
+  end
+
   def add_donut({nil, nil}, _) do
     message = "Oops! There is no such person!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
+  def add_donut({:self, :self}, _) do
+    message = "Self sending is forbidden!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
