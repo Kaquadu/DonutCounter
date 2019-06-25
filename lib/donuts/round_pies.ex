@@ -6,7 +6,7 @@ defmodule Donuts.RoundPies do
   alias Donuts.Sessions.Session
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
-  defdelegate handle_slack_event(event), to: Donuts.RoundPies.SlackCommunicator
+  defdelegate handle_slack_event(event), to: Donuts.SlackCommunicator
 
   def get_all() do
     Repo.all(Donut)
@@ -23,30 +23,41 @@ defmodule Donuts.RoundPies do
   end
 
   def add_new_donut(sender_name, target_name, target_id) do
-      %{
-        :sender => sender_name,
-        :guilty => target_name,
-        :user_id => target_id,
-        :expiration_date =>
-          DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-        :delivered => false
-      }
-      |> create_donut()
+    %{
+      :sender => sender_name,
+      :guilty => target_name,
+      :user_id => target_id,
+      :expiration_date =>
+        DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+      :delivered => false
+    }
+    |> create_donut()
   end
 
   def delete_donut(%Donut{} = donut) do
     Repo.delete(donut)
   end
 
-  def get_all_donuts_by_id(id) do
+  def get_all_donuts_number(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id
       )
     )
+    |> length()
   end
 
-  def get_delivered_donuts_by_id(id) do
+  def get_delivered_donuts_number(id) do
+    Repo.all(
+      from(d in Donut,
+        where: d.user_id == ^id,
+        where: d.delivered == true
+      )
+    )
+    |> length()
+  end
+
+  def get_delivered_donuts(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
@@ -55,7 +66,18 @@ defmodule Donuts.RoundPies do
     )
   end
 
-  def get_expired_donuts_by_id(id) do
+  def get_expired_donuts_number(id) do
+    Repo.all(
+      from(d in Donut,
+        where: d.user_id == ^id,
+        where: d.delivered == false,
+        where: d.expiration_date < ^DateTime.utc_now()
+      )
+    )
+    |> length()
+  end
+
+  def get_expired_donuts(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
@@ -65,7 +87,18 @@ defmodule Donuts.RoundPies do
     )
   end
 
-  def get_active_donuts_by_id(id) do
+  def get_active_donuts_number(id) do
+    Repo.all(
+      from(d in Donut,
+        where: d.user_id == ^id,
+        where: d.delivered == false,
+        where: d.expiration_date > ^DateTime.utc_now()
+      )
+    )
+    |> length()
+  end
+
+  def get_active_donuts(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,

@@ -9,14 +9,14 @@ defmodule DonutsWeb.Plugs.LoginStatus do
     active_token =
       conn
       |> get_session(:token)
-      |> Sessions.check_active()
+      |> Sessions.check_token_activity()
 
     if active_token != [] do
       conn
     else
       conn
-      |> put_flash(:info, "Your session has expired.")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_flash(:info, "You have to login.")
+      |> redirect(to: Routes.session_path(conn, :sign_in))
     end
   end
 end

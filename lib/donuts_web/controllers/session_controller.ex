@@ -5,7 +5,7 @@ defmodule DonutsWeb.SessionController do
   alias Donuts.Sessions
   alias Donuts.Sessions.Session
   alias Donuts.Accounts
-  alias Donuts.Helpers.Auth
+  alias Donuts.SlackCommunicator.Auth
   alias Donuts.Helpers.HTTPHelper
 
   def sign_in(conn, _params) do
@@ -20,45 +20,30 @@ defmodule DonutsWeb.SessionController do
   end
 
   def auth(conn, params) do
-    token_info = 
-      params 
+    token_info =
+      params
       |> Auth.get_code()
       |> Auth.get_token_info()
 
-    case Sessions.auth_user(token_info) do
-      {:ok, nil} ->
-        conn
-        |> put_session(:token, token_info["access_token"])
-        |> redirect(to: Routes.page_path(conn, :logged_in))
-      {:invalid_user, nil} ->
-        conn
-        |> put_flash(:info, "Sorry, it seems you are not in our user database.")
-        |> redirect(to: Routes.page_path(conn, :index))
-      {:invalid_request, nil} ->
-        conn
-        |> put_flash(:info, "Sorry, it seems we have some kind of problem with logging in.")
-        |> redirect(to: Routes.page_path(conn, :index))
-    end
-
-    # if Map.get(token_info, "ok") == true do
-    #   user_id = token_info |> Map.get("user") |> Map.get("id")
-
-    #   if Accounts.get_by_slack_id(user_id) do
-    #     Auth.create_session(token_info)
-
-    #     conn
-    #     |> put_session(:token, token_info["access_token"])
-    #     |> redirect(to: Routes.page_path(conn, :logged_in))
-    #   else
-    #     conn
-    #     |> put_flash(:info, "Sorry, it seems you are not in our user database.")
-    #     |> redirect(to: Routes.page_path(conn, :index))
-    #   end
-    # else
-    #   conn
-    #   |> put_flash(:info, "Sorry, it seems we have some kind of problem with logging in.")
-    #   |> redirect(to: Routes.page_path(conn, :index))
-    # end
+    Sessions.auth_user(token_info)
+    |> auth_response(conn, token_info)
   end
 
+  def auth_response({:ok, nil}, conn, token_info) do
+    conn
+    |> put_session(:token, token_info["access_token"])
+    |> redirect(to: Routes.page_path(conn, :index))
+  end
+
+  def auth_response({:invalid_user, nil}, conn, _) do
+    conn
+    |> put_flash(:info, "Sorry, it seems you are not in our user database.")
+    |> redirect(to: Routes.page_path(conn, :index))
+  end
+
+  def auth_response({:invalid_request, nil}, conn, _) do
+    conn
+    |> put_flash(:info, "Sorry, it seems we have some kind of problem with logging in.")
+    |> redirect(to: Routes.page_path(conn, :index))
+  end
 end

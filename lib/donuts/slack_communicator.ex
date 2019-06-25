@@ -1,10 +1,11 @@
-defmodule Donuts.RoundPies.SlackCommunicator do
+defmodule Donuts.SlackCommunicator do
   @oauth_token Application.get_env(:donuts, :oauth_token)
   @donuts_channel Application.get_env(:donuts, :donuts_channel_id)
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
-  alias Donuts.Helpers.HTTPHelper
   alias Donuts.Accounts
   alias Donuts.RoundPies.Donut
+  alias Donuts.RoundPies
+  alias Donuts.Helpers.HTTPHelper
 
   # defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
 
@@ -59,8 +60,9 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
       when length(params) == 1 do
     [id] = params
-    delete_target = Donuts.RoundPies.get_by_id(id)
-    process_rm_donut(delete_target)
+    Donuts.RoundPies.get_by_id(id)
+    |> check_self_release(sender_id)
+    |> process_rm_donut()
   end
 
   def process_donut_command(["donuts_rm" | params], sender_id, event_channel)
@@ -72,8 +74,9 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   def process_donut_command(["donuts_release" | params], sender_id, event_channel)
       when length(params) == 1 do
     [id] = params
-    release_target = Donuts.RoundPies.get_by_id(id)
-    process_release_donut(release_target)
+      Donuts.RoundPies.get_by_id(id)
+      |> check_self_release(sender_id)
+      |> process_release_donut()
   end
 
   def process_donut_command(["donuts_release" | params], sender_id, event_channel)
@@ -117,6 +120,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
 
   def process_add_donut([cmd_fname], cmd_lname, from_id) when cmd_lname == nil do
     get_sender(cmd_fname)
+    |> check_selfsending(from_id)
     |> add_donut(from_id)
   end
 
@@ -124,6 +128,7 @@ defmodule Donuts.RoundPies.SlackCommunicator do
     cmd_sender_name = "#{cmd_fname} #{cmd_lname}"
 
     get_sender(cmd_sender_name)
+    |> check_selfsending(from_id)
     |> add_donut(from_id)
   end
 
@@ -140,46 +145,62 @@ defmodule Donuts.RoundPies.SlackCommunicator do
     {sender_by_rn, sender_by_sid}
   end
 
+  def check_selfsending({nil, nil}, _), do: {nil ,nil}
+
+  def check_selfsending({nil, sender_by_sid}, target_id) do
+    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    if (sender_by_sid.name == target_name) do
+      {:self, :self}
+    else
+      {nil, sender_by_sid}
+    end
+  end
+
+  def check_selfsending({sender_by_rn, nil}, target_id) do
+    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
+    if (sender_by_rn.name == target_name) do
+      {:self, :self}
+    else
+      {sender_by_rn, nil}
+    end
+  end
+
+
   def add_donut({nil, nil}, _) do
     message = "Oops! There is no such person!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
+  def add_donut({:self, :self}, _) do
+    message = "Self sending is forbidden!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
   def add_donut({nil, sender_by_sid}, target_id) do
-    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
-    target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
-
-    sender_list_name = sender_by_sid |> Map.get(:name)
-
     %{
-      :sender => sender_list_name,
-      :guilty => target_name,
-      :user_id => target_id,
+      :sender => sender_by_sid.name,
+      :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       :expiration_date =>
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false
     }
-    |> Donuts.RoundPies.create_donut()
+    |> RoundPies.create_donut()
 
     message = "Succesfuly added donut debt!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def add_donut({sender_by_rn, nil}, target_id) do
-    target_name = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
-    target_id = Accounts.get_by_slack_id(target_id) |> Map.get(:id)
-
-    sender_list_name = sender_by_rn |> Map.get(:name)
-
     %{
-      :sender => sender_list_name,
-      :guilty => target_name,
-      :user_id => target_id,
+      :sender => sender_by_rn.name,
+      :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       :expiration_date =>
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       :delivered => false
     }
-    |> Donuts.RoundPies.create_donut()
+    |> RoundPies.create_donut()
 
     message = "Succesfuly added donut debt!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
@@ -196,8 +217,8 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   end
 
   def process_rm_donut(delete_target) do
-    Donuts.RoundPies.delete_donut(delete_target)
-    name = delete_target |> Map.get(:guilty)
+    RoundPies.delete_donut(delete_target)
+    name = delete_target.guilty
     message = "Deleted donut debt of #{name}!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
@@ -207,8 +228,13 @@ defmodule Donuts.RoundPies.SlackCommunicator do
     send_message_to_channel(@donuts_channel, message)
   end
 
+  def process_release_donut(:self) do
+    message = "Self release is forbidden!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
   def process_release_donut(release_target) do
-    case Donuts.RoundPies.update_donut(release_target, %{:delivered => true}) do
+    case RoundPies.update_donut(release_target, %{:delivered => true}) do
       {:ok, donut} ->
         message = "Released successfully!" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
@@ -216,6 +242,15 @@ defmodule Donuts.RoundPies.SlackCommunicator do
       {:error, %Ecto.Changeset{} = changeset} ->
         message = "Oops! Error in changeset!" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
+    end
+  end
+
+  def check_self_release(donut, sender_id) do
+    s_name = Accounts.get_by_slack_id(sender_id) |> Map.get(:name)
+    if donut.guilty == s_name do
+      :self
+    else
+      donut
     end
   end
 
@@ -257,34 +292,57 @@ defmodule Donuts.RoundPies.SlackCommunicator do
   end
 
   def process_donut_add_days(donut_target, days) when is_integer(days) do
-    current_exp_date = donut_target |> Map.get(:expiration_date)
-    f_exp_date = DateTime.add(current_exp_date, days * 24 * 60 * 60, :second)
-    Donuts.RoundPies.update_donut(donut_target, %{:expiration_date => f_exp_date})
+    f_exp_date =
+      donut_target.expiration_date
+      |> DateTime.add(days * 24 * 60 * 60, :second)
+
+    RoundPies.update_donut(donut_target, %{:expiration_date => f_exp_date})
     message = "Changed date!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def get_active_donuts() do
     active_donuts =
-      Donuts.RoundPies.get_all()
+      RoundPies.get_all()
       |> Enum.reduce("Active donuts: \n", fn donut, message ->
         donut
-        delivered = donut |> Map.get(:delivered)
+        delivered = donut.delivered
 
         if delivered == false do
-          message = "#{message} Guilty: #{Map.get(donut, :guilty)} | "
-          message = "#{message} Sender: #{Map.get(donut, :sender)} | "
+          message = "#{message} Guilty: #{donut.guilty} | "
+          message = "#{message} Sender: #{donut.sender} | "
 
           exp_date =
-            Map.get(donut, :expiration_date)
+            donut.expiration_date
             |> DateTime.to_date()
             |> Date.to_string()
 
           message = "#{message} Expiration date: #{exp_date} | "
-          message = "#{message} ID: #{Map.get(donut, :id)} \n"
+          message = "#{message} ID: #{donut.id} \n"
         else
           message
         end
       end)
+  end
+end
+
+defmodule Donuts.SlackCommunicator.Auth do
+  @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
+  @client_id Application.get_env(:donuts, :client_id)
+  @client_secret Application.get_env(:donuts, :client_secret)
+
+  alias Donuts.Helpers.HTTPHelper
+
+  def get_code(params) do
+    params["code"]
+  end
+
+  def get_token_info(code) do
+    redirect = @redirect_uri_auth |> URI.encode()
+
+    "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{
+      code
+    }&redirect_uri=#{redirect}"
+    |> HTTPHelper.get_body()
   end
 end

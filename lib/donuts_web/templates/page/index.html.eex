@@ -1,1 +1,87 @@
+<div class = "page-container">
+  <div class = "menu-container">
+    <a class = "href-button" href = "#aboutDonuts">About</a>
+    <a class = "href-button" href = "#donutCommands">Commands</a>
+    <a class = "href-button" href = "#donutsList">Sweet list</a>
+    <a class = "href-button" href = "#addDonut">Add donut</a>
+  </div>
 
+  <hr>
+
+  <section id = "aboutDonuts">
+    <h2>About Donuts</h2>
+    <hr>
+    <p>Our internal security policy assumes that one cannot leave his/her electronic device with an unlocked screen. If someone notices unlocked screen, he may type the word - ‘donuts’ (or variations of this word) via one of the public channels on our internal communicator. As a penalty for breaking security aspects, the one who was caught in the act owes everyone in the company doughnuts and is obliged to bring them to the office. </p>
+  </section>
+
+  <section id = "donutCommands">
+    <h2>Commands</h2>
+    <hr>
+    <p>Sweet list can be modified via Slack. You can use commands listed below to do so.
+    <p><strong>donuts_add</strong> - add donut to currently logged user. Remember to type your name & surename or @slack_name!</p>
+    <p>Example: donuts_add Kuba Kowalczykowski</p>
+    <p>Example #2: donuts_add @Kuba Kowalczykowski
+    <p><strong>donuts_rm</strong> - remove donut debt based on its ID</p>
+    <p>Example: donuts_rm 5933ce33-fb90-4133-b1de-eb9239779ab6</p>
+    <p><strong>donuts_release</strong> - tags donut as delivered based on its ID</p>
+    <p>Example: donuts_release 5933ce33-fb90-4133-b1de-eb9239779ab6</p>
+    <p><strong>donuts_add_days</strong> - add days do expiration date</p>
+    <p>Example: donuts_add_days 5933ce33-fb90-4133-b1de-eb9239779ab6 -5</p>
+    <p><strong>donuts_info</strong> - gets all active donuts</p>
+    <p>Example: donuts_info</p>
+    <p><strong>donuts_help</strong> - list of commands</p>
+    <p>Example: donuts_help</p>
+  </section>
+
+  <section id = "donutsList">
+  <h2>Sweet List</h2>
+    <hr>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+
+          <th>Total</th>
+
+          <th>Delivered</th>
+
+          <th>Expired</th>
+
+          <th>Active</th>
+
+          <th>Profile</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for user <- @stats do %>
+            <tr>
+              <td><%= user.username %></td>
+
+              <td><%= user.total_donuts %></td>
+
+              <td><%= user.delivered_donuts %></td>
+
+              <td><%= user.expired_donuts %></td>
+
+              <td><%= user.active_donuts %></td>
+
+              <td><%= link "Show", to: DonutsWeb.Router.Helpers.page_path(@conn, :user_view, user) %></td>
+            </tr>
+        <%= end %>
+      </tbody>
+    </table>
+  </section>
+
+  <section id = "addDonut">
+  <h2>Add Donut</h2>
+    <hr>
+    <%= form_for @conn, Routes.page_path(@conn, :add_donut), [as: :donut], fn f -> %>
+      <%= label f, :Your_name %>
+      <%= text_input f, :sender_name %>
+
+      <%= submit "Donut him!" %>
+    <% end %>
+
+  </section>
+
+</div>

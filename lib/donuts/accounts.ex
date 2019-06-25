@@ -2,6 +2,7 @@ defmodule Donuts.Accounts do
   import Ecto.Query, warn: false
   alias Donuts.Repo
   alias Donuts.Accounts.User
+  alias Donuts.RoundPies
 
   def get_all() do
     Repo.all(User)
@@ -23,5 +24,20 @@ defmodule Donuts.Accounts do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def get_statistics() do
+    get_all()
+    |> Enum.reduce([], fn user, stats_list ->
+      user_stats = %{
+        :username => user.name,
+        :total_donuts => RoundPies.get_all_donuts_number(user.id),
+        :delivered_donuts => RoundPies.get_delivered_donuts_number(user.id),
+        :expired_donuts => RoundPies.get_expired_donuts_number(user.id),
+        :active_donuts => RoundPies.get_active_donuts_number(user.id)
+      }
+
+      stats_list = [user_stats | stats_list]
+    end)
   end
 end
