@@ -67,7 +67,7 @@
 
               <td><%= link "Show", to: DonutsWeb.Router.Helpers.page_path(@conn, :user_view, user) %></td>
             </tr>
-        <% end %>
+        <%= end %>
       </tbody>
     </table>
   </section>
