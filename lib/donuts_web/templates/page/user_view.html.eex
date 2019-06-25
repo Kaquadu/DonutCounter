@@ -46,7 +46,7 @@
         <tr>
            <td><%= donut.sender %></td>
            
-           <td><%= donut.expiration_date %></td>
+           <td><%= donut.expiration_date |> DateTime.to_date() %></td>
 
            <td><%= donut.id %></td>
         </tr>
@@ -73,7 +73,7 @@
         <tr>
            <td><%= donut.sender %></td>
            
-           <td><%= donut.expiration_date %></td>
+           <td><%= donut.expiration_date |> DateTime.to_date() %></td>
 
            <td><%= donut.id %></td>
         </tr>
@@ -100,7 +100,7 @@
         <tr>
            <td><%= donut.sender %></td>
            
-           <td><%= donut.expiration_date %></td>
+           <td><%= donut.expiration_date |> DateTime.to_date() %></td>
 
            <td><%= donut.id %></td>
         </tr>
