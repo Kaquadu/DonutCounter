@@ -25,8 +25,9 @@ defmodule DonutsWeb.PageController do
   end
 
   def release_target(conn, params) do
-    IO.inspect params
-    #|> RoundPies.update_donut(%{:delivered => true})
+    params["donut"]
+    |> RoundPies.get_by_id()
+    |> RoundPies.update_donut(%{:delivered => true})
     
     conn |> redirect(to: Routes.page_path(conn, :index))
   end
