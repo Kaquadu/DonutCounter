@@ -73,8 +73,9 @@ defmodule Donuts.SlackCommunicator do
   def process_donut_command(["donuts_release" | params], sender_id, event_channel)
       when length(params) == 1 do
     [id] = params
-    release_target = Donuts.RoundPies.get_by_id(id)
-    process_release_donut(release_target)
+      Donuts.RoundPies.get_by_id(id)
+      |> check_self_release(sender_id)
+      |> process_release_donut()
   end
 
   def process_donut_command(["donuts_release" | params], sender_id, event_channel)
@@ -226,6 +227,11 @@ defmodule Donuts.SlackCommunicator do
     send_message_to_channel(@donuts_channel, message)
   end
 
+  def process_release_donut(:self) do
+    message = "Self release is forbidden!" |> URI.encode()
+    send_message_to_channel(@donuts_channel, message)
+  end
+
   def process_release_donut(release_target) do
     case RoundPies.update_donut(release_target, %{:delivered => true}) do
       {:ok, donut} ->
@@ -235,6 +241,15 @@ defmodule Donuts.SlackCommunicator do
       {:error, %Ecto.Changeset{} = changeset} ->
         message = "Oops! Error in changeset!" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
+    end
+  end
+
+  def check_self_release(donut, sender_id) do
+    s_name = Accounts.get_by_slack_id(sender_id) |> Map.get(:name)
+    if donut.guilty == s_name do
+      :self
+    else
+      donut
     end
   end
 
