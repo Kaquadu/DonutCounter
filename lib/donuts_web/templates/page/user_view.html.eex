@@ -43,11 +43,11 @@
     <tbody>
     <%= for donut <- @active do %>
         <tr>
-           <td>donut.sender</td>
+           <td><%= donut.sender %></td>
            
-           <td>donut.expiration_date</td>
+           <td><%= donut.expiration_date %></td>
 
-           <td>donut.id</td>
+           <td><%= donut.id %></td>
         </tr>
     <% end %>
     </tbody>
@@ -70,11 +70,11 @@
     <tbody>
     <%= for donut <- @delivered do %>
         <tr>
-           <td>donut.sender</td>
+           <td><%= donut.sender %></td>
            
-           <td>donut.expiration_date</td>
+           <td><%= donut.expiration_date %></td>
 
-           <td>donut.id</td>
+           <td><%= donut.id %></td>
         </tr>
     <% end %>
     </tbody>
@@ -97,11 +97,11 @@
     <tbody>
     <%= for donut <- @expired do %>
         <tr>
-           <td>donut.sender</td>
+           <td><%= donut.sender %></td>
            
-           <td>donut.expiration_date</td>
+           <td><%= donut.expiration_date %></td>
 
-           <td>donut.id</td>
+           <td><%= donut.id %></td>
         </tr>
     <% end %>
     </tbody>
