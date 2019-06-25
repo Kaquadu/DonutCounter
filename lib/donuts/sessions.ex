@@ -12,6 +12,10 @@ defmodule Donuts.Sessions do
     Repo.all(Session)
   end
 
+  def check_token_activity(nil) do
+    nil
+  end
+
   def check_token_activity(token) do
     DateTime.add(DateTime.utc_now(), -1 * @ttl, :second)
     token_h = Bcrypt.Base.hash_password(token, @salt)
