@@ -1,3 +1,111 @@
 <h3><%= @user["username"] %></h3>
 <hr>
+
+<table>
+    <thead>
+    <tr>
+        <th>Total</th>
+
+        <th>Delivered</th>
+
+        <th>Expired</th>
+
+        <th>Active</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><%= @user["total_donuts"] %></td>
+
+            <td><%= @user["delivered_donuts"] %></td>
+
+            <td><%= @user["expired_donuts"] %></td>
+
+            <td><%= @user.["active_donuts"] %></td>
+        </tr>
+    </tbody>
+</table>
+
+<hr>
+<h4>Active donuts</h4>
+<hr>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sender</th>
+
+            <th>Expiration date</th>
+
+            <th>ID</th>>
+        </tr>
+    </thead>
+    <tbody>
+    <%= for donut <- @active do %>
+        <tr>
+           <td>donut.sender</td>
+           
+           <td>donut.expiration_date</td>
+
+           <td>donut.id</td>
+        </tr>
+    <% end %>
+    </tbody>
+</table>
+
+<hr>
+<h4>Delivered donuts</h4>
+<hr>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sender</th>
+
+            <th>Expiration date</th>
+
+            <th>ID</th>>
+        </tr>
+    </thead>
+    <tbody>
+    <%= for donut <- @delivered do %>
+        <tr>
+           <td>donut.sender</td>
+           
+           <td>donut.expiration_date</td>
+
+           <td>donut.id</td>
+        </tr>
+    <% end %>
+    </tbody>
+</table>
+
+<hr>
+<h4>Expired donuts</h4>
+<hr>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sender</th>
+
+            <th>Expiration date</th>
+
+            <th>ID</th>>
+        </tr>
+    </thead>
+    <tbody>
+    <%= for donut <- @expired do %>
+        <tr>
+           <td>donut.sender</td>
+           
+           <td>donut.expiration_date</td>
+
+           <td>donut.id</td>
+        </tr>
+    <% end %>
+    </tbody>
+</table>
+
+
 <%= link "Go back!", to: DonutsWeb.Router.Helpers.page_path(@conn, :index) %>
