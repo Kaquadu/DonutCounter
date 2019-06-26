@@ -15,8 +15,7 @@ defmodule Donuts.Background.UserManager do
   def handle_info(message, state) do
     case message do
       :update_db ->
-        Donuts.SlackCommunicator.get_all_users()
-        |> assign_users()
+        assign_users()
 
         schedule(1 * 60 * 1000)
         {:noreply, state}
@@ -33,9 +32,9 @@ defmodule Donuts.Background.UserManager do
     IO.puts("---------------------")
   end
 
-  def assign_users(raw_data) do
-    members =
-      raw_data["members"]
+  def assign_users() do
+    Donuts.SlackCommunicator.get_all_users()
+      |> Map.get("members")
       |> update_users()
   end
 
