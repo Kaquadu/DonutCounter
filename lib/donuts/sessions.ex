@@ -38,7 +38,7 @@ defmodule Donuts.Sessions do
 
   def auth_user(token_info = %{"ok" => true, "user" => %{"id" => user_id}}) do
     if Accounts.get_by_slack_id(user_id) do
-      make_session(token_info)
+      initialize_session(token_info)
       {:ok, nil}
     else
       {:invalid_user, nil}
@@ -49,9 +49,7 @@ defmodule Donuts.Sessions do
     {:invalid_request, nil}
   end
 
-  def make_session(response) do
-    token = response["access_token"]
-
+  def initialize_session(%{"access_token" => token}) do
     Donuts.SlackCommunicator.get_all_users()
     |> Donuts.Background.UserManager.assign_users()
 

@@ -24,12 +24,12 @@ defmodule Donuts.RoundPies do
 
   def add_new_donut(sender_name, target_name, target_id) do
     %{
-      :sender => sender_name,
-      :guilty => target_name,
-      :user_id => target_id,
-      :expiration_date =>
+      sender: sender_name,
+      guilty: target_name,
+      user_id: target_id,
+      expiration_date:
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-      :delivered => false
+      delivered: false
     }
     |> create_donut()
   end
@@ -38,7 +38,7 @@ defmodule Donuts.RoundPies do
     Repo.delete(donut)
   end
 
-  def get_all_donuts_number(id) do
+  def count_all_donuts(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id
@@ -47,7 +47,7 @@ defmodule Donuts.RoundPies do
     |> length()
   end
 
-  def get_delivered_donuts_number(id) do
+  def count_delivered_donuts(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
@@ -66,7 +66,7 @@ defmodule Donuts.RoundPies do
     )
   end
 
-  def get_expired_donuts_number(id) do
+  def count_expired_donuts(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
@@ -87,7 +87,7 @@ defmodule Donuts.RoundPies do
     )
   end
 
-  def get_active_donuts_number(id) do
+  def count_active_donuts(id) do
     Repo.all(
       from(d in Donut,
         where: d.user_id == ^id,
