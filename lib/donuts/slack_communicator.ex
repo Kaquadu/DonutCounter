@@ -178,12 +178,12 @@ defmodule Donuts.SlackCommunicator do
 
   def add_donut({nil, sender_by_sid}, target_id) do
     %{
-      :sender => sender_by_sid.name,
-      :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
-      :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
-      :expiration_date =>
+      sender: sender_by_sid.name,
+      guilty: Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      user_id: Accounts.get_by_slack_id(target_id) |> Map.get(:id),
+      expiration_date:
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-      :delivered => false
+      delivered: false
     }
     |> RoundPies.create_donut()
 
@@ -193,12 +193,12 @@ defmodule Donuts.SlackCommunicator do
 
   def add_donut({sender_by_rn, nil}, target_id) do
     %{
-      :sender => sender_by_rn.name,
-      :guilty => Accounts.get_by_slack_id(target_id) |> Map.get(:name),
-      :user_id => Accounts.get_by_slack_id(target_id) |> Map.get(:id),
-      :expiration_date =>
+      sender: sender_by_rn.name,
+      guilty: Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      user_id: Accounts.get_by_slack_id(target_id) |> Map.get(:id),
+      expiration_date:
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
-      :delivered => false
+      delivered: false
     }
     |> RoundPies.create_donut()
 
@@ -247,11 +247,7 @@ defmodule Donuts.SlackCommunicator do
 
   def check_self_release(donut, sender_id) do
     s_name = Accounts.get_by_slack_id(sender_id) |> Map.get(:name)
-    if donut.guilty == s_name do
-      :self
-    else
-      donut
-    end
+    if donut.guilty == s_name, do: :self, else: donut
   end
 
   def send_help() do
