@@ -5,7 +5,7 @@ defmodule DonutsWeb.SessionController do
   alias Donuts.Sessions
   alias Donuts.Sessions.Session
   alias Donuts.Accounts
-  alias Donuts.SlackCommunicator.Auth
+  alias Donuts.SlackCommunicator
   alias Donuts.Helpers.HTTPHelper
 
   def sign_in(conn, _params) do
@@ -22,8 +22,8 @@ defmodule DonutsWeb.SessionController do
   def auth(conn, params) do
     token_info =
       params
-      |> Auth.get_code()
-      |> Auth.get_token_info()
+      |> SlackCommunicator.get_code()
+      |> SlackCommunicator.get_token_info()
 
     Sessions.auth_user(token_info)
     |> auth_response(conn, token_info)

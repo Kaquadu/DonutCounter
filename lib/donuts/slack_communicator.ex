@@ -2,6 +2,10 @@ defmodule Donuts.SlackCommunicator do
   @oauth_token Application.get_env(:donuts, :oauth_token)
   @donuts_channel Application.get_env(:donuts, :donuts_channel_id)
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
+  @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
+  @client_id Application.get_env(:donuts, :client_id)
+  @client_secret Application.get_env(:donuts, :client_secret)
+
   alias Donuts.Accounts
   alias Donuts.RoundPies.Donut
   alias Donuts.RoundPies
@@ -320,14 +324,6 @@ defmodule Donuts.SlackCommunicator do
         end
       end)
   end
-end
-
-defmodule Donuts.SlackCommunicator.Auth do
-  @redirect_uri_auth Application.get_env(:donuts, :redirect_uri_auth)
-  @client_id Application.get_env(:donuts, :client_id)
-  @client_secret Application.get_env(:donuts, :client_secret)
-
-  alias Donuts.Helpers.HTTPHelper
 
   def get_code(params) do
     params["code"]
