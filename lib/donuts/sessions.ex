@@ -38,11 +38,7 @@ defmodule Donuts.Sessions do
 
   def auth_user(token_info = %{"ok" => true, "user" => %{"id" => user_id}}) do
     if Accounts.get_by_slack_id(user_id) do
-<<<<<<< HEAD
       initialize_session(token_info)
-=======
-      make_session(token_info)
->>>>>>> 4129b4f8ae91876bb30cce214920e5c25f89b323
       {:ok, nil}
     else
       {:invalid_user, nil}
@@ -53,7 +49,6 @@ defmodule Donuts.Sessions do
     {:invalid_request, nil}
   end
 
-<<<<<<< HEAD
   def initialize_session(%{"access_token" => token, "user" => %{"id" => slack_id}}) do
     Donuts.Background.UserManager.assign_users()
 
@@ -75,36 +70,6 @@ defmodule Donuts.Sessions do
 
   defp active_token?(token) do
     !(check_token_activity(token) in [[], nil])
-=======
-  def make_session(response) do
-    token = response["access_token"]
-
-    Donuts.SlackCommunicator.get_all_users()
-    |> Donuts.Background.UserManager.assign_users()
-
-    user_id =
-      response["user"]["id"]
-      |> Accounts.get_by_slack_id()
-      |> Map.get(:id)
-
-    create_session(%{:token => token, :user_id => user_id})
-  end
-
-  def logged_in?(conn) do
-    session_token = conn |> Conn.get_session(:token)
-
-    if session_token do
-      active_tks = check_token_activity(session_token)
-
-      case active_tks do
-        [] -> false
-        nil -> false
-        _ -> true
-      end
-    else
-      false
-    end
->>>>>>> 4129b4f8ae91876bb30cce214920e5c25f89b323
   end
 
   def get_current_user_name(conn) do
@@ -112,7 +77,6 @@ defmodule Donuts.Sessions do
       conn 
         |> Conn.get_session(:token)
         |> check_token_activity()
-<<<<<<< HEAD
         |> get_name_from_token()
   end
 
@@ -131,31 +95,5 @@ defmodule Donuts.Sessions do
 
   def can_release?(conn, user_name) do
     user_name != get_current_user_name(conn)
-=======
-
-    case active_session_tokens do
-      [] ->
-        "Not active"
-
-      nil ->
-        "Not active"
-
-      _ ->
-        active_session_tokens
-        |> List.first()
-        |> Map.get(:user_id)
-        |> Accounts.get_by_id()
-        |> Map.get(:name)
-    end
-  end
-
-  def can_release?(conn, user_name) do
-    current_user = get_current_user_name(conn)
-    if (current_user == user_name) do
-      false
-    else
-      true
-    end
->>>>>>> 4129b4f8ae91876bb30cce214920e5c25f89b323
   end
 end
