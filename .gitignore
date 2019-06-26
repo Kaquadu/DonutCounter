@@ -1,5 +1,4 @@
 .DS_Store
 _build/
 deps/
-config/config.secret.exs
 assets/node_modules/
