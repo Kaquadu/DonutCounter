@@ -192,7 +192,7 @@ defmodule Donuts.SlackCommunicator do
     }
     |> RoundPies.create_donut()
 
-    message = "Successfully added donut debt! #{guilty} owes us some donuts!" |> URI.encode()
+    message = "Successfully added donut debt! <@#{target_id}> owes us some donuts!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
@@ -208,7 +208,7 @@ defmodule Donuts.SlackCommunicator do
     }
     |> RoundPies.create_donut()
 
-    message = "Successfully added donut debt! #{guilty} owes us some donuts!" |> URI.encode()
+    message = "Successfully added donut debt! <@#{target_id}> owes us some donuts!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
