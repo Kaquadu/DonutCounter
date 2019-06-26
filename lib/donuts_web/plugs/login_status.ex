@@ -15,7 +15,7 @@ defmodule DonutsWeb.Plugs.LoginStatus do
       conn
     else
       conn
-      |> put_flash(:info, "You have to login.")
+      |> put_flash(:info, "You have to log in.")
       |> redirect(to: Routes.session_path(conn, :sign_in))
     end
   end
