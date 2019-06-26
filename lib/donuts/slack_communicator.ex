@@ -181,9 +181,10 @@ defmodule Donuts.SlackCommunicator do
   end
 
   def add_donut({nil, sender_by_sid}, target_id) do
+    guilty = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
     %{
       sender: sender_by_sid.name,
-      guilty: Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      guilty: guilty,
       user_id: Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       expiration_date:
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
@@ -191,14 +192,15 @@ defmodule Donuts.SlackCommunicator do
     }
     |> RoundPies.create_donut()
 
-    message = "Succesfuly added donut debt!" |> URI.encode()
+    message = "Successfully added donut debt! #{guilty} owes us some donuts!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def add_donut({sender_by_rn, nil}, target_id) do
+    guilty = Accounts.get_by_slack_id(target_id) |> Map.get(:name)
     %{
       sender: sender_by_rn.name,
-      guilty: Accounts.get_by_slack_id(target_id) |> Map.get(:name),
+      guilty: guilty,
       user_id: Accounts.get_by_slack_id(target_id) |> Map.get(:id),
       expiration_date:
         DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
@@ -206,7 +208,7 @@ defmodule Donuts.SlackCommunicator do
     }
     |> RoundPies.create_donut()
 
-    message = "Succesfuly added donut debt!" |> URI.encode()
+    message = "Successfully added donut debt! #{guilty} owes us some donuts!" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
@@ -240,7 +242,7 @@ defmodule Donuts.SlackCommunicator do
   def process_release_donut(release_target) do
     case RoundPies.update_donut(release_target, %{:delivered => true}) do
       {:ok, donut} ->
-        message = "Released successfully!" |> URI.encode()
+        message = "Released successfully! Thanks for donuts, #{release_target.guilty}!" |> URI.encode()
         send_message_to_channel(@donuts_channel, message)
 
       {:error, %Ecto.Changeset{} = changeset} ->
