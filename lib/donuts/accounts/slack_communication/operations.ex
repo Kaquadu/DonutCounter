@@ -60,4 +60,8 @@ defmodule Donuts.Slack.Operations do
     message = "Self sending is forbidden. Do you wanna owe donuts to everyone..?" |> URI.encode()
     send_ephermal(message, user, channel_id)
   end
+
+  def message({:ok, "donuts", :list, message, user, channel_id}) do
+    send_ephermal(message, user, channel_id)
+  end
 end
