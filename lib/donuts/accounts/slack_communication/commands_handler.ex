@@ -33,6 +33,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def process_slack_command("/donuts", ["release", target_name | params], from_id, channel_id)
     when params == [] do
+      target_name = target_name |> String.trim("@") |> IO.inspect
       target = Accounts.get_by_slack_name(target_name)
       check_self_sending(target.id, from_id)
       |> release_donut(target, from_id, channel_id)
