@@ -52,8 +52,7 @@ defmodule Donuts.RoundPies do
     from(d in Donut,
         where: d.delivered == false,
         where: d.user_id == ^id,
-        order_by: d.inserted_at,
-        limit: 1
+        order_by: d.inserted_at
       )
     ) |> List.first()
   end
