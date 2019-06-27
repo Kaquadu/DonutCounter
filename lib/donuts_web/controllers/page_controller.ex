@@ -7,6 +7,7 @@ defmodule DonutsWeb.PageController do
   alias Donuts.Helpers.Auth
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.RoundPies
+  alias Donuts.Slack
 
   plug(DonutsWeb.Plugs.LoginStatus when action in [:index, :logged_in, :add_donut, :user_view])
 
@@ -37,13 +38,13 @@ defmodule DonutsWeb.PageController do
     conn |> send_resp(200, params["challange"])
   end
 
-  def event_handler(conn, %{"event" => event}) do
-    Donuts.RoundPies.handle_slack_event(event)
-    conn |> send_resp(200, "")
-  end
+  # def event_handler(conn, %{"event" => event}) do
+  #   Slack.CommandsHandler.handle_slack_event(event)
+  #   conn |> send_resp(200, "")
+  # end
 
   def event_handler(conn, command) do
-    Donuts.RoundPies.handle_slack_command(command)
+    Slack.CommandsHandler.handle_slack_command(command)
     conn |> send_resp(200, "")
   end
 
