@@ -145,7 +145,7 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def save_remove(remove_target, target, from_id, channel_id) do
-      RoundPies.delete_donut()
+      RoundPies.delete_donut(remove_target)
       message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
       {:ok, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
     end
