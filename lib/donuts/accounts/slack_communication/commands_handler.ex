@@ -35,8 +35,7 @@ defmodule Donuts.Slack.CommandsHandler do
     when params == [] do
       target_name = target_name |> String.trim("@") |> IO.inspect
       target = Accounts.get_by_slack_name(target_name)
-      check_self_sending(target.id, from_id)
-      |> release_donut(target, from_id, channel_id)
+      initialize_release(target, from_id, channel_id)
     end
 
     def process_slack_command("/donuts", ["remove", target_name | params], from_id, channel_id)
@@ -74,6 +73,26 @@ defmodule Donuts.Slack.CommandsHandler do
       |> Operations.message()
     end
 
+    def initialize_release(target, from_id, channel_id) do
+      check_self_sending(target.id, from_id)
+      |> release_donut(target, from_id, channel_id)
+    end
+
+    def initialize_release(target, from_id, channel_id) when target == [] or target == nil do
+      message = "Wrong name of release target." |> URI.encode()
+      {:error, "donuts", :release, from_id, message, channel_id} |> Operations.message()
+    end
+
+    def initialize_remove(target, from_id, channel_id) do
+      check_self_sending(target.id, from_id)
+      |> remove_donut(target, from_id, channel_id)
+    end
+
+    def initialize_remove(target, from_id, channel_id) when target == [] or target == nil do
+      message = "Wrong name of remove target." |> URI.encode()
+      {:error, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
+    end
+
     def add_donut(false, guilty, sender_name, channel_id) do
       %{
         sender: sender_name,
@@ -105,6 +124,20 @@ defmodule Donuts.Slack.CommandsHandler do
       end
     end
 
+    def remove_donut(false, target, from_id, channel_id) do
+      release_target =
+        target.id
+        |> RoundPies.get_newest_active_donut()
+        |> RoundPies.delete_donut()
+        message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
+        {:ok, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
+    end
+
+    def remove_donut(true, target, from_id, channel_id) do
+        message = "Self remove is forbidden ;)." |> URI.encode()
+        {:error, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
+    end
+
     def release_donut(true, target, from_id, channel_id) do
       message = "Self release is forbidden ;)" |> URI.encode()
       {:error, "donuts", :release, from_id, message, channel_id} |> Operations.message()
@@ -118,16 +151,16 @@ defmodule Donuts.Slack.CommandsHandler do
           delivered = donut.delivered
   
           if delivered == false do
-            message = "#{message} Guilty: #{donut.guilty} \n"
-            message = "#{message} Sender: #{donut.sender} \n"
+            message = "#{message}\n> Guilty: #{donut.guilty} \n"
+            message = "#{message}\n> Sender: #{donut.sender} \n"
   
             exp_date =
               donut.expiration_date
               |> DateTime.to_date()
               |> Date.to_string()
   
-            message = "#{message} Expiration date: #{exp_date} \n"
-            message = "#{message} ----------------------------------------------------- \n"
+            message = "#{message}\n> Expiration date: #{exp_date} \n"
+            message = "#{message} ---------------------------------- \n"
           else
             message
           end
