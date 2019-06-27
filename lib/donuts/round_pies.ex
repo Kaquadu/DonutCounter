@@ -47,9 +47,10 @@ defmodule Donuts.RoundPies do
     |> length()
   end
 
-  def get_oldest_donut(id) do
+  def get_oldest_active_donut(id) do
     Repo.all(
     from(d in Donut,
+        where: d.delivered == false,
         where: d.user_id == ^id,
         order_by: d.inserted_at,
         limit: 1
