@@ -55,7 +55,7 @@ defmodule Donuts.RoundPies do
         order_by: d.inserted_at,
         limit: 1
       )
-    )
+    ) |> List.first()
   end
 
   def count_delivered_donuts(id) do
