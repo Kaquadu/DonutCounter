@@ -26,7 +26,7 @@ defmodule Donuts.Slack.CommandsHandler do
     def handle_slack_command(_params), do: :unhandled
 
     def process_slack_command("/donuts", ["list" | params], from_id, channel_id)
-    when params == [] and name != nil do
+    when params == [] do
       message = get_active_donuts()
       {:ok, "donuts", :list, message, from_id, channel_id}
     end
