@@ -57,6 +57,16 @@ defmodule Donuts.RoundPies do
     ) |> List.first()
   end
 
+  def get_newest_active_donut(id) do
+    Repo.all(
+    from(d in Donut,
+        where: d.delivered == false,
+        where: d.user_id == ^id,
+        order_by: d.inserted_at
+      )
+    ) |> List.last()
+  end
+
   def count_delivered_donuts(id) do
     Repo.all(
       from(d in Donut,
