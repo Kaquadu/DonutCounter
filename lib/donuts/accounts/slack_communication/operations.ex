@@ -23,6 +23,14 @@ defmodule Donuts.Slack.Operations do
     |> HTTPHelper.get_body()
   end
 
+  def send_ephermal(message, receiver) do
+    attachments = %{
+      pretext: "pretext"
+      text: message
+    } |> Poison.encode() |> URI.encode()
+    "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{@donuts_channel}&attachments=#{attachments}&text=#{message}&user=#{receiver}"
+  end
+
   def get_code(params) do
     params["code"]
   end
@@ -37,13 +45,14 @@ defmodule Donuts.Slack.Operations do
   end
 
   def message({:ok, "donuts", sender_name, guilty}) do
-    message = "<@channel> Mmmmm... #{guilty} just owes us some donuts thanks to #{sender_name}'s vigilance" |> URI.encode()
+    message = "Mmmmm... <@#{guilty}> just owes us some donuts thanks to <@#{sender_name}>'s vigilance" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
-  def message({:error, "donuts", :wrong_user}) do
+  def message({:error, "donuts", :wrong_user, user}) do
     message = "Wrong user" |> URI.encode()
-    send_message_to_channel(@donuts_channel, message)
+    send_ephermal(message, user)
+    #send_message_to_channel(@donuts_channel, message)
   end
 
   def message({:error, "donuts", :self_sending}) do

@@ -24,9 +24,9 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def handle_slack_command(_params), do: :unhandled
 
-    def process_slack_command("/donuts", [name | params], sender_id)
+    def process_slack_command("/donuts", [name | params], from_id)
     when params == [] and name != nil do
-        process_adding_donut(name, sender_id)
+        process_adding_donut(name, from_id)
     end
 
     def process_slack_command(_), do: :unhandled
@@ -39,8 +39,8 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def check_self_sending(sender, receiver), do: (sender == receiver)
 
-    def initialize_donut(sender, _) when sender == [] or sender == nil do
-      {:error, "donuts", :wrong_user} |> Operations.message()
+    def initialize_donut(sender, target_id) when sender == [] or sender == nil do
+      {:error, "donuts", :wrong_user, target_id} |> Operations.message()
     end
 
     def initialize_donut(sender, target_id) do
@@ -64,6 +64,6 @@ defmodule Donuts.Slack.CommandsHandler do
       {:ok, "donuts", sender_name, guilty.slack_name}
     end
 
-    def add_donut(true, _), do: {:error, "donuts", :self_sending}
+    def add_donut(true, guilty, _), do: {:error, "donuts", :self_sending, guilty.slack_id}
 
 end
