@@ -42,8 +42,8 @@ defmodule DonutsWeb.PageController do
     conn |> send_resp(200, "")
   end
 
-  def event_handler(conn, params) do
-    params |> IO.inspect
+  def event_handler(conn, command) do
+    Donuts.RoundPies.handle_slack_command(command)
     conn |> send_resp(200, "")
   end
 
