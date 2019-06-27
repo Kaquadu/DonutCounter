@@ -25,7 +25,7 @@ defmodule Donuts.Slack.Operations do
 
   def send_ephermal(message, receiver) do
     attachments = %{
-      pretext: "pretext"
+      pretext: "pretext",
       text: message
     } |> Poison.encode() |> URI.encode()
     "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{@donuts_channel}&attachments=#{attachments}&text=#{message}&user=#{receiver}"
