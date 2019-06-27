@@ -24,8 +24,8 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def handle_slack_command(_params), do: :unhandled
 
-    def process_slack_command(command, [name | params], sender_id)
-    when command == "donuts" and params == [] and name != nil do
+    def process_slack_command("/donuts", [name | params], sender_id)
+    when params == [] and name != nil do
         process_adding_donut(name, sender_id)
     end
 
