@@ -92,7 +92,7 @@ defmodule Donuts.Slack.CommandsHandler do
     def release_donut(false, target, from_id, channel_id) do
       release_target =
         target.id
-        |> RoundPies.get_oldest_donut()
+        |> RoundPies.get_oldest_active_donut()
 
       case RoundPies.update_donut(release_target, %{:delivered => true}) do
         {:ok, donut} ->
