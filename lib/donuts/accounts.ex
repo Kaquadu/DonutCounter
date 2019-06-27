@@ -16,6 +16,10 @@ defmodule Donuts.Accounts do
     Repo.get_by(User, slack_id: slack_id)
   end
 
+  def get_by_slack_name(slack_name) do
+    Rego.get_by(User, slack_name: slack_name)
+  end
+
   def get_by_real_name(real_name) do
     Repo.get_by(User, name: real_name)
   end
@@ -24,6 +28,16 @@ defmodule Donuts.Accounts do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
   end
 
   def get_statistics() do

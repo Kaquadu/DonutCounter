@@ -1,6 +1,7 @@
 defmodule Donuts.Background.UserManager do
   use GenServer
   alias Donuts.Accounts
+  alias Donuts.Slack
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, [])
@@ -33,7 +34,7 @@ defmodule Donuts.Background.UserManager do
   end
 
   def assign_users() do
-    Donuts.SlackCommunicator.get_all_users()
+    Slack.Operations.get_all_users()
       |> Map.get("members")
       |> update_users()
   end
@@ -42,16 +43,39 @@ defmodule Donuts.Background.UserManager do
   def update_users(members) when length(members) == 0, do: :ok
 
   def update_users(members) do
-    members |> IO.inspect
+    members
     |> Enum.each(fn usr_raw ->
       slack_id = usr_raw["id"]
       if !Accounts.get_by_slack_id(slack_id) and usr_raw["deleted"] == false and usr_raw["id"] != "USLACKBOT" do
         %{"slack_id" => usr_raw["id"], 
+          "name" => usr_raw["profile"]["real_name"], 
+          "is_admin" => usr_raw["is_admin"], 
+          "slack_name" => slack_name = usr_raw["name"]}
+          |> Accounts.create_user()
+      end
+    end)
+  end
+
+  def update_user([], usr_raw) do
+    if (usr_raw["id"] != "USLACKBOT") do
+      %{"slack_id" => usr_raw["id"], 
         "name" => usr_raw["profile"]["real_name"], 
         "is_admin" => usr_raw["is_admin"], 
         "slack_name" => slack_name = usr_raw["name"]}
         |> Accounts.create_user()
-      end
-    end)
+    end
+  end
+
+  def update_user(db_usr, usr_raw) do
+    case usr_raw["deleted"] do
+      false ->
+        attrs = %{"slack_id" => usr_raw["id"], 
+          "name" => usr_raw["profile"]["real_name"], 
+          "is_admin" => usr_raw["is_admin"], 
+          "slack_name" => slack_name = usr_raw["name"]}
+        Accounts.update_user(db_usr, attrs)
+      true ->
+        Accounts.delete_user(db_usr)
+    end
   end
 end

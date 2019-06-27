@@ -3,4 +3,3 @@ _build/
 deps/
 config/config.secret.exs
 assets/node_modules/
-lib/donuts/slack_communicator.ex.old
