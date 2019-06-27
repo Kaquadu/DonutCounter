@@ -32,6 +32,7 @@ defmodule Donuts.Slack.CommandsHandler do
     def process_slack_command(_), do: :unhandled
 
     def process_adding_donut(sender_name, target_id) do
+      sender_name |> IO.inspect
       sender = Accounts.get_by_slack_name(sender_name)    
       initialize_donut(sender, target_id)
     end
