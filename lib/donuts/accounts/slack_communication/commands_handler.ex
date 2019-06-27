@@ -19,13 +19,19 @@ defmodule Donuts.Slack.CommandsHandler do
     "text" => params,
     "user_id" => sender_id,
     "channel_id" => channel_id}) do
-        cmd_params = params |> String.split(" ", trim: true)
+        cmd_params = params |> String.split(" ", trim: true) |> IO.inspect
         process_slack_command(command, cmd_params, sender_id, channel_id)
     end
 
     def handle_slack_command(_params), do: :unhandled
 
     def process_slack_command("/donuts", ["list" | params], from_id, channel_id)
+    when params == [] do
+      message = get_active_donuts() |> URI.encode()
+      {:ok, "donuts", :list, message, from_id, channel_id}
+    end
+
+    def process_slack_command("/donuts", ["release", target | params], from_id, channel_id)
     when params == [] do
       message = get_active_donuts() |> URI.encode()
       {:ok, "donuts", :list, message, from_id, channel_id}
