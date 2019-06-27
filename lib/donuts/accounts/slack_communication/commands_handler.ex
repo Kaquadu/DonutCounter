@@ -31,11 +31,11 @@ defmodule Donuts.Slack.CommandsHandler do
       {:ok, "donuts", :list, message, from_id, channel_id} |> Operations.message()
     end
 
-    def process_slack_command("/donuts", ["release", target | params], from_id, channel_id)
+    def process_slack_command("/donuts", ["release", target_name | params], from_id, channel_id)
     when params == [] do
-      from_id |> IO.inspect
-      message = get_active_donuts() |> URI.encode()
-      {:ok, "donuts", :list, message, from_id, channel_id}
+      target = Accounts.get_by_slack_name(target_name)
+      check_self_sending(target.id, from_id)
+      |> release_donut(target, from_id, channel_id)
     end
 
     def process_slack_command("/donuts", [name | params], from_id, channel_id)
@@ -54,7 +54,7 @@ defmodule Donuts.Slack.CommandsHandler do
     def check_self_sending(sender, receiver), do: (sender == receiver)
 
     def initialize_donut(sender, target_id, channel_id) when sender == [] or sender == nil do
-      {:error, "donuts", :wrong_user, target_id, channel_id} |> Operations.message()
+      {:error, "donuts", :add, target_id, channel_id} |> Operations.message()
     end
 
     def initialize_donut(sender, target_id, channel_id) do
@@ -78,7 +78,28 @@ defmodule Donuts.Slack.CommandsHandler do
       {:ok, "donuts", sender_name, guilty.slack_name, channel_id}
     end
 
-    def add_donut(true, guilty, sender, channel_id), do: {:error, "donuts", :self_sending, guilty.slack_id, channel_id}
+    def add_donut(true, guilty, sender, channel_id), do: {:self_sending, "donuts", :add, guilty.slack_id, channel_id}
+
+    def release_donut(false, target, from_id, channel_id) do
+      release_target =
+        target.id
+        |> RoundPies.get_odlest_donut()
+
+      case RoundPies.update_donut(release_target, %{:delivered => true}) do
+        {:ok, donut} ->
+          message = "Donuts delivered - confirmed by <@#{from_id}>! Thanks <@#{release_target.slack_name}>!" |> URI.encode()
+          {:ok, "donuts", :release, from_id, message, channel_id} => Operations.message()
+  
+        {:error, %Ecto.Changeset{} = changeset} ->
+          message = "Oops! Error in changeset!" |> URI.encode()
+          {:error, "donuts", :release, from_id, message, channel_id} |> Operations.message()
+      end
+    end
+
+    def release_donut(true, target, from_id, channel_id) do
+      message = "Self release is forbidden ;)" |> URI.encode()
+      {:error, "donuts", :release, from_id, message, channel_id} |> Operations.message()
+    end
 
     def get_active_donuts() do
       active_donuts =
@@ -97,7 +118,7 @@ defmodule Donuts.Slack.CommandsHandler do
               |> Date.to_string()
   
             message = "#{message} Expiration date: #{exp_date} \n"
-            "-----------------------------------------------------"
+            message = "#{message} -----------------------------------------------------"
           else
             message
           end
