@@ -88,7 +88,7 @@ defmodule Donuts.Slack.CommandsHandler do
       case RoundPies.update_donut(release_target, %{:delivered => true}) do
         {:ok, donut} ->
           message = "Donuts delivered - confirmed by <@#{from_id}>! Thanks <@#{release_target.slack_name}>!" |> URI.encode()
-          {:ok, "donuts", :release, from_id, message, channel_id} => Operations.message()
+          {:ok, "donuts", :release, from_id, message, channel_id} |> Operations.message()
   
         {:error, %Ecto.Changeset{} = changeset} ->
           message = "Oops! Error in changeset!" |> URI.encode()
