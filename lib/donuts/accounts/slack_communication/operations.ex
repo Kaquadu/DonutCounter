@@ -62,6 +62,6 @@ defmodule Donuts.Slack.Operations do
   end
 
   def message({:ok, "donuts", :list, message, user, channel_id}) do
-    send_ephermal(message, user, channel_id) |> IO.inspect
+    send_ephermal(message, user, channel_id)
   end
 end
