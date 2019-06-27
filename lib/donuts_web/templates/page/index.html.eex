@@ -41,6 +41,8 @@
         <tr>
           <th>Name</th>
 
+          <th>Slack name</th>
+
           <th>Total</th>
 
           <th>Delivered</th>
@@ -56,6 +58,8 @@
         <%= for user <- @stats do %>
             <tr>
               <td><%= user.username %></td>
+
+              <td><%= user.slack_name%></td>
 
               <td><%= user.total_donuts %></td>
 
