@@ -24,7 +24,7 @@ defmodule Donuts.Slack.Operations do
   end
 
   def send_ephermal(message, receiver) do
-    attachments = %{
+    {status, attachments} = %{
       pretext: "pretext",
       text: message
     } |> Poison.encode()
