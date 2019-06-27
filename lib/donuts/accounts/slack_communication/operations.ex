@@ -37,17 +37,17 @@ defmodule Donuts.Slack.Operations do
   end
 
   def message({:ok, "donuts", sender_name, guilty}) do
-    message = "<@channel> Mmmmm... #{guilty} just owes us some donuts thanks to #{sender_name}'s vigilance"
+    message = "<@channel> Mmmmm... #{guilty} just owes us some donuts thanks to #{sender_name}'s vigilance" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def message({:error, "donuts", :wrong_user}) do
-    message = "Wrong user"
+    message = "Wrong user" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 
   def message({:error, "donuts", :self_sending}) do
-    message = "Self sending"
+    message = "Self sending" |> URI.encode()
     send_message_to_channel(@donuts_channel, message)
   end
 end
