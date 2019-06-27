@@ -45,6 +45,7 @@ defmodule Donuts.Background.UserManager do
     members |> IO.inspect
     |> Enum.each(fn usr_raw ->
       slack_id = usr_raw["id"]
+      slack_name = usr_raw["name"] #this is unical name
 
       if slack_id != "USLACKBOT" and !Accounts.get_by_slack_id(slack_id) do
         slack_id = usr_raw["id"]
