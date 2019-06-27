@@ -112,7 +112,16 @@ defmodule Donuts.Slack.CommandsHandler do
       release_target =
         target.id
         |> RoundPies.get_oldest_active_donut()
+        |> save_release(target, from_id, channel_id)
+      end
+    end
 
+    def save_release(nil, target, from_id, channel_id) do
+      message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
+      {:error, "donuts", :release, from_id, message, channel_id} |> Operations.message()
+    end
+
+    def save_release(release_target, target, from_id, channel_id) do
       case RoundPies.update_donut(release_target, %{:delivered => true}) do
         {:ok, donut} ->
           message = "Donuts delivered - confirmed by <@#{from_id}>! Thanks <@#{target.slack_name}>!" |> URI.encode()
@@ -125,10 +134,19 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def remove_donut(false, target, from_id, channel_id) do
-      release_target =
+      remove_target =
         target.id
         |> RoundPies.get_newest_active_donut()
-        |> RoundPies.delete_donut()
+        |> save_remove(target, from_id, channel_id)
+    end
+
+    def save_remove(nil, target, from_id, channel_id) do
+      message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
+      {:error, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
+    end
+
+    def save_remove(remove_target, target, from_id, channel_id) do
+      RoundPies.delete_donut()
         message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
         {:ok, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
     end
