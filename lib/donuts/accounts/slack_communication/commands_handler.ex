@@ -110,6 +110,10 @@ defmodule Donuts.Slack.CommandsHandler do
       {:error, "donuts", :release, from_id, message, channel_id} |> Operations.message()
     end
 
+    def remove_donut(target, from_id, channel_id)) do
+      
+    end
+
     def get_active_donuts() do
       active_donuts =
         RoundPies.get_all()
