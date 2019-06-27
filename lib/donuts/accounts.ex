@@ -45,7 +45,7 @@ defmodule Donuts.Accounts do
     |> Enum.reduce([], fn user, stats_list ->
       user_stats = %{
         :username => user.name,
-        :slack_id => user.slack_id,
+        :slack_name => user.slack_name,
         :total_donuts => RoundPies.count_all_donuts(user.id),
         :delivered_donuts => RoundPies.count_delivered_donuts(user.id),
         :expired_donuts => RoundPies.count_expired_donuts(user.id),
