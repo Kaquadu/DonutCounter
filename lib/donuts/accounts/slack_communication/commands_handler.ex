@@ -33,6 +33,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def process_slack_command("/donuts", ["release", target | params], from_id, channel_id)
     when params == [] do
+      from_id |> IO.inspect
       message = get_active_donuts() |> URI.encode()
       {:ok, "donuts", :list, message, from_id, channel_id}
     end
