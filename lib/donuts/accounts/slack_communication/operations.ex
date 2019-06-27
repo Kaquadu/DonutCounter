@@ -51,13 +51,13 @@ defmodule Donuts.Slack.Operations do
   end
 
   def message({:error, "donuts", :wrong_user, user}) do
-    message = "Wrong user" |> URI.encode()
+    message = "I'm sorry, it seems you picked a wrong username :sadface:" |> URI.encode()
     send_ephermal(message, user)
     #send_message_to_channel(@donuts_channel, message)
   end
 
-  def message({:error, "donuts", :self_sending}) do
-    message = "Self sending" |> URI.encode()
-    send_message_to_channel(@donuts_channel, message)
+  def message({:error, "donuts", :self_sending, user}) do
+    message = "Self sending is forbidden. Do you wanna owe donuts to everyone..?" |> URI.encode()
+    send_ephermal(message, user)
   end
 end
