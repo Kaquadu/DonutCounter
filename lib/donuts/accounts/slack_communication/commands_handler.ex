@@ -17,41 +17,42 @@ defmodule Donuts.Slack.CommandsHandler do
     def handle_slack_command(%{
     "command" => command,
     "text" => params,
-    "user_id" => sender_id}) do
+    "user_id" => sender_id,
+    "channel_id" => channel_id}) do
         cmd_params = params |> String.split(" ", trim: true)
-        process_slack_command(command, cmd_params, sender_id)
+        process_slack_command(command, cmd_params, sender_id, channel_id)
     end
 
     def handle_slack_command(_params), do: :unhandled
 
-    def process_slack_command("/donuts", [name | params], from_id)
+    def process_slack_command("/donuts", [name | params], from_id, channel_id)
     when params == [] and name != nil do
-        process_adding_donut(name, from_id)
+        process_adding_donut(name, from_id, channel_id)
     end
 
     def process_slack_command(_), do: :unhandled
 
-    def process_adding_donut(sender_name, target_id) do
+    def process_adding_donut(sender_name, target_id, channel_id) do
       sender_name = sender_name |> String.trim("@") |> IO.inspect
       sender = Accounts.get_by_slack_name(sender_name)    
-      initialize_donut(sender, target_id)
+      initialize_donut(sender, target_id, channel_id)
     end
 
     def check_self_sending(sender, receiver), do: (sender == receiver)
 
-    def initialize_donut(sender, target_id) when sender == [] or sender == nil do
-      {:error, "donuts", :wrong_user, target_id} |> Operations.message()
+    def initialize_donut(sender, target_id, channel_id) when sender == [] or sender == nil do
+      {:error, "donuts", :wrong_user, target_id, channel_id} |> Operations.message()
     end
 
-    def initialize_donut(sender, target_id) do
+    def initialize_donut(sender, target_id, channel_id) do
       guilty = Accounts.get_by_slack_id(target_id)
 
       check_self_sending(guilty.name, sender.name)
-      |> add_donut(guilty, sender.name)
+      |> add_donut(guilty, sender.name, channel_id)
       |> Operations.message()
     end
 
-    def add_donut(false, guilty, sender_name) do
+    def add_donut(false, guilty, sender_name, channel_id) do
       %{
         sender: sender_name,
         guilty: guilty.name,
@@ -61,9 +62,9 @@ defmodule Donuts.Slack.CommandsHandler do
         delivered: false
       }
       |> RoundPies.create_donut()
-      {:ok, "donuts", sender_name, guilty.slack_name}
+      {:ok, "donuts", sender_name, guilty.slack_name, channel_id}
     end
 
-    def add_donut(true, guilty, _), do: {:error, "donuts", :self_sending, guilty.slack_id}
+    def add_donut(true, guilty, sender, channel_id), do: {:error, "donuts", :self_sending, guilty.slack_id, channel_id}
 
 end
