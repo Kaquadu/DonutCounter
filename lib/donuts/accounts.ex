@@ -17,7 +17,7 @@ defmodule Donuts.Accounts do
   end
 
   def get_by_slack_name(slack_name) do
-    Rego.get_by(User, slack_name: slack_name)
+    Repo.get_by(User, slack_name: slack_name)
   end
 
   def get_by_real_name(real_name) do
