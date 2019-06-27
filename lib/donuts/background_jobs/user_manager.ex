@@ -46,13 +46,7 @@ defmodule Donuts.Background.UserManager do
     members
     |> Enum.each(fn usr_raw ->
       slack_id = usr_raw["id"]
-      if !Accounts.get_by_slack_id(slack_id) and usr_raw["deleted"] == false and usr_raw["id"] != "USLACKBOT" do
-        %{"slack_id" => usr_raw["id"], 
-          "name" => usr_raw["profile"]["real_name"], 
-          "is_admin" => usr_raw["is_admin"], 
-          "slack_name" => slack_name = usr_raw["name"]}
-          |> Accounts.create_user()
-      end
+      Accounts.get_by_slack_id(slack_id) |> update_user(usr_raw)
     end)
   end
 
