@@ -1,6 +1,6 @@
 defmodule Donuts.Background.ExpirationChecker do
   use GenServer
-  alias Donuts.SlackCommunicator
+  alias Donuts.Slack
   @minutes Application.get_env(:donuts, :donuts_checker_minutes)
 
   def start_link(_) do
@@ -41,7 +41,7 @@ defmodule Donuts.Background.ExpirationChecker do
       end)
       |> URI.encode()
 
-    SlackCommunicator.send_message_to_channel("general", mess)
+    Slack.Operations.send_message_to_channel("general", mess)
   end
 
   def schedule(time) do
