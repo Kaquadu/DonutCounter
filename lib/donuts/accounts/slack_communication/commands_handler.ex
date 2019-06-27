@@ -113,7 +113,6 @@ defmodule Donuts.Slack.CommandsHandler do
         target.id
         |> RoundPies.get_oldest_active_donut()
         |> save_release(target, from_id, channel_id)
-      end
     end
 
     def save_release(nil, target, from_id, channel_id) do
@@ -147,8 +146,8 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def save_remove(remove_target, target, from_id, channel_id) do
       RoundPies.delete_donut()
-        message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
-        {:ok, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
+      message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
+      {:ok, "donuts", :remove, from_id, message, channel_id} |> Operations.message()
     end
 
     def remove_donut(true, target, from_id, channel_id) do
