@@ -42,6 +42,11 @@ defmodule DonutsWeb.PageController do
     conn |> send_resp(200, "")
   end
 
+  def event_handler(conn, params) do
+    params |> IO.inspect
+    conn |> send_resp(200, "")
+  end
+
   def add_donut(conn, %{"donut" => %{"sender_name" => sender_name}}) do
     target_name = Sessions.get_current_user_name(conn)
     process_add_donut(conn, sender_name, target_name)
