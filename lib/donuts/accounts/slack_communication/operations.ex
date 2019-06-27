@@ -29,6 +29,7 @@ defmodule Donuts.Slack.Operations do
       text: message
     } |> Poison.encode()
     "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{@donuts_channel}&attachments=#{attachments}&text=#{message}&user=#{receiver}"
+    |> HTTPHelper.get_body()
   end
 
   def get_code(params) do
