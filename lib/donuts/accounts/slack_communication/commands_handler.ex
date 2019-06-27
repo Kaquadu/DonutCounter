@@ -96,7 +96,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
       case RoundPies.update_donut(release_target, %{:delivered => true}) do
         {:ok, donut} ->
-          message = "Donuts delivered - confirmed by <@#{from_id}>! Thanks <@#{release_target.slack_name}>!" |> URI.encode()
+          message = "Donuts delivered - confirmed by <@#{from_id}>! Thanks <@#{target.slack_name}>!" |> URI.encode()
           {:ok, "donuts", :release, from_id, message, channel_id} |> Operations.message()
   
         {:error, %Ecto.Changeset{} = changeset} ->
@@ -108,10 +108,6 @@ defmodule Donuts.Slack.CommandsHandler do
     def release_donut(true, target, from_id, channel_id) do
       message = "Self release is forbidden ;)" |> URI.encode()
       {:error, "donuts", :release, from_id, message, channel_id} |> Operations.message()
-    end
-
-    def remove_donut(target, from_id, channel_id)) do
-      
     end
 
     def get_active_donuts() do
