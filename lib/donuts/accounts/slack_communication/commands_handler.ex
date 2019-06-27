@@ -119,7 +119,7 @@ defmodule Donuts.Slack.CommandsHandler do
               |> Date.to_string()
   
             message = "#{message} Expiration date: #{exp_date} \n"
-            message = "#{message} -----------------------------------------------------"
+            message = "#{message} ----------------------------------------------------- \n"
           else
             message
           end
