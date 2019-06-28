@@ -123,6 +123,11 @@ defmodule Donuts.Slack.CommandsHandler do
         |> save_release(target, from_id, channel_id)
     end
 
+    def release_donut(true, target, from_id, channel_id) do
+      message = "Self release is forbidden ;)" |> URI.encode()
+      {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    end
+
     def save_release(nil, target, from_id, channel_id) do
       message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
       {:error, "donuts", from_id, message, channel_id} |> Operations.message()
@@ -147,6 +152,11 @@ defmodule Donuts.Slack.CommandsHandler do
         |> save_remove(target, from_id, channel_id)
     end
 
+    def remove_donut(true, target, from_id, channel_id) do
+      message = "Self remove is forbidden ;)" |> URI.encode()
+      {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    end
+
     def save_remove(nil, target, from_id, channel_id) do
       message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
       {:error, "donuts", from_id, message, channel_id} |> Operations.message()
@@ -156,16 +166,6 @@ defmodule Donuts.Slack.CommandsHandler do
       RoundPies.delete_donut(remove_target)
       message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
       {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
-    end
-
-    def remove_donut(true, target, from_id, channel_id) do
-        message = "Self remove is forbidden ;)" |> URI.encode()
-        {:error, "donuts", from_id, message, channel_id} |> Operations.message()
-    end
-
-    def release_donut(true, target, from_id, channel_id) do
-      message = "Self release is forbidden ;)" |> URI.encode()
-      {:error, "donuts", from_id, message, channel_id} |> Operations.message()
     end
 
     def get_active_donuts() do
