@@ -11,12 +11,16 @@ defmodule DonutsWeb.Plugs.LoginStatus do
       |> get_session(:token)
       |> Sessions.check_token_activity()
 
-    if active_token != [] do
-      conn
-    else
-      conn
+    manage_session(conn, active_token)
+  end
+
+  def manage_session(conn, active_token) when active_token == nil or active_token == [] do
+    conn
       |> put_flash(:info, "You have to log in.")
       |> redirect(to: Routes.session_path(conn, :sign_in))
-    end
+  end
+
+  def manage_session(conn, active_token) do
+    conn
   end
 end
