@@ -67,7 +67,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def initialize_donut(sender, target_id, channel_id) when sender == [] or sender == nil do
       message = "I'm sorry, it seems you picked a wrong username :(" |> URI.encode()
-      {:error, "donuts", sender.slack_name, message channel_id} |> Operations.message()
+      {:error, "donuts", sender.slack_name, message, channel_id} |> Operations.message()
     end
 
     def initialize_donut(sender, target_id, channel_id) do
