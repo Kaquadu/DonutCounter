@@ -70,8 +70,8 @@ defmodule Donuts.Slack.CommandsHandler do
   def process_slack_command("/donuts", params, from_id, channel_id), do: :unhandled
 
   def process_adding_donut(sender_name, target_id, channel_id) do
-    sender_name = sender_name |> String.trim("@") |> IO.inspect
-    sender = Accounts.get_by_slack_name(sender_name) |> IO.inspect
+    sender_name = sender_name |> String.trim("@")
+    sender = Accounts.get_by_slack_name(sender_name)
     initialize_donut(sender, target_id, channel_id)
   end
 
@@ -83,15 +83,10 @@ defmodule Donuts.Slack.CommandsHandler do
   end
 
   def initialize_donut(sender, target_id, channel_id) do
-    guilty = Accounts.get_by_slack_id(target_id) |> IO.inspect
+    guilty = Accounts.get_by_slack_id(target_id)
 
     check_self_sending(guilty.name, sender.name)
     |> add_donut(guilty, sender, channel_id)
-  end
-
-  def initialize_release(target, from_id, channel_id) do
-    check_self_sending(target.slack_id, from_id)
-    |> release_donut(target, from_id, channel_id)
   end
 
   def initialize_release(target, from_id, channel_id) when target == [] or target == nil do
@@ -99,14 +94,19 @@ defmodule Donuts.Slack.CommandsHandler do
     {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
-  def initialize_remove(target, from_id, channel_id) do
+  def initialize_release(target, from_id, channel_id) do
     check_self_sending(target.slack_id, from_id)
-    |> remove_donut(target, from_id, channel_id)
+    |> release_donut(target, from_id, channel_id)
   end
 
   def initialize_remove(target, from_id, channel_id) when target == [] or target == nil do
     message = "Wrong name of remove target." |> URI.encode()
     {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+  
+  def initialize_remove(target, from_id, channel_id) do
+    check_self_sending(target.slack_id, from_id)
+    |> remove_donut(target, from_id, channel_id)
   end
 
   def add_donut(false, guilty, sender, channel_id) do
