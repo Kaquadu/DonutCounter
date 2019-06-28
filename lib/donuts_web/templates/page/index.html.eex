@@ -18,7 +18,7 @@
     <h2>List of commands</h2>
     <hr>
     <ul>
-      <li><strong>/donuts @your-name</strong> - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know to whom we owe delicious donuts</li>
+      <li><strong>/donuts @your-name</strong> - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know who is the cause of delicious donuts</li>
       <li><strong>/donuts release @name-of-guilty</strong> - releases the odlest guilty's debt marking it as delivered</li>
       <li><strong>/donuts remove @name-of-guilty</strong> - removes the newest guilty's debt and removes it from statistics, used in case of mistakes</li>
       <li><strong>/donuts help</strong> - displays list of commands</li>
