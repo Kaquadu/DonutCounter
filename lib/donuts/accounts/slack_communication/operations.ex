@@ -28,7 +28,7 @@ defmodule Donuts.Slack.Operations do
       type: "section",
       pretext: "Hey kid, do you wanna buy some donuts..? :wink:" |> URI.encode(),
       color: "good",
-      text: {
+      text: %{
         type: "mrkdwn",
         text: message
       }
