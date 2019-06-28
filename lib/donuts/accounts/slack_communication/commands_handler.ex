@@ -55,7 +55,7 @@ defmodule Donuts.Slack.CommandsHandler do
       _/donuts remove @name_of_guilty_ - removes the newest debt of of @name_of_guildy and removes it from statistics, used in case of mistakes \n
       _/donuts help_ - displays list of commands \n
       _/donuts list_ - display list of currently active donuts \n \n
-      At the https://sleepy-taiga-28784.herokuapp.com you can sign in and check statistic. Good luck & don't forget to secure yourself :wink:" |> URI.encode
+      At the https://sleepy-taiga-28784.herokuapp.com you can sign in and check statistic. Good luck & don't forget to secure yourself :wink:" |> IO.inspect |> URI.encode
       {:info, "donuts", from_id, message, channel_id} |> Operations.message()
     end
 
