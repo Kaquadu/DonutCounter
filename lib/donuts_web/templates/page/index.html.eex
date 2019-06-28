@@ -16,12 +16,13 @@
 
   <section id = "donutCommands">
     <h2>List of commands</h2>
+    <hr>
     <ul>
-      <li>/donuts @your-name - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know to whom we owe delicious donuts</li>
-      <li>/donuts release @name-of-guilty - releases the odlest guilty's debt marking it as delivered</li>
-      <li>/donuts remove @name-of-guilty - removes the newest guilty's debt and removes it from statistics, used in case of mistakes</li>
-      <li>/donuts help - displays list of commands</li>
-      <li>/donuts list - display list of currently active donuts</li>
+      <li><strong>/donuts @your-name</strong> - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know to whom we owe delicious donuts</li>
+      <li><strong>/donuts release @name-of-guilty</strong> - releases the odlest guilty's debt marking it as delivered</li>
+      <li><strong>/donuts remove @name-of-guilty</strong> - removes the newest guilty's debt and removes it from statistics, used in case of mistakes</li>
+      <li><strong>/donuts help</strong> - displays list of commands</li>
+      <li><strong>/donuts list</strong> - display list of currently active donuts</li>
     </ul>
   </section>
 
