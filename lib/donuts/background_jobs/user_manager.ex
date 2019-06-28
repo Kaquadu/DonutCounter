@@ -35,8 +35,8 @@ defmodule Donuts.Background.UserManager do
 
   def assign_users() do
     Slack.Operations.get_all_users()
-      |> Map.get("members")
-      |> update_users()
+    |> Map.get("members")
+    |> update_users()
   end
 
   def update_users(members) when is_nil(members), do: :ok
@@ -51,23 +51,29 @@ defmodule Donuts.Background.UserManager do
   end
 
   def update_user(db_usr, usr_raw) when db_usr == [] or db_usr == nil do
-    if (usr_raw["id"] != "USLACKBOT") do
-      %{"slack_id" => usr_raw["id"], 
-        "name" => usr_raw["profile"]["real_name"], 
-        "is_admin" => usr_raw["is_admin"], 
-        "slack_name" => slack_name = usr_raw["name"]}
-        |> Accounts.create_user()
+    if usr_raw["id"] != "USLACKBOT" do
+      %{
+        "slack_id" => usr_raw["id"],
+        "name" => usr_raw["profile"]["real_name"],
+        "is_admin" => usr_raw["is_admin"],
+        "slack_name" => slack_name = usr_raw["name"]
+      }
+      |> Accounts.create_user()
     end
   end
 
   def update_user(db_usr, usr_raw) do
     case usr_raw["deleted"] do
       false ->
-        attrs = %{"slack_id" => usr_raw["id"], 
-          "name" => usr_raw["profile"]["real_name"], 
-          "is_admin" => usr_raw["is_admin"], 
-          "slack_name" => slack_name = usr_raw["name"]}
+        attrs = %{
+          "slack_id" => usr_raw["id"],
+          "name" => usr_raw["profile"]["real_name"],
+          "is_admin" => usr_raw["is_admin"],
+          "slack_name" => slack_name = usr_raw["name"]
+        }
+
         Accounts.update_user(db_usr, attrs)
+
       true ->
         Accounts.delete_user(db_usr)
     end
