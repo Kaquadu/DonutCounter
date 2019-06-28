@@ -55,7 +55,7 @@ defmodule Donuts.Slack.CommandsHandler do
     *donuts remove name-of-guilty* - removes the newest guilty's debt and removes it from statistics, used in case of mistakes
     *donuts help* - displays list of commands
     *donuts list* - display list of currently active donuts \n
-    At the webapp you can sign in and check statistic. Good luck and don't forget to secure yourself :wink:"
+    On the webapp you can sign in and check statistic. Good luck and don't forget to secure yourself :wink:"
     |> URI.encode()
     {:info, "donuts", from_id, message, channel_id} |> Operations.message()
   end
