@@ -48,7 +48,7 @@ defmodule Donuts.Slack.CommandsHandler do
     def process_slack_command("/donuts", ["help" | params], from_id, channel_id)
     when params == [] do
       message =
-      ":doughnut: *Welcome to donut counter!* :doughnut \n
+      ":doughnut: *Welcome to donut counter!* :doughnut: \n
       List of commands: \n
       _/donuts @your_name_ - add donut debt to the currently logged person. Remember to sign yourself with @your_name - we all would like to know to whom we owe delicious donuts :wink: \n
       _/donuts release @name_of_guilty_ - releases the odlest debt of @name_of_guilty marking it as delivered \n
