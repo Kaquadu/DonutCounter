@@ -15,22 +15,14 @@
   </section>
 
   <section id = "donutCommands">
-    <h2>Commands</h2>
-    <hr>
-    <p>Sweet list can be modified via Slack. You can use commands listed below to do so.
-    <p><strong>donuts_add</strong> - add donut to currently logged user. Remember to type your name & surename or @slack_name!</p>
-    <p>Example: donuts_add Kuba Kowalczykowski</p>
-    <p>Example #2: donuts_add @Kuba Kowalczykowski
-    <p><strong>donuts_rm</strong> - remove donut debt based on its ID</p>
-    <p>Example: donuts_rm 5933ce33-fb90-4133-b1de-eb9239779ab6</p>
-    <p><strong>donuts_release</strong> - tags donut as delivered based on its ID</p>
-    <p>Example: donuts_release 5933ce33-fb90-4133-b1de-eb9239779ab6</p>
-    <p><strong>donuts_add_days</strong> - add days do expiration date</p>
-    <p>Example: donuts_add_days 5933ce33-fb90-4133-b1de-eb9239779ab6 -5</p>
-    <p><strong>donuts_info</strong> - gets all active donuts</p>
-    <p>Example: donuts_info</p>
-    <p><strong>donuts_help</strong> - list of commands</p>
-    <p>Example: donuts_help</p>
+    <h2>List of commands</h2>
+    <ul>
+      <li>/donuts @your-name - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know to whom we owe delicious donuts</li>
+      <li>/donuts release @name-of-guilty - releases the odlest guilty's debt marking it as delivered</li>
+      <li>/donuts remove @name-of-guilty - removes the newest guilty's debt and removes it from statistics, used in case of mistakes</li>
+      <li>/donuts help - displays list of commands</li>
+      <li>/donuts list - display list of currently active donuts</li>
+    </ul>
   </section>
 
   <section id = "donutsList">

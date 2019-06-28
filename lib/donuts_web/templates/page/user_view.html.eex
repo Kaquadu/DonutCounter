@@ -38,8 +38,6 @@
 
             <th>Expiration date</th>
 
-            <th>ID</th>
-
             <%= if Donuts.Sessions.can_release?(@conn, @user["username"]) do %>
                 <th>Release</th>
             <%= end %>
@@ -51,8 +49,6 @@
            <td><%= donut.sender %></td>
            
            <td><%= donut.expiration_date |> DateTime.to_date() %></td>
-
-           <td><%= donut.id %></td>
 
             <%= if Donuts.Sessions.can_release?(@conn, @user["username"]) do %>
                 <td> <%= link "Release", to: DonutsWeb.Router.Helpers.page_path(@conn, :release_target, donut: donut), method: "post" %> </td>
@@ -73,7 +69,6 @@
 
             <th>Expiration date</th>
 
-            <th>ID</th>
         </tr>
     </thead>
     <tbody>
@@ -83,7 +78,6 @@
            
            <td><%= donut.expiration_date |> DateTime.to_date() %></td>
 
-           <td><%= donut.id %></td>
         </tr>
     <%= end %>
     </tbody>
@@ -100,7 +94,6 @@
 
             <th>Expiration date</th>
 
-            <th>ID</th>
         </tr>
     </thead>
     <tbody>
@@ -110,7 +103,6 @@
            
            <td><%= donut.expiration_date |> DateTime.to_date() %></td>
 
-           <td><%= donut.id %></td>
         </tr>
     <%= end %>
     </tbody>
