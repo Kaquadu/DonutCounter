@@ -171,7 +171,7 @@ defmodule Donuts.Slack.CommandsHandler do
     def get_active_donuts() do
       active_donuts =
         RoundPies.get_all()
-        |> Enum.reduce(":doughnut: :doughnut: :doughnut: Active donuts: \n", fn donut, message ->
+        |> Enum.reduce("*Active donuts:* \n", fn donut, message ->
           donut
           delivered = donut.delivered
   
@@ -185,7 +185,7 @@ defmodule Donuts.Slack.CommandsHandler do
               |> DateTime.to_date()
               |> Date.to_string()
   
-            message = "#{message}\n> Expiration date: #{exp_date} \n"
+            message = "#{message}\n> Expiration date: `#{exp_date}` \n"
           else
             message
           end
