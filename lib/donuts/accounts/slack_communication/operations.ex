@@ -50,6 +50,10 @@ defmodule Donuts.Slack.Operations do
     send_ephermal(message, user, channel_id)
   end
 
+  def message({:info, "donuts", from_id, message, channel_id}) do
+    send_ephermal(message, from_id, channel_id)
+  end
+
   def message({:error, "donuts", from_id, message, channel_id}) do
     send_ephermal(message, from_id, channel_id)
   end

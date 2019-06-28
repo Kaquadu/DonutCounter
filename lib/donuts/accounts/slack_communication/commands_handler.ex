@@ -28,7 +28,7 @@ defmodule Donuts.Slack.CommandsHandler do
     def process_slack_command("/donuts", ["list" | params], from_id, channel_id)
     when params == [] do
       message = get_active_donuts() |> URI.encode()
-      {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
+      {:info, "donuts", from_id, message, channel_id} |> Operations.message()
     end
 
     def process_slack_command("/donuts", ["release", target_name | params], from_id, channel_id)
@@ -171,11 +171,12 @@ defmodule Donuts.Slack.CommandsHandler do
     def get_active_donuts() do
       active_donuts =
         RoundPies.get_all()
-        |> Enum.reduce("Active donuts: \n", fn donut, message ->
+        |> Enum.reduce(":doughnut: :doughnut: :doughnut: Active donuts: \n", fn donut, message ->
           donut
           delivered = donut.delivered
   
           if delivered == false do
+            message = "#{message} :doughnut: Donut:"
             message = "#{message}\n> Guilty: #{donut.guilty} \n"
             message = "#{message}\n> Sender: #{donut.sender} \n"
   
@@ -185,7 +186,6 @@ defmodule Donuts.Slack.CommandsHandler do
               |> Date.to_string()
   
             message = "#{message}\n> Expiration date: #{exp_date} \n"
-            message = "#{message} ---------------------------------- \n"
           else
             message
           end
