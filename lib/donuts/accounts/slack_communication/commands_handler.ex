@@ -51,7 +51,7 @@ defmodule Donuts.Slack.CommandsHandler do
     message =
       ":doughnut: *Welcome to donut counter!* :doughnut: \n
     List of commands:
-    *donuts your-name* - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know to whom we owe delicious donuts :wink:
+    *donuts your-name* - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know who is the cause of delicious donuts :wink:
     *donuts release name-of-guilty* - releases the odlest guilty's debt marking it as delivered
     *donuts remove name-of-guilty* - removes the newest guilty's debt and removes it from statistics, used in case of mistakes
     *donuts help* - displays list of commands
