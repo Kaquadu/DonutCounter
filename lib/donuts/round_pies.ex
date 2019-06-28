@@ -27,8 +27,7 @@ defmodule Donuts.RoundPies do
       sender: sender_name,
       guilty: target_name,
       user_id: target_id,
-      expiration_date:
-        DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
+      expiration_date: DateTime.add(DateTime.utc_now(), @expiration_days * 24 * 60 * 60, :second),
       delivered: false
     }
     |> create_donut()
@@ -49,22 +48,24 @@ defmodule Donuts.RoundPies do
 
   def get_oldest_active_donut(id) do
     Repo.all(
-    from(d in Donut,
+      from(d in Donut,
         where: d.delivered == false,
         where: d.user_id == ^id,
         order_by: d.inserted_at
       )
-    ) |> List.first()
+    )
+    |> List.first()
   end
 
   def get_newest_active_donut(id) do
     Repo.all(
-    from(d in Donut,
+      from(d in Donut,
         where: d.delivered == false,
         where: d.user_id == ^id,
         order_by: d.inserted_at
       )
-    ) |> List.last()
+    )
+    |> List.last()
   end
 
   def count_delivered_donuts(id) do

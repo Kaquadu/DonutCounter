@@ -73,24 +73,24 @@ defmodule Donuts.Sessions do
   end
 
   def get_current_user_name(conn) do
-    active_session_tokens = 
-      conn 
-        |> Conn.get_session(:token)
-        |> check_token_activity()
-        |> get_name_from_token()
+    active_session_tokens =
+      conn
+      |> Conn.get_session(:token)
+      |> check_token_activity()
+      |> get_name_from_token()
   end
 
-  def get_name_from_token(active_tokens) 
-    when active_tokens in [[], nil] do
-      "Not active"
+  def get_name_from_token(active_tokens)
+      when active_tokens in [[], nil] do
+    "Not active"
   end
 
   def get_name_from_token(active_tokens) do
     active_tokens
-      |> List.first()
-      |> Map.get(:user_id)
-      |> Accounts.get_by_id()
-      |> Map.get(:name)
+    |> List.first()
+    |> Map.get(:user_id)
+    |> Accounts.get_by_id()
+    |> Map.get(:name)
   end
 
   def can_release?(conn, user_name) do

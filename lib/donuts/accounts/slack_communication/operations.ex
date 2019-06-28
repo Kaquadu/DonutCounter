@@ -24,7 +24,9 @@ defmodule Donuts.Slack.Operations do
   end
 
   def send_ephermal(message, receiver, channel_id) do
-    "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{channel_id}&text=#{message}&user=#{receiver}"
+    "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{channel_id}&text=#{
+      message
+    }&user=#{receiver}"
     |> HTTPHelper.get_body()
   end
 

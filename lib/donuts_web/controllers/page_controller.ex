@@ -21,15 +21,20 @@ defmodule DonutsWeb.PageController do
     delivered_donuts = RoundPies.get_delivered_donuts(user_id)
     expired_donuts = RoundPies.get_expired_donuts(user_id)
     active_donuts = RoundPies.get_active_donuts(user_id)
-    render(conn, "user_view.html", user: user, delivered: delivered_donuts, 
-                                    expired: expired_donuts, active: active_donuts)
+
+    render(conn, "user_view.html",
+      user: user,
+      delivered: delivered_donuts,
+      expired: expired_donuts,
+      active: active_donuts
+    )
   end
 
   def release_target(conn, params) do
     params["donut"]
     |> RoundPies.get_by_id()
     |> RoundPies.update_donut(%{:delivered => true})
-    
+
     conn |> redirect(to: Routes.page_path(conn, :index))
   end
 
@@ -54,21 +59,22 @@ defmodule DonutsWeb.PageController do
   end
 
   def process_add_donut(conn, sender_name, target_name)
-    when sender_name != target_name do
-      if Accounts.get_by_real_name(sender_name) do
-        target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
-        {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
-        conn |> render("donuted.html", success: true)
-      else
-        conn
-          |> put_flash(:info, "Incorrect name.")
-          |> render("donuted.html", success: false)
-      end
-  end
-  def process_add_donut(conn, sender_name, target_name)
-    when sender_name == target_name do
+      when sender_name != target_name do
+    if Accounts.get_by_real_name(sender_name) do
+      target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
+      {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
+      conn |> render("donuted.html", success: true)
+    else
       conn
-      |> put_flash(:info, "Self donuting is forbidden.")
+      |> put_flash(:info, "Incorrect name.")
       |> render("donuted.html", success: false)
+    end
+  end
+
+  def process_add_donut(conn, sender_name, target_name)
+      when sender_name == target_name do
+    conn
+    |> put_flash(:info, "Self donuting is forbidden.")
+    |> render("donuted.html", success: false)
   end
 end
