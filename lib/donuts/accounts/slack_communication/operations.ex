@@ -24,16 +24,7 @@ defmodule Donuts.Slack.Operations do
   end
 
   def send_ephermal(message, receiver, channel_id) do
-    {status, attachments} = %{
-      type: "section",
-      pretext: "Hey kid, do you wanna buy some donuts..? :wink:" |> URI.encode(),
-      color: "good",
-      text: %{
-        type: "mrkdwn",
-        text: message
-      }
-    } |> Poison.encode()
-    "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{channel_id}&text=#{message}&attachments=#{attachments}&user=#{receiver}"
+    "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{channel_id}&text=#{message}&user=#{receiver}"
     |> HTTPHelper.get_body()
   end
 
@@ -56,7 +47,8 @@ defmodule Donuts.Slack.Operations do
   end
 
   def message({:info, "donuts", from_id, message, channel_id}) do
-    send_ephermal(message, from_id, channel_id)
+    {from_id, channel_id} |> IO.inspect
+    send_ephermal(message, from_id, channel_id) |> IO.inspect
   end
 
   def message({:error, "donuts", from_id, message, channel_id}) do
