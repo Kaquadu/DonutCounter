@@ -176,7 +176,7 @@ defmodule Donuts.Slack.CommandsHandler do
           delivered = donut.delivered
   
           if delivered == false do
-            message = "#{message} :doughnut: Donut:"
+            message = "#{message} :doughnut: Donut: \n"
             message = "#{message}\n> Guilty: #{donut.guilty} \n"
             message = "#{message}\n> Sender: #{donut.sender} \n"
   
@@ -185,7 +185,7 @@ defmodule Donuts.Slack.CommandsHandler do
               |> DateTime.to_date()
               |> Date.to_string()
   
-            message = "#{message}\n> Expiration date: `#{exp_date}` \n"
+            message = "#{message}\n> Expiration date: #{exp_date} \n"
           else
             message
           end
