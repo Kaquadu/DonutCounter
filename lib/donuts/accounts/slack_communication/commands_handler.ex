@@ -74,7 +74,7 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def initialize_release(target, from_id, channel_id) do
-      check_self_sending(target.id, from_id)
+      check_self_sending(target.slack_id, from_id)
       |> release_donut(target, from_id, channel_id)
     end
 
@@ -84,7 +84,7 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def initialize_remove(target, from_id, channel_id) do
-      check_self_sending(target.id, from_id)
+      check_self_sending(target.slack_id, from_id)
       |> remove_donut(target, from_id, channel_id)
     end
 
