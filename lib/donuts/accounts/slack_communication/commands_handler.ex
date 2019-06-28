@@ -84,6 +84,7 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def initialize_remove(target, from_id, channel_id) do
+      {target.slack_id, from_id} |> IO.inspect()
       check_self_sending(target.slack_id, from_id)
       |> remove_donut(target, from_id, channel_id)
     end
