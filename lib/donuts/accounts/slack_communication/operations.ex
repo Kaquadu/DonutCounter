@@ -25,10 +25,11 @@ defmodule Donuts.Slack.Operations do
 
   def send_ephermal(message, receiver, channel_id) do
     {status, attachments} = %{
+      type: "section",
       pretext: "Hey kid, do you wanna buy some donuts..? :wink:" |> URI.encode(),
       color: "good",
       text: {
-        type: "mrkdwn"
+        type: "mrkdwn",
         text: message
       }
     } |> Poison.encode()
