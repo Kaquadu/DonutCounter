@@ -33,17 +33,16 @@ defmodule Donuts.Slack.CommandsHandler do
 
     def process_slack_command("/donuts", ["release", target_name | params], from_id, channel_id)
     when params == [] do
-      target_name = target_name |> String.trim("@") |> IO.inspect
+      target_name = target_name |> String.trim("@")
       target = Accounts.get_by_slack_name(target_name)
       initialize_release(target, from_id, channel_id)
     end
 
     def process_slack_command("/donuts", ["remove", target_name | params], from_id, channel_id)
     when params == [] do
-      target_name = target_name |> String.trim("@") |> IO.inspect
+      target_name = target_name |> String.trim("@")
       target = Accounts.get_by_slack_name(target_name)
-      check_self_sending(target.id, from_id)
-      |> remove_donut(target, from_id, channel_id)
+      initialize_remove(target, from_id, channel_id)
     end
 
     def process_slack_command("/donuts", [name | params], from_id, channel_id)
@@ -74,7 +73,7 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def initialize_release(target, from_id, channel_id) do
-      check_self_sending(target.slack_id, from_id)
+      check_self_sending(target.slack_remove, from_id)
       |> release_donut(target, from_id, channel_id)
     end
 
@@ -84,7 +83,7 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def initialize_remove(target, from_id, channel_id) do
-      {target.slack_id, from_id} |> IO.inspect()
+      {target.slack_name, from_id} |> IO.inspect()
       check_self_sending(target.slack_id, from_id)
       |> remove_donut(target, from_id, channel_id)
     end
