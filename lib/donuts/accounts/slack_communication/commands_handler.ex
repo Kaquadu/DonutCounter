@@ -58,7 +58,8 @@ defmodule Donuts.Slack.CommandsHandler do
       At the <https://sleepy-taiga-28784.herokuapp.com> you can sign in and check statistic. Good luck & don't forget to secure yourself :wink:"
       |> URI.encode()
 
-      message = "nie ogarniam" |> URI.encode()
+      message = "nie ogarniam
+      ale fajnie" |> URI.encode()
       {:info, "donuts", from_id, message, channel_id} |> Operations.message()
     end
 
