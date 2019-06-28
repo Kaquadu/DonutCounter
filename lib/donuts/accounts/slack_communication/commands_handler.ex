@@ -50,12 +50,12 @@ defmodule Donuts.Slack.CommandsHandler do
     message =
     ":doughnut: *Welcome to donut counter!* :doughnut: \n
     List of commands:
-    */donuts @your-name* - add donut debt to the currently logged person. Remember to sign yourself with @your-name - we all would like to know to whom we owe delicious donuts :wink:
-    */donuts release @name-of-guilty* - releases the odlest debt of @name-of-guilty marking it as delivered
-    */donuts remove @name-of-guilty* - removes the newest debt of of @name-of-guilty and removes it from statistics, used in case of mistakes
-    */donuts help* - displays list of commands
-    */donuts list* - display list of currently active donuts \n
-    At the webapp you can sign in and check statistic. Good luck & don't forget to secure yourself :wink:"
+    *donuts your-name* - add donut debt to the currently logged person. Remember to sign yourself - we all would like to know to whom we owe delicious donuts :wink:
+    *donuts release name-of-guilty* - releases the odlest guilty's debt marking it as delivered
+    *donuts remove name-of-guilty* - removes the newest guilty's debt and removes it from statistics, used in case of mistakes
+    *donuts help* - displays list of commands
+    *donuts list* - display list of currently active donuts \n
+    At the webapp you can sign in and check statistic. Good luck and don't forget to secure yourself :wink:"
     |> URI.encode()
     {:info, "donuts", from_id, message, channel_id} |> Operations.message()
   end
