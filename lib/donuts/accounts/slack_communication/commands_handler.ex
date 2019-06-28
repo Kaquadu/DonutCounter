@@ -73,7 +73,7 @@ defmodule Donuts.Slack.CommandsHandler do
     end
 
     def initialize_release(target, from_id, channel_id) do
-      check_self_sending(target.slack_remove, from_id)
+      check_self_sending(target.slack_name, from_id)
       |> release_donut(target, from_id, channel_id)
     end
 
