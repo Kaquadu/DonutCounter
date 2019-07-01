@@ -199,18 +199,18 @@ defmodule Donuts.Slack.CommandsHandler do
     {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
-  def add_days(_, nil, days, from_id, channel_id) do
+  def add_days(selfsending, nil, days, from_id, channel_id) do
     message = "There is no such person." |> URI.encode()
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+
+  def add_days(selfsending, target, :error, from_id, channel_id) do
+    message = "Parameter 'days' mus be a number." |> URI.encode()
     {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def add_days(true, target, days, from_id, channel_id) do
     message = "Adding days to your debts by yourself is forbidden ;)" |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
-  end
-
-  def add_days(_, target, :error, from_id, channel_id) do
-    message = "Parameter 'days' mus be a number." |> URI.encode()
     {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
