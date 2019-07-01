@@ -12,7 +12,7 @@ defmodule Donuts.Slack.CommandsHandler do
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.Slack.Operations
 
-  # defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
+  defguard not_other_command(value) when value != "list" and value != "release" and value != "remove" and value != "add_days"
 
   def handle_slack_command(%{
         "command" => command,
@@ -39,11 +39,23 @@ defmodule Donuts.Slack.CommandsHandler do
     initialize_release(target, from_id, channel_id)
   end
 
+  def process_slack_command("/donuts", ["release" | params], from_id, channel_id)
+      when params == [] do
+    message = "Correct command: /donuts release @username." |> URI.encode()
+    {:info, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+
   def process_slack_command("/donuts", ["remove", target_name | params], from_id, channel_id)
       when params == [] do
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_remove(target, from_id, channel_id)
+  end
+
+  def process_slack_command("/donuts", ["remove" | params], from_id, channel_id)
+      when params == [] do
+    message = "Correct command: /donuts release @username." |> URI.encode()
+    {:info, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def process_slack_command("/donuts", ["help" | params], from_id, channel_id)
@@ -77,7 +89,7 @@ defmodule Donuts.Slack.CommandsHandler do
   end
 
   def process_slack_command("/donuts", [name | params], from_id, channel_id)
-      when params == [] and name != nil do
+      when params == [] and name != nil and not_other_command(name) do
     process_adding_donut(name, from_id, channel_id)
   end
 
