@@ -23,7 +23,7 @@ defmodule Donuts.Slack.Operations do
     |> HTTPHelper.get_body()
   end
 
-  def send_ephermal(message, receiver, channel_id) do
+  def send_ephemeral(message, receiver, channel_id) do
     "https://slack.com/api/chat.postEphemeral?token=#{@oauth_token}&channel=#{channel_id}&text=#{
       message
     }&user=#{receiver}"
@@ -45,14 +45,14 @@ defmodule Donuts.Slack.Operations do
 
   def message({:ok, "donuts", user, message, channel_id}) do
     send_message_to_channel(@donuts_channel, message)
-    send_ephermal(message, user, channel_id)
+    send_ephemeral(message, user, channel_id)
   end
 
   def message({:info, "donuts", from_id, message, channel_id}) do
-    send_ephermal(message, from_id, channel_id)
+    send_ephemeral(message, from_id, channel_id)
   end
 
   def message({:error, "donuts", from_id, message, channel_id}) do
-    send_ephermal(message, from_id, channel_id)
+    send_ephemeral(message, from_id, channel_id)
   end
 end
