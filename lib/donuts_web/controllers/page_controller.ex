@@ -53,10 +53,16 @@ defmodule DonutsWeb.PageController do
     process_add_donut(conn, sender_name, target_name)
   end
 
+  def process_add_donut(conn, sender_and_target_name, sender_and_target_name)
+      when sender_name == target_name do
+    conn
+    |> put_flash(:info, "Self donuting is forbidden.")
+    |> render("donuted.html", success: false)
+  end
+
   def process_add_donut(conn, sender_name, target_name)
-      when sender_name != target_name do
     if Accounts.get_by_real_name(sender_name) do
-      target_id = Accounts.get_by_real_name(target_name) |> Map.get(:id)
+      %{id: target_id} = Accounts.get_by_real_name(target_name)
       {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
       conn |> render("donuted.html", success: true)
     else
@@ -64,12 +70,5 @@ defmodule DonutsWeb.PageController do
       |> put_flash(:info, "Incorrect name.")
       |> render("donuted.html", success: false)
     end
-  end
-
-  def process_add_donut(conn, sender_name, target_name)
-      when sender_name == target_name do
-    conn
-    |> put_flash(:info, "Self donuting is forbidden.")
-    |> render("donuted.html", success: false)
   end
 end

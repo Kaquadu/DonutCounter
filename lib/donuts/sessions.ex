@@ -85,12 +85,8 @@ defmodule Donuts.Sessions do
     "Not active"
   end
 
-  def get_name_from_token(active_tokens) do
-    active_tokens
-    |> List.first()
-    |> Map.get(:user_id)
-    |> Accounts.get_by_id()
-    |> Map.get(:name)
+  def get_name_from_token([active_token | _]) do
+    Accounts.get_by_id(active_token.user_id).name
   end
 
   def can_release?(conn, user_name) do
