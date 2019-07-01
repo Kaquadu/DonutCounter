@@ -58,10 +58,9 @@ defmodule DonutsWeb.PageController do
     conn
     |> put_flash(:info, "Self donuting is forbidden.")
     |> render("donuted.html", success: false)
-    end
   end
 
-  def process_add_donut(conn, sender_name, target_name)
+  def process_add_donut(conn, sender_name, target_name) do
     if Accounts.get_by_real_name(sender_name) do
       %{id: target_id} = Accounts.get_by_real_name(target_name)
       {status, donut} = Donuts.RoundPies.add_new_donut(sender_name, target_name, target_id)
