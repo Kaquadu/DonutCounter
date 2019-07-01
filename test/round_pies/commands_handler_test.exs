@@ -424,7 +424,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
           Date.utc_today()
         } \n"
 
-      assert result = expected
+      assert result == expected
     end
   end
 
