@@ -39,11 +39,23 @@ defmodule Donuts.Slack.CommandsHandler do
     initialize_release(target, from_id, channel_id)
   end
 
+  def process_slack_command("/donuts", ["release" | params], from_id, channel_id)
+      when params == [] do
+    message = "Correct command: /donuts release @username." |> URI.encode()
+    {:info, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+
   def process_slack_command("/donuts", ["remove", target_name | params], from_id, channel_id)
       when params == [] do
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_remove(target, from_id, channel_id)
+  end
+
+  def process_slack_command("/donuts", ["remove" | params], from_id, channel_id)
+      when params == [] do
+    message = "Correct command: /donuts release @username." |> URI.encode()
+    {:info, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def process_slack_command("/donuts", ["help" | params], from_id, channel_id)
