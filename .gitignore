@@ -3,3 +3,4 @@ _build/
 deps/
 config/config.secret.exs
 assets/node_modules/
+.elixir_ls/
