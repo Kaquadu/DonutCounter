@@ -58,6 +58,7 @@ defmodule DonutsWeb.PageController do
     conn
     |> put_flash(:info, "Self donuting is forbidden.")
     |> render("donuted.html", success: false)
+    end
   end
 
   def process_add_donut(conn, sender_name, target_name)
