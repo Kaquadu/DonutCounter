@@ -1,6 +1,7 @@
 defmodule Donuts.Slack.CommandsHandlerUnitTest do
     use Donuts.DataCase
     alias Donuts.Slack.CommandsHandler
+    @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
     describe "Functions necessary to add a donut" do
         test "process_adding_donut - valid data" do
