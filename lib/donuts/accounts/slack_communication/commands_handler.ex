@@ -62,6 +62,14 @@ defmodule Donuts.Slack.CommandsHandler do
     {:info, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
+  def process_slack_command("/donuts", ["add_days", target_name, days | params], from_id, channel_id)
+      when params == [] do
+    days = days |> String.to_integer()
+    target_name = target_name |> String.trim("@")
+    target = Accounts.get_by_slack_name(target_name)
+    initialize_add_days(target, days, from_id, channel_id)
+  end
+
   def process_slack_command("/donuts", [name | params], from_id, channel_id)
       when params == [] and name != nil do
     process_adding_donut(name, from_id, channel_id)
@@ -107,6 +115,11 @@ defmodule Donuts.Slack.CommandsHandler do
   def initialize_remove(target, from_id, channel_id) do
     check_self_sending(target.slack_id, from_id)
     |> remove_donut(target, from_id, channel_id)
+  end
+
+  def initialize_add_days(target, days, from_id, channel_id) do
+    check_self_sending(target.slack_id, from_id)
+    |> add_days(target, days, from_id, channel_id)
   end
 
   def add_donut(false, guilty, sender, channel_id) do
@@ -184,6 +197,16 @@ defmodule Donuts.Slack.CommandsHandler do
     RoundPies.delete_donut(remove_target)
     message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
     {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+
+  def add_days(false, target, days, from_id, channel_id) do
+    donut = 
+      target.id 
+      |> RoundPies.get_oldest_active_donut()
+    
+      new_expiration_date = DateTime.add(donut.expiration_date, days, days * 24 * 60 * 60, :second)
+
+      RoundPies.update_donut(donut, %{:expiration_date => new_expiration_date})
   end
 
   def get_active_donuts() do
