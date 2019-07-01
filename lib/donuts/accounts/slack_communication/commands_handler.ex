@@ -12,7 +12,9 @@ defmodule Donuts.Slack.CommandsHandler do
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.Slack.Operations
 
-  defguard not_other_command(value) when value != "list" and value != "release" and value != "remove" and value != "add_days"
+  defguard not_other_command(value)
+           when value != "list" and value != "release" and value != "remove" and
+                  value != "add_days"
 
   def handle_slack_command(%{
         "command" => command,
@@ -37,6 +39,7 @@ defmodule Donuts.Slack.CommandsHandler do
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_release(target, from_id, channel_id)
+    |> Operations.message()
   end
 
   def process_slack_command("/donuts", ["release" | params], from_id, channel_id)
@@ -50,6 +53,7 @@ defmodule Donuts.Slack.CommandsHandler do
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_remove(target, from_id, channel_id)
+    |> Operations.message()
   end
 
   def process_slack_command("/donuts", ["remove" | params], from_id, channel_id)
@@ -74,29 +78,39 @@ defmodule Donuts.Slack.CommandsHandler do
     {:info, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
-  def process_slack_command("/donuts", ["add_days", target_name, days | params], from_id, channel_id)
+  def process_slack_command(
+        "/donuts",
+        ["add_days", target_name, days | params],
+        from_id,
+        channel_id
+      )
       when params == [] do
     days = days |> Integer.parse()
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_add_days(target, days, from_id, channel_id)
+    |> Operations.message()
   end
 
   def process_slack_command("/donuts", ["add_days", param | params], from_id, channel_id)
       when params == [] do
-        message = "Wrong function arity. Correct command: /dontus add_days _@username_ _days_." |> URI.encode()
-        {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    message =
+      "Wrong function arity. Correct command: /dontus add_days _@username_ _days_."
+      |> URI.encode()
+
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
-  def process_slack_command("/donuts", ["add_days"| params], from_id, channel_id)
+  def process_slack_command("/donuts", ["add_days" | params], from_id, channel_id)
       when params == [] do
-        message = "Correct command: /dontus add_days _@username_ _days_." |> URI.encode()
-        {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    message = "Correct command: /dontus add_days _@username_ _days_." |> URI.encode()
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def process_slack_command("/donuts", [name | params], from_id, channel_id)
       when params == [] and name != nil and not_other_command(name) do
     process_adding_donut(name, from_id, channel_id)
+    |> Operations.message()
   end
 
   def process_slack_command("/donuts", params, from_id, channel_id), do: :unhandled
@@ -111,7 +125,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def initialize_donut(sender, target_id, channel_id) when sender == [] or sender == nil do
     message = "I'm sorry, it seems you picked a wrong username :(" |> URI.encode()
-    {:error, "donuts", target_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", target_id, message, channel_id}
   end
 
   def initialize_donut(sender, target_id, channel_id) do
@@ -123,7 +137,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def initialize_release(target, from_id, channel_id) when target == [] or target == nil do
     message = "Wrong name of release target." |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def initialize_release(target, from_id, channel_id) do
@@ -133,9 +147,9 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def initialize_remove(target, from_id, channel_id) when target == [] or target == nil do
     message = "Wrong name of remove target." |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
-  
+
   def initialize_remove(target, from_id, channel_id) do
     check_self_sending(target.slack_id, from_id)
     |> remove_donut(target, from_id, channel_id)
@@ -143,7 +157,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def initialize_add_days(nil, days, from_id, channel_id) do
     message = "There is no such person." |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def initialize_add_days(target, days, from_id, channel_id) do
@@ -165,12 +179,12 @@ defmodule Donuts.Slack.CommandsHandler do
       "Mmmmm... <@#{guilty.slack_name}> just owes us some donuts thanks to <@#{sender.slack_name}>'s vigilance"
       |> URI.encode()
 
-    {:ok, "donuts", sender.slack_name, message, channel_id} |> Operations.message()
+    {:ok, "donuts", sender.slack_name, message, channel_id}
   end
 
   def add_donut(true, guilty, sender, channel_id) do
     message = "Self sending is forbidden. Do you wanna owe donuts to everyone..?" |> URI.encode()
-    {:error, "donuts", guilty.slack_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", guilty.slack_id, message, channel_id}
   end
 
   def release_donut(false, target, from_id, channel_id) do
@@ -182,12 +196,12 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def release_donut(true, target, from_id, channel_id) do
     message = "Self release is forbidden ;)" |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def save_release(nil, target, from_id, channel_id) do
     message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def save_release(release_target, target, from_id, channel_id) do
@@ -197,11 +211,11 @@ defmodule Donuts.Slack.CommandsHandler do
           "Donuts delivered - confirmed by <@#{from_id}>! Thanks <@#{target.slack_name}>!"
           |> URI.encode()
 
-        {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
+        {:ok, "donuts", from_id, message, channel_id}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         message = "Oops! Error in changeset!" |> URI.encode()
-        {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+        {:error, "donuts", from_id, message, channel_id}
     end
   end
 
@@ -214,50 +228,51 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def remove_donut(true, target, from_id, channel_id) do
     message = "Self remove is forbidden ;)" |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def save_remove(nil, target, from_id, channel_id) do
     message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def save_remove(remove_target, target, from_id, channel_id) do
     RoundPies.delete_donut(remove_target)
     message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
-    {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:ok, "donuts", from_id, message, channel_id}
   end
 
   def add_days(selfsending, target, :error, from_id, channel_id) do
     message = "Parameter 'days' mus be a number." |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def add_days(true, target, days, from_id, channel_id) do
     message = "Adding days to your debts by yourself is forbidden ;)" |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def add_days(false, target, days, from_id, channel_id) do
-    donut = 
-      target.id 
+    donut =
+      target.id
       |> RoundPies.get_oldest_active_donut()
       |> save_add_days(target, days, from_id, channel_id)
   end
 
   def save_add_days(nil, target, days, from_id, channel_id) do
     message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id}
   end
 
   def save_add_days(donut, target, days, from_id, channel_id) do
     new_expiration_date = DateTime.add(donut.expiration_date, days, days * 24 * 60 * 60, :second)
     RoundPies.update_donut(donut, %{:expiration_date => new_expiration_date})
-    message =
-          "Oldest donuts of <@#{target.slack_name}> updated by <@#{from_id}> - added #{days} days!"
-          |> URI.encode()
 
-        {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
+    message =
+      "Oldest donuts of <@#{target.slack_name}> updated by <@#{from_id}> - added #{days} days!"
+      |> URI.encode()
+
+    {:ok, "donuts", from_id, message, channel_id}
   end
 
   def get_active_donuts() do
