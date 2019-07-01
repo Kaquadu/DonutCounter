@@ -72,11 +72,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def process_slack_command("/donuts", ["add_days", param | params], from_id, channel_id)
       when params == [] do
-<<<<<<< HEAD
         message = "Wrong command arity." |> URI.encode()
-=======
-        message = "Wrong function arity." |> URI.encode()
->>>>>>> add/add-days
         {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
