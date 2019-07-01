@@ -259,6 +259,160 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     end
   end
 
+  describe "Add days" do
+    test "/donuts add_days @Kuba Kowalczykowski 1" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days @kkowalczykowski 1",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+
+    test "/donuts add_days @Kuba Kowalczykowski 1 asdf" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days @kkowalczykowski 1 asdf",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+
+      assert result == :unhandled
+    end
+
+    test "/donuts add_days @Kuba Kowalczykowski asdf" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days @kkowalczykowski asdf",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+
+    test "/donuts add_days @asdf 1" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days @asdf 1",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+
+    test "/donuts add_days @asdf asdf" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days @asdf asdf",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+
+    test "/donuts add_days @Kuba Kowalczykowski" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days @kkowalczykowski",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+
+    test "/donuts add_days @asdf" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days @asdf",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+
+    test "/donuts add_days 1" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days 1",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+
+    test "/donuts add_days" do
+      {s, usr} = add_test_user()
+      add_test_donut(usr)
+
+      result =
+        %{
+          "command" => "/donuts",
+          "text" => "add_days",
+          "user_id" => "UJY1A1VLM",
+          "channel_id" => "general"
+        }
+        |> CommandsHandler.handle_slack_command()
+        |> Map.get("ok")
+
+      assert result == true
+    end
+  end
+
   describe "Other functions" do
     test "get_active_donuts()" do
       {s, usr} = add_test_user()
