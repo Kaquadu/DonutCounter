@@ -62,20 +62,17 @@ defmodule Donuts.Background.UserManager do
     end
   end
 
+  def update_user(db_usr, %{"deleted" => true} = usr_raw) do
+    Accounts.delete_user(db_usr)
+  end
+
   def update_user(db_usr, usr_raw) do
-    case usr_raw["deleted"] do
-      false ->
-        attrs = %{
-          "slack_id" => usr_raw["id"],
-          "name" => usr_raw["profile"]["real_name"],
-          "is_admin" => usr_raw["is_admin"],
-          "slack_name" => slack_name = usr_raw["name"]
-        }
-
-        Accounts.update_user(db_usr, attrs)
-
-      true ->
-        Accounts.delete_user(db_usr)
-    end
+    attrs = %{
+      "slack_id" => usr_raw["id"],
+      "name" => usr_raw["profile"]["real_name"],
+      "is_admin" => usr_raw["is_admin"],
+      "slack_name" => slack_name = usr_raw["name"]
+    }
+    Accounts.update_user(db_usr, attrs)
   end
 end
