@@ -12,7 +12,7 @@ defmodule Donuts.Slack.CommandsHandler do
   alias Donuts.Helpers.HTTPHelper
   alias Donuts.Slack.Operations
 
-  # defguard is_add_via_slack(cmd_ingridients) when List.first(cmd_ingridients) == "donuts_add" and length(cmd_ingridients) == 2
+  defguard not_other_command(value) when value != "list" and value != "release" and value != "remove" and value != "add_days"
 
   def handle_slack_command(%{
         "command" => command,
@@ -77,7 +77,7 @@ defmodule Donuts.Slack.CommandsHandler do
   end
 
   def process_slack_command("/donuts", [name | params], from_id, channel_id)
-      when params == [] and name != nil do
+      when params == [] and name != nil and not_other_command(name) do
     process_adding_donut(name, from_id, channel_id)
   end
 
