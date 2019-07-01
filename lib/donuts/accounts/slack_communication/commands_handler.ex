@@ -201,17 +201,17 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def add_days(_, nil, days, from_id, channel_id) do
     message = "There is no such person." |> URI.encode()
-    {:error, "donuts", guilty.slack_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def add_days(true, target, days, from_id, channel_id) do
     message = "Adding days to your debts by yourself is forbidden ;)" |> URI.encode()
-    {:error, "donuts", guilty.slack_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def add_days(_, target, :error, from_id, channel_id) do
     message = "Parameter 'days' mus be a number." |> URI.encode()
-    {:error, "donuts", guilty.slack_id, message, channel_id} |> Operations.message()
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def add_days(false, target, days, from_id, channel_id) do
