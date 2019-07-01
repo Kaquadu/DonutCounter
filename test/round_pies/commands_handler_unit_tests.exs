@@ -62,6 +62,28 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
 
             assert result == {:error, "donuts", user2.slack_id, expected_message, "general"}
         end
+
+        test "initialize_donut - valid data" do
+            {s, user1} = add_test_user(
+                "UJY1A1VLM",
+                "kkowalczykowski",
+                "Kuba Kowalczykowski",
+                true
+            )
+            {s, user2} = add_test_user(
+                "CJY2B1VLM",
+                "jkowalski",
+                "Jan Kowalski",
+                true
+            )
+            result = 
+                CommandsHandler.initialize_donut(user1, user2.slack_id, "general")
+
+            expected_message = "Mmmmm... <@#{user2.slack_name}> just owes us some donuts thanks to <@#{user1.slack_name}>'s vigilance"
+            |> URI.encode()
+
+            assert result == {:ok, "donuts", user2.slack_name, expected_message, "general"}
+        end
     end
 
 
