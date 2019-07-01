@@ -43,15 +43,15 @@ defmodule DonutsWeb.PageController do
     conn |> send_resp(200, params["challange"])
   end
 
-  def event_handler(conn, %{"command" => command}) do
-    command |> IO.inspect
-    Slack.CommandsHandler.handle_slack_command(command)
-    conn |> send_resp(200, "")
-  end
-
   def event_handler(conn, %{"event" => event}) do
     event |> IO.inspect
     #Slack.CommandsHandler.handle_slack_command(command)
+    conn |> send_resp(200, "")
+  end
+
+  def event_handler(conn, command) do
+    command |> IO.inspect
+    Slack.CommandsHandler.handle_slack_command(command)
     conn |> send_resp(200, "")
   end
 
