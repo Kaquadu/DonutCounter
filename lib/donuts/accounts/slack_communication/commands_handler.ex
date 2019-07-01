@@ -70,6 +70,12 @@ defmodule Donuts.Slack.CommandsHandler do
     initialize_add_days(target, days, from_id, channel_id)
   end
 
+  def process_slack_command("/donuts", ["add_days", param | params], from_id, channel_id)
+      when params == [] do
+        message = "Wrong function arity." |> URI.encode()
+        {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+
   def process_slack_command("/donuts", [name | params], from_id, channel_id)
       when params == [] and name != nil do
     process_adding_donut(name, from_id, channel_id)
@@ -115,6 +121,11 @@ defmodule Donuts.Slack.CommandsHandler do
   def initialize_remove(target, from_id, channel_id) do
     check_self_sending(target.slack_id, from_id)
     |> remove_donut(target, from_id, channel_id)
+  end
+
+  def initialize_add_days(nil, days, from_id, channel_id) do
+    message = "There is no such person." |> URI.encode()
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def initialize_add_days(target, days, from_id, channel_id) do
@@ -197,11 +208,6 @@ defmodule Donuts.Slack.CommandsHandler do
     RoundPies.delete_donut(remove_target)
     message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
     {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
-  end
-
-  def add_days(selfsending, nil, days, from_id, channel_id) do
-    message = "There is no such person." |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def add_days(selfsending, target, :error, from_id, channel_id) do
