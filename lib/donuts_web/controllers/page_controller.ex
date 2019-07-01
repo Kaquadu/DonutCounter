@@ -43,6 +43,11 @@ defmodule DonutsWeb.PageController do
     conn |> send_resp(200, params["challange"])
   end
 
+  def event_handler(conn, %{"event" = event}) do
+    Slack.EventHandler.handle_slack_event(event)
+    conn |> send_resp(200, "")
+  end
+
   def event_handler(conn, command) do
     Slack.CommandsHandler.handle_slack_command(command)
     conn |> send_resp(200, "")
