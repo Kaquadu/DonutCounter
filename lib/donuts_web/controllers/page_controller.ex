@@ -54,7 +54,6 @@ defmodule DonutsWeb.PageController do
   end
 
   def process_add_donut(conn, sender_and_target_name, sender_and_target_name)
-      when sender_name == target_name do
     conn
     |> put_flash(:info, "Self donuting is forbidden.")
     |> render("donuted.html", success: false)
@@ -69,6 +68,6 @@ defmodule DonutsWeb.PageController do
       conn
       |> put_flash(:info, "Incorrect name.")
       |> render("donuted.html", success: false)
-    end
+    endgit
   end
 end
