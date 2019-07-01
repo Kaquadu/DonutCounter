@@ -44,6 +44,7 @@ defmodule DonutsWeb.PageController do
   end
 
   def event_handler(conn, command) do
+    command |> IO.inspect
     Slack.CommandsHandler.handle_slack_command(command)
     conn |> send_resp(200, "")
   end
