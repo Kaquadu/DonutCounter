@@ -18,6 +18,11 @@ defmodule Donuts.Slack.Operations do
     |> HTTPHelper.get_body()
   end
 
+  def get_user_info(id) do
+    "https://slack.com/api/users.info?token=#{@oauth_token}&user=#{id}"
+    |> HTTPHelper.get_body()
+  end
+
   def send_message_to_channel(channel, text) do
     "https://slack.com/api/chat.postMessage?token=#{@oauth_token}&channel=#{channel}&text=#{text}&as_user=false"
     |> HTTPHelper.get_body()
