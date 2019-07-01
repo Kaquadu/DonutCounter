@@ -62,6 +62,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
   describe "Adding donut" do
     test "/donuts @Kuba Kowalczykowski" do
       add_test_user()
+
       result =
         %{
           "command" => "/donuts",
@@ -77,6 +78,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
 
     test "/donuts @Kuba Kowalczykowski asdf" do
       add_test_user()
+
       result =
         %{
           "command" => "/donuts",
@@ -91,6 +93,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
 
     test "/donuts @xyz" do
       add_test_user()
+
       result =
         %{
           "command" => "/donuts",
@@ -106,6 +109,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
 
     test "/donuts @xyz asdf" do
       add_test_user()
+
       result =
         %{
           "command" => "/donuts",
@@ -123,6 +127,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts release @Kuba Kowalczykowski" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -139,6 +144,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts release @Kuba Kowalczykowski asdf" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -154,6 +160,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts release @xyz" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -170,6 +177,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts release @xyz asdf" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -187,6 +195,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts remove @Kuba Kowalczykowski" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -203,6 +212,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts remove @Kuba Kowalczykowski asdf" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -218,6 +228,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts remove @xyz" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -234,6 +245,7 @@ defmodule Donuts.Slack.CommandsHandlerTest do
     test "/donuts remove @xyz asdf" do
       {s, usr} = add_test_user()
       add_test_donut(usr)
+
       result =
         %{
           "command" => "/donuts",
@@ -252,7 +264,12 @@ defmodule Donuts.Slack.CommandsHandlerTest do
       {s, usr} = add_test_user()
       add_test_donut(usr)
       result = CommandsHandler.get_active_donuts()
-      expected = "*Active donuts:* \n :doughnut: Donut: \n\n> Guilty: #{usr.name} \n\n> Sender: #{usr.name} \n\n> Expiration date: #{Date.utc_today()} \n"
+
+      expected =
+        "*Active donuts:* \n :doughnut: Donut: \n\n> Guilty: #{usr.name} \n\n> Sender: #{usr.name} \n\n> Expiration date: #{
+          Date.utc_today()
+        } \n"
+
       assert result = expected
     end
   end
