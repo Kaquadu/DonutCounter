@@ -203,10 +203,22 @@ defmodule Donuts.Slack.CommandsHandler do
     donut = 
       target.id 
       |> RoundPies.get_oldest_active_donut()
-    
-      new_expiration_date = DateTime.add(donut.expiration_date, days, days * 24 * 60 * 60, :second)
+      |> save_add_days(target, days, from_id, channel_id)
+  end
 
-      RoundPies.update_donut(donut, %{:expiration_date => new_expiration_date})
+  def save_add_days(nil, target, days, from_id, channel_id) do
+    message = "<@#{target.slack_name}> has no donut debts!" |> URI.encode()
+    {:error, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+
+  def save_add_days(donut, target, days, from_id, channel_id) do
+    new_expiration_date = DateTime.add(donut.expiration_date, days, days * 24 * 60 * 60, :second)
+    RoundPies.update_donut(donut, %{:expiration_date => new_expiration_date})
+    message =
+          "Oldest donuts of <@#{target.slack_name}> updated by <@#{from_id}> - added #{days} days!"
+          |> URI.encode()
+
+        {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
   def get_active_donuts() do
