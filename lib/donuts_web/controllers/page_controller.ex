@@ -68,6 +68,6 @@ defmodule DonutsWeb.PageController do
       conn
       |> put_flash(:info, "Incorrect name.")
       |> render("donuted.html", success: false)
-    endgit
+    end
   end
 end
