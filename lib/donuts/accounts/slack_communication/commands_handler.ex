@@ -64,7 +64,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def process_slack_command("/donuts", ["add_days", target_name, days | params], from_id, channel_id)
       when params == [] do
-    days = days |> String.to_integer()
+    days = days |> Integer.parse()
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_add_days(target, days, from_id, channel_id)
@@ -197,6 +197,21 @@ defmodule Donuts.Slack.CommandsHandler do
     RoundPies.delete_donut(remove_target)
     message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
     {:ok, "donuts", from_id, message, channel_id} |> Operations.message()
+  end
+
+  def add_days(_, nil, days, from_id, channel_id) do
+    message = "There is no such person." |> URI.encode()
+    {:error, "donuts", guilty.slack_id, message, channel_id} |> Operations.message()
+  end
+
+  def add_days(true, target, days, from_id, channel_id) do
+    message = "Adding days to your debts by yourself is forbidden ;)" |> URI.encode()
+    {:error, "donuts", guilty.slack_id, message, channel_id} |> Operations.message()
+  end
+
+  def add_days(_, target, :error, from_id, channel_id) do
+    message = "Parameter 'days' mus be a number." |> URI.encode()
+    {:error, "donuts", guilty.slack_id, message, channel_id} |> Operations.message()
   end
 
   def add_days(false, target, days, from_id, channel_id) do
