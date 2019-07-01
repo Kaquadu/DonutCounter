@@ -5,6 +5,7 @@ defmodule Donuts.Sessions do
   alias Donuts.Helpers.Auth
   alias Donuts.Repo
   alias Donuts.Sessions.Session
+  alias Slack
   @ttl Application.get_env(:donuts, :ttl_seconds)
   @salt Application.get_env(:donuts, :bcrypt_salt)
 
@@ -39,19 +40,25 @@ defmodule Donuts.Sessions do
   def auth_user(token_info = %{"ok" => true, "user" => %{"id" => user_id}}) do
     if Accounts.get_by_slack_id(user_id) do
       initialize_session(token_info)
-      {:ok, nil}
+      :ok
     else
-      {:invalid_user, nil}
+      user = Slack.Operations.get_user_info(user_id) |> Map.get("user")
+      %{
+        "slack_id" => user["id"],
+        "name" => user["profile"]["real_name"],
+        "is_admin" => user["is_admin"],
+        "slack_name" => user["name"]
+      }
+      |> Accounts.create_user()
+      :ok
     end
   end
 
   def auth_user(%{"ok" => false}) do
-    {:invalid_request, nil}
+    :invalid_request
   end
 
   def initialize_session(%{"access_token" => token, "user" => %{"id" => slack_id}}) do
-    Donuts.Background.UserManager.assign_users()
-
     user_id =
       slack_id
       |> Accounts.get_by_slack_id()
@@ -85,12 +92,8 @@ defmodule Donuts.Sessions do
     "Not active"
   end
 
-  def get_name_from_token(active_tokens) do
-    active_tokens
-    |> List.first()
-    |> Map.get(:user_id)
-    |> Accounts.get_by_id()
-    |> Map.get(:name)
+  def get_name_from_token([active_token | _]) do
+    Accounts.get_by_id(active_token.user_id).name
   end
 
   def can_release?(conn, user_name) do

@@ -29,19 +29,13 @@ defmodule DonutsWeb.SessionController do
     |> auth_response(conn, token_info)
   end
 
-  def auth_response({:ok, nil}, conn, token_info) do
+  def auth_response(:ok, conn, token_info) do
     conn
     |> put_session(:token, token_info["access_token"])
     |> redirect(to: Routes.page_path(conn, :index))
   end
 
-  def auth_response({:invalid_user, nil}, conn, _) do
-    conn
-    |> put_flash(:info, "Sorry, it seems you are not in our user database.")
-    |> redirect(to: Routes.page_path(conn, :index))
-  end
-
-  def auth_response({:invalid_request, nil}, conn, _) do
+  def auth_response(:invalid_request, conn, _) do
     conn
     |> put_flash(:info, "Sorry, it seems we have some kind of problem with logging in.")
     |> redirect(to: Routes.page_path(conn, :index))
