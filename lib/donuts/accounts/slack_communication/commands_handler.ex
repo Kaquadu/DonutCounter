@@ -179,12 +179,12 @@ defmodule Donuts.Slack.CommandsHandler do
       "Mmmmm... <@#{guilty.slack_name}> just owes us some donuts thanks to <@#{sender.slack_name}>'s vigilance"
       |> URI.encode()
 
-    {:ok, "donuts", sender.slack_name, message, channel_id}
+    {:ok, "donuts", guilty.slack_name, message, channel_id}
   end
 
   def add_donut(true, guilty, sender, channel_id) do
     message = "Self sending is forbidden. Do you wanna owe donuts to everyone..?" |> URI.encode()
-    {:error, "donuts", guilty.slack_id, message, channel_id}
+    {:error, "donuts", guilty.slack_name, message, channel_id}
   end
 
   def release_donut(false, target, from_id, channel_id) do
