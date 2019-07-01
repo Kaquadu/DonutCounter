@@ -54,7 +54,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def process_slack_command("/donuts", ["remove" | params], from_id, channel_id)
       when params == [] do
-    message = "Correct command: /donuts release @username." |> URI.encode()
+    message = "Correct command: /donuts remove @username." |> URI.encode()
     {:info, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
@@ -84,7 +84,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def process_slack_command("/donuts", ["add_days", param | params], from_id, channel_id)
       when params == [] do
-        message = "Wrong function arity." |> URI.encode()
+        message = "Wrong function arity. Correct command: /dontus add_days _@username_ _days_." |> URI.encode()
         {:error, "donuts", from_id, message, channel_id} |> Operations.message()
   end
 
