@@ -10,7 +10,7 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
                 "Kuba Kowalczykowski",
                 true
             )
-            {s, user1} = add_test_user(
+            {s, user2} = add_test_user(
                 "CJY2B1VLM",
                 "jkowalski",
                 "Jan Kowalski",
@@ -19,7 +19,48 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
             result = 
                 CommandsHandler.process_adding_donut(user1.slack_name, user2.slack_id, "general")
 
-            assert result == {:ok, "donuts", user1.slack_name, message, channel_id}
+            expected_message = "Mmmmm... <@#{user2.slack_name}> just owes us some donuts thanks to <@#{user1.slack_name}>'s vigilance"
+            |> URI.encode()
+
+            assert result == {:ok, "donuts", user2.slack_name, expected_message, "general"}
+        end
+
+        test "process_adding_donut - self sending" do
+            {s, user1} = add_test_user(
+                "UJY1A1VLM",
+                "kkowalczykowski",
+                "Kuba Kowalczykowski",
+                true
+            )
+            result = 
+                CommandsHandler.process_adding_donut(user1.slack_name, user1.slack_id, "general")
+
+            expected_message = message = "Self sending is forbidden. Do you wanna owe donuts to everyone..?" 
+            |> URI.encode()
+
+            assert result == {:error, "donuts", user1.slack_name, expected_message, "general"}
+        end
+
+        test "process_adding_donut - wrong username" do
+            {s, user1} = add_test_user(
+                "UJY1A1VLM",
+                "kkowalczykowski",
+                "Kuba Kowalczykowski",
+                true
+            )
+            {s, user2} = add_test_user(
+                "CJY2B1VLM",
+                "jkowalski",
+                "Jan Kowalski",
+                true
+            )
+            result = 
+                CommandsHandler.process_adding_donut("@asdf", user2.slack_id, "general")
+
+            expected_message = message = "I'm sorry, it seems you picked a wrong username :(" 
+            |> URI.encode()
+
+            assert result == {:error, "donuts", user2.slack_id, expected_message, "general"}
         end
     end
 
