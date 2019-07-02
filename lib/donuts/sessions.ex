@@ -14,7 +14,7 @@ defmodule Donuts.Sessions do
   end
 
   def check_token_activity(nil) do
-    nil
+    []
   end
 
   def check_token_activity(token) do
