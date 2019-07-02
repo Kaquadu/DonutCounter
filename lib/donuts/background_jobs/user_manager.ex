@@ -50,7 +50,7 @@ defmodule Donuts.Background.UserManager do
     end)
   end
 
-  def update_user(db_usr, usr_raw) when db_usr == [] or db_usr == nil do
+  def update_user([], usr_raw) do
     if usr_raw["id"] != "USLACKBOT" do
       %{
         "slack_id" => usr_raw["id"],
