@@ -4,7 +4,31 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
 
     describe "Function necessary to add days to a donut" do
         test "process_slack_command" do
+          {s, user1} = add_test_user(
+                "UJY1A1VLM",
+                "kkowalczykowski",
+                "Kuba Kowalczykowski",
+                true
+            )
+            {s, user2} = add_test_user(
+                "CJY2B1VLM",
+                "jkowalski",
+                "Jan Kowalski",
+                true
+            )
+            {s, donut} = add_test_donut(user1, user2)
+          result = CommandsHandler.process_slack_command(
+            "/donuts",
+            ["add_days", "@jkowalski", "1"],
+            "UJY1A1VLM",
+            "general"
+          )
 
+          message =
+            "Oldest donuts of <@#{user2.slack_name}> updated by <@#{user1.slack_id}> - added 1 days!"
+            |> URI.encode()
+
+          assert result = {:ok, "donuts", user1.slack_name, message, channel_id}
         end
 
         test "" do
