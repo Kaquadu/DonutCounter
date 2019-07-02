@@ -276,7 +276,7 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
         "Oldest donuts of <@#{user2.slack_name}> updated by <@#{user1.slack_id}> - added 1 days!"
         |> URI.encode()
 
-      assert result = {:ok, "donuts", user1.slack_id, message, channel_id}
+      assert result = {:ok, "donuts", user1.slack_id, message, "general"}
     end
 
     test "save_add_days no debts" do
@@ -301,7 +301,7 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
       )
       message = "<@#{user2.slack_name}> has no donut debts!" |> URI.encode()
 
-      assert result = {:ok, "donuts", user1.slack_id, message, channel_id}
+      assert result = {:ok, "donuts", user1.slack_id, message, "general"}
     end
   end
 
