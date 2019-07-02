@@ -14,7 +14,7 @@ defmodule DonutsWeb.Plugs.LoginStatus do
     manage_session(conn, active_token)
   end
 
-  def manage_session(conn, token) do
+  def manage_session(conn, []) do
     conn
     |> put_flash(:info, "You have to log in.")
     |> redirect(to: Routes.session_path(conn, :sign_in))
