@@ -14,12 +14,13 @@ defmodule Donuts.Slack.EventHandler do
 
     def handle_slack_event(event = %{"type" => "user_change"}) do
         usr_raw = event["user"]
-        %{
+        attrs = %{
             "slack_id" => usr_raw["id"],
             "name" => usr_raw["profile"]["real_name"],
             "is_admin" => usr_raw["is_admin"],
             "slack_name" => slack_name = usr_raw["name"]
           }
-          |> Accounts.update_user()
+        Accounts.get_by_slack_id(usr_raw["id"])
+        |> Accounts.update_user(attrs)
     end
 end
