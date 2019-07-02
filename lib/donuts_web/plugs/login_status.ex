@@ -8,13 +8,13 @@ defmodule DonutsWeb.Plugs.LoginStatus do
   def call(%Plug.Conn{} = conn, _opts) do
     active_token =
       conn
-      |> get_session(:token)
-      |> Sessions.check_token_activity()
+      |> get_session(:token) |> IO.inspect()
+      |> Sessions.check_token_activity() |> IO.inspect()
 
     manage_session(conn, active_token)
   end
 
-  def manage_session(conn, []) do
+  def manage_session(conn, token) do
     conn
     |> put_flash(:info, "You have to log in.")
     |> redirect(to: Routes.session_path(conn, :sign_in))
