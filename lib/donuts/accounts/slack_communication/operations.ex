@@ -45,7 +45,7 @@ defmodule Donuts.Slack.Operations do
     "https://slack.com/api/oauth.access?client_id=#{@client_id}&client_secret=#{@client_secret}&code=#{
       code
     }&redirect_uri=#{redirect}"
-    |> HTTPHelper.get_body() |> IO.inspect()
+    |> HTTPHelper.get_body()
   end
 
   def message({:ok, "donuts", user, message, channel_id}) do
