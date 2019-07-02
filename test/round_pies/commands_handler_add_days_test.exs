@@ -248,6 +248,61 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
       message = "Adding days to your debts by yourself is forbidden ;)" |> URI.encode()
       assert result == {:error, "donuts", user1.slack_id, message, "general"}
     end
+
+    test "save_add_days valid" do
+      {s, user1} = add_test_user(
+        "UJY1A1VLM",
+        "kkowalczykowski",
+        "Kuba Kowalczykowski",
+        true
+      )
+      {s, user2} = add_test_user(
+        "CJY2B1VLM",
+        "jkowalski",
+        "Jan Kowalski",
+        true
+      )
+      {s, donut} = add_test_donut(user1, user2)
+
+      result = CommandsHandler.save_add_days(
+        donut,
+        user2,
+        1,
+        user1.slack_id,
+        "general"
+      )
+
+      message =
+        "Oldest donuts of <@#{user2.slack_name}> updated by <@#{user1.slack_id}> - added 1 days!"
+        |> URI.encode()
+
+      assert result = {:ok, "donuts", user1.slack_id, message, channel_id}
+    end
+
+    test "save_add_days no debts" do
+      {s, user1} = add_test_user(
+        "UJY1A1VLM",
+        "kkowalczykowski",
+        "Kuba Kowalczykowski",
+        true
+      )
+      {s, user2} = add_test_user(
+        "CJY2B1VLM",
+        "jkowalski",
+        "Jan Kowalski",
+        true
+      )
+      result = CommandsHandler.save_add_days(
+        nil,
+        user2,
+        1,
+        user1.slack_id,
+        "general"
+      )
+      message = "<@#{user2.slack_name}> has no donut debts!" |> URI.encode()
+
+      assert result = {:ok, "donuts", user1.slack_id, message, channel_id}
+    end
   end
 
   def add_test_user(id, s_name, name, i_a) do
