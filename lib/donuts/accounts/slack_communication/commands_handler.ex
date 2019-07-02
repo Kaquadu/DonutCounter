@@ -38,6 +38,7 @@ defmodule Donuts.Slack.CommandsHandler do
       when params == [] do
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
+
     initialize_release(target, from_id, channel_id)
     |> Operations.message()
   end
@@ -52,6 +53,7 @@ defmodule Donuts.Slack.CommandsHandler do
       when params == [] do
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
+
     initialize_remove(target, from_id, channel_id)
     |> Operations.message()
   end
@@ -88,6 +90,7 @@ defmodule Donuts.Slack.CommandsHandler do
     days = days |> Integer.parse()
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
+
     initialize_add_days(target, days, from_id, channel_id)
     |> Operations.message()
   end

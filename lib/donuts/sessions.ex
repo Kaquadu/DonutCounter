@@ -43,6 +43,7 @@ defmodule Donuts.Sessions do
       :ok
     else
       user = Slack.Operations.get_user_info(user_id) |> Map.get("user")
+
       %{
         "slack_id" => user["id"],
         "name" => user["profile"]["real_name"],
@@ -50,6 +51,7 @@ defmodule Donuts.Sessions do
         "slack_name" => user["name"]
       }
       |> Accounts.create_user()
+
       initialize_session(token_info)
       :ok
     end
