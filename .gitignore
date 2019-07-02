@@ -1,5 +1,6 @@
 .DS_Store
 _build/
 deps/
+.elixir_ls/
 config/config.secret.exs
 assets/node_modules/

@@ -32,7 +32,10 @@ defmodule Donuts.Background.ExpirationChecker do
           donut.expiration_date
           |> DateTime.to_date()
           |> Date.to_string()
-        Enum.join([":doughnut: Donut: \n", "\n> Guilty: #{donut.guilty} \n", "\n> Sender: #{donut.sender} \n", "\n> Expiration date: #{exp_date} \n"])
+        Enum.join([":doughnut: Donut: \n",
+        "\n> Guilty: #{donut.guilty} \n",
+        "\n> Sender: #{donut.sender} \n",
+        "\n> Expiration date: #{exp_date} \n"])
       end)
       |> Enum.join()
       |> URI.encode()
