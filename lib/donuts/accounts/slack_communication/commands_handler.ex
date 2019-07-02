@@ -160,7 +160,7 @@ defmodule Donuts.Slack.CommandsHandler do
     {:error, "donuts", from_id, message, channel_id}
   end
 
-  def initialize_add_days(selfsending, :error, from_id, channel_id) do
+  def initialize_add_days(target, :error, from_id, channel_id) do
     message = "Parameter _days_ must be a number." |> URI.encode()
     {:error, "donuts", from_id, message, channel_id}
   end

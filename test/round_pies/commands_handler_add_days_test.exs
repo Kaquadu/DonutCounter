@@ -114,7 +114,7 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
       {s, donut} = add_test_donut(user1, user2)
       result = CommandsHandler.initialize_add_days(
         user2,
-        1,
+        {1, ""},
         user1.slack_id,
         "general"
       )
