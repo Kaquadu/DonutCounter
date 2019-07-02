@@ -27,20 +27,19 @@ defmodule Donuts.Background.ExpirationChecker do
 
   def communicate_expired_donuts(expired_donuts) do
     mess =
-      Enum.map(expired_donuts, fn donut ->
+      Enum.reduce(expired_donuts, ":doughnut: *Expired donuts:* :doughnut:\n", fn donut, message ->
         exp_date =
           donut.expiration_date
           |> DateTime.to_date()
           |> Date.to_string()
 
-        Enum.join([
+        Enum.join([message,
           ":doughnut: Donut: \n",
           "\n> Guilty: #{donut.guilty} \n",
           "\n> Sender: #{donut.sender} \n",
           "\n> Expiration date: #{exp_date} \n"
         ])
       end)
-      |> Enum.join()
       |> URI.encode()
 
     Slack.Operations.send_message_to_channel("general", mess)
