@@ -3,7 +3,7 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
   alias Donuts.Slack.CommandsHandler
   @expiration_days Application.get_env(:donuts, :donuts_expiration_days)
 
-  describe "Functions necessary to release a donut --- " do
+  describe "Functions necessary to release a donut " do
     test "initialize_release valid target, with donuts" do
       {s, user1} =
         add_test_user(
