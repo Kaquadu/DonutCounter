@@ -265,7 +265,7 @@ defmodule Donuts.Slack.CommandsHandler do
   end
 
   def save_add_days(donut, target, days, from_id, channel_id) do
-    new_expiration_date = DateTime.add(donut.expiration_date, days, days * 24 * 60 * 60, :second)
+    new_expiration_date = DateTime.add(donut.expiration_date, days * 24 * 60 * 60, :second)
     RoundPies.update_donut(donut, %{:expiration_date => new_expiration_date})
 
     message =
