@@ -24,6 +24,8 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
             result = 
                 user_change_event()
                 |> EventHandler.handle_slack_event()
+                |> Tuple.to_list()
+                |> List.first()
 
             assert result == :ok
         end
