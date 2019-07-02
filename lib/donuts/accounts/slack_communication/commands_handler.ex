@@ -85,7 +85,7 @@ defmodule Donuts.Slack.CommandsHandler do
         channel_id
       )
       when params == [] do
-    days = days |> Integer.parse() |> Tuple.to_list() |> List.first()
+    days = days |> Integer.parse()
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_add_days(target, days, from_id, channel_id)
@@ -160,7 +160,12 @@ defmodule Donuts.Slack.CommandsHandler do
     {:error, "donuts", from_id, message, channel_id}
   end
 
-  def initialize_add_days(target, days, from_id, channel_id) do
+  def initialize_add_days(selfsending, :error, from_id, channel_id) do
+    message = "Parameter 'days' mus be a number." |> URI.encode()
+    {:error, "donuts", from_id, message, channel_id}
+  end
+
+  def initialize_add_days(target, {days, _}, from_id, channel_id) do
     check_self_sending(target.slack_id, from_id)
     |> (target, days, from_id, channel_id)
   end
@@ -240,11 +245,6 @@ defmodule Donuts.Slack.CommandsHandler do
     RoundPies.delete_donut(remove_target)
     message = "Newest donut of <@#{target.slack_name}> removed." |> URI.encode()
     {:ok, "donuts", from_id, message, channel_id}
-  end
-
-  def add_days(selfsending, target, :error, from_id, channel_id) do
-    message = "Parameter 'days' mus be a number." |> URI.encode()
-    {:error, "donuts", from_id, message, channel_id}
   end
 
   def add_days(true, target, days, from_id, channel_id) do
