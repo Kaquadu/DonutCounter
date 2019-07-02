@@ -167,7 +167,7 @@ defmodule Donuts.Slack.CommandsHandler do
 
   def initialize_add_days(target, {days, _}, from_id, channel_id) do
     check_self_sending(target.slack_id, from_id)
-    |> (target, days, from_id, channel_id)
+    |> add_donut(target, days, from_id, channel_id)
   end
 
   def add_donut(false, guilty, sender, channel_id) do

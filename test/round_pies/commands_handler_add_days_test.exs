@@ -53,6 +53,19 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
     end
 
     test "process_slack_command /donuts add_days @xyz" do
+      {s, user1} = add_test_user(
+            "UJY1A1VLM",
+            "kkowalczykowski",
+            "Kuba Kowalczykowski",
+            true
+        )
+      {s, user2} = add_test_user(
+          "CJY2B1VLM",
+          "jkowalski",
+          "Jan Kowalski",
+          true
+      )
+      {s, donut} = add_test_donut(user1, user2)
       result = CommandsHandler.process_slack_command(
         "/donuts",
         ["add_days", "@xyz"],
@@ -63,6 +76,19 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
     end
 
     test "process_slack_command /donuts add_days" do
+      {s, user1} = add_test_user(
+            "UJY1A1VLM",
+            "kkowalczykowski",
+            "Kuba Kowalczykowski",
+            true
+        )
+      {s, user2} = add_test_user(
+          "CJY2B1VLM",
+          "jkowalski",
+          "Jan Kowalski",
+          true
+      )
+      {s, donut} = add_test_donut(user1, user2)
       result = CommandsHandler.process_slack_command(
         "/donuts",
         ["add_days"],
@@ -106,6 +132,13 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
             "Kuba Kowalczykowski",
             true
         )
+      {s, user2} = add_test_user(
+        "CJY2B1VLM",
+        "jkowalski",
+        "Jan Kowalski",
+        true
+      )
+      {s, donut} = add_test_donut(user1, user2)
       result = CommandsHandler.initialize_add_days(
         nil,
         1,
@@ -113,6 +146,106 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
         "general"
       )
       message = "There is no such person." |> URI.encode()
+      assert result == {:error, "donuts", user1.slack_id, message, "general"}
+    end
+
+    test "initialize_add_days - wrong days" do
+      {s, user1} = add_test_user(
+        "UJY1A1VLM",
+        "kkowalczykowski",
+        "Kuba Kowalczykowski",
+        true
+      )
+      {s, user2} = add_test_user(
+        "CJY2B1VLM",
+        "jkowalski",
+        "Jan Kowalski",
+        true
+      )
+      {s, donut} = add_test_donut(user1, user2)
+      result = CommandsHandler.initialize_add_days(
+        user2,
+        :error,
+        user1.slack_id,
+        "general"
+      )
+      message = "Parameter _days_ must be a number." |> URI.encode()
+      assert result == {:error, "donuts", user1.slack_id, message, "general"}
+    end
+
+    test "initialize_add_days - wrong days" do
+      {s, user1} = add_test_user(
+        "UJY1A1VLM",
+        "kkowalczykowski",
+        "Kuba Kowalczykowski",
+        true
+      )
+      {s, user2} = add_test_user(
+        "CJY2B1VLM",
+        "jkowalski",
+        "Jan Kowalski",
+        true
+      )
+      {s, donut} = add_test_donut(user1, user2)
+      result = CommandsHandler.initialize_add_days(
+        user2,
+        :error,
+        user1.slack_id,
+        "general"
+      )
+      message = "Parameter _days_ must be a number." |> URI.encode()
+      assert result == {:error, "donuts", user1.slack_id, message, "general"}
+    end
+
+    test "add_days valid" do
+      {s, user1} = add_test_user(
+        "UJY1A1VLM",
+        "kkowalczykowski",
+        "Kuba Kowalczykowski",
+        true
+      )
+      {s, user2} = add_test_user(
+        "CJY2B1VLM",
+        "jkowalski",
+        "Jan Kowalski",
+        true
+      )
+      {s, donut} = add_test_donut(user1, user2)
+      result = CommandsHandler.add_days(
+        false,
+        user2,
+        1,
+        user1.slack_id,
+        "general"
+      )
+      message =
+        "Oldest donuts of <@#{user2.slack_name}> updated by <@#{user1.slack_id}> - added 1 days!"
+        |> URI.encode()
+      assert result == {:ok, "donuts", user1.slack_id, message, "general"}
+    end
+
+    test "add_days self sending" do
+      {s, user1} = add_test_user(
+        "UJY1A1VLM",
+        "kkowalczykowski",
+        "Kuba Kowalczykowski",
+        true
+      )
+      {s, user2} = add_test_user(
+        "CJY2B1VLM",
+        "jkowalski",
+        "Jan Kowalski",
+        true
+      )
+      {s, donut} = add_test_donut(user1, user2)
+      result = CommandsHandler.add_days(
+        true,
+        user1,
+        1,
+        user1.slack_id,
+        "general"
+      )
+      message = "Adding days to your debts by yourself is forbidden ;)" |> URI.encode()
       assert result == {:error, "donuts", user1.slack_id, message, "general"}
     end
   end
