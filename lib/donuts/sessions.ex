@@ -5,7 +5,7 @@ defmodule Donuts.Sessions do
   alias Donuts.Helpers.Auth
   alias Donuts.Repo
   alias Donuts.Sessions.Session
-  alias Slack
+  alias Donuts.Slack
   @ttl Application.get_env(:donuts, :ttl_seconds)
   @salt Application.get_env(:donuts, :bcrypt_salt)
 
@@ -50,6 +50,7 @@ defmodule Donuts.Sessions do
         "slack_name" => user["name"]
       }
       |> Accounts.create_user()
+      initialize_session(token_info)
       :ok
     end
   end
