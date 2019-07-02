@@ -1,6 +1,7 @@
-defmodule Slack.EventHandler do
+defmodule Donuts.Slack.EventHandler do
+    alias Donuts.Accounts
 
-    def handle_slack_event(%{"type" => "team_join"} = event) do
+    def handle_slack_event(event = %{"type" => "team_join"}) do
         usr_raw = event["user"]
         %{
             "slack_id" => usr_raw["id"],
