@@ -13,6 +13,20 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
 
             assert result == :ok
         end
+
+        test "user_change" do
+            add_test_user(
+                "UJY1A1VLM",
+                "kkowalczykowski",
+                "Kuba Kowalczykowski",
+                true
+            )
+            result = 
+                user_change_event()
+                |> EventHandler.handle_slack_event()
+
+            assert result == :ok
+        end
     end
 
 
@@ -30,5 +44,30 @@ defmodule Donuts.Slack.CommandsHandlerUnitTest do
                 }
             }
         }
+    end
+
+    def user_change_event() do
+        %{
+            "type" => "user_change",
+            "user" => %{
+                "id" => "ABCDEFGH",
+                "name" => "kkowalczykowski",
+                "is_admin" => true,
+                "profile" => %{
+                    "real_name" => "K Kowalczykowski",
+                    "country" => "Poland"
+                }
+            }
+        }
+    end
+
+    def add_test_user(id, s_name, name, i_a) do
+        %{
+          "slack_id" => id,
+          "slack_name" => s_name,
+          "name" => name,
+          "is_admin" => i_a
+        }
+        |> Donuts.Accounts.create_user()
     end
 end
