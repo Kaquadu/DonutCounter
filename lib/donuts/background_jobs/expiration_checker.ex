@@ -41,13 +41,13 @@ defmodule Donuts.Background.ExpirationChecker do
     #   end)
 
     mess = 
-    Enum.map(expired_donuts, fn d ->
+    Enum.map(expired_donuts, fn donut ->
         exp_date =
-          d.expiration_date
+          donut.expiration_date
           |> DateTime.to_date()
           |> Date.to_string()
         Enum.join([":doughnut: Donut: \n", "\n> Guilty: #{donut.guilty} \n", "\n> Sender: #{donut.sender} \n", "\n> Expiration date: #{exp_date} \n"])
-      ) 
+      end)
       |> Enum.join()
       |> URI.encode()
 
