@@ -85,7 +85,7 @@ defmodule Donuts.Slack.CommandsHandler do
         channel_id
       )
       when params == [] do
-    days = days |> Integer.parse()
+    days = days |> Integer.parse() |> Tuple.to_list() |> List.first()
     target_name = target_name |> String.trim("@")
     target = Accounts.get_by_slack_name(target_name)
     initialize_add_days(target, days, from_id, channel_id)
